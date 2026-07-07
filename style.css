@@ -52,12 +52,14 @@
 }
 
 html {
+   scroll-padding-top: 90px;
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
 body {
+   text-rendering: optimizeLegibility;
     font-family: var(--font-sans);
     font-weight: 400; /* Regular */
     line-height: 1.6;
@@ -748,6 +750,7 @@ body.intro-active {
 }
 
 .hero-image {
+   content-visibility: auto;
     width: 100%;
     max-height: 480px;
     object-fit: contain;
@@ -776,6 +779,7 @@ body.intro-active {
 }
 
 .feature-card {
+   contain: layout paint;
     padding: 45px 35px; /* More padding */
     border-radius: 8px; /* Rounded corners */
     background-color: var(--color-secondary); /* Off White background */
@@ -838,6 +842,7 @@ body.intro-active {
 }
 
 .product-card {
+   contain: layout paint;
     background-color: var(--color-secondary); /* Off White background */
     border-radius: 8px; /* Rounded corners */
     overflow: hidden;
@@ -907,6 +912,7 @@ body.intro-active {
 }
 
 .product-main-img {
+   image-rendering: auto;
     max-width: 95%;
     max-height: 95%;
     object-fit: contain;
@@ -1157,6 +1163,7 @@ body.intro-active {
 }
 
 .contact-card {
+   contain: layout paint;
     background-color: var(--color-secondary); /* Off White Background */
     border-radius: 8px; /* Rounded corners */
     padding: 40px 30px; /* More padding */
@@ -3542,3 +3549,4 @@ textarea.form-input {
         transform: translateY(20px);
     }
 }
+img { ... }, :focus-visible { ... }, @media (prefers-reduced-motion: reduce) { ... }

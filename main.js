@@ -265,7 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
         wishlist.forEach(id => {
             wishlistHTML += `
                 <div class="cart-item">
-                    <img src="assets/images/lipley balm product.png.png" alt="LIPLEY Tinted Lip Balm" class="cart-item-img">
+                    <img src="assets/images/lipley-balm-product.png" alt="LIPLEY Tinted Lip Balm" class="cart-item-img">
                     <div class="cart-item-details">
                         <h4 class="cart-item-name">LIPLEY Strawberry Beetroot Tinted Lip Balm</h4>
                         <span class="cart-item-price">₹149</span>
@@ -414,7 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
         pShareBtn.addEventListener('click', () => {
             navigator.clipboard.writeText(window.location.href)
                 .then(() => {
-                    alert('Store link copied to clipboard! Feel free to share.');
+                   alert('LIPLEY website link copied successfully.');
                 })
                 .catch(() => {
                     alert('LIPLEY Cosmetics: ' + window.location.href);
@@ -771,7 +771,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localList.push(newReview);
         localStorage.setItem("lipley_reviews_db", JSON.stringify(localList));
         
-        alert("Thank you! Your review has been submitted successfully and is pending administrator moderation.\n\n(Moderator Tip: Open the page with ?admin=true to approve or delete reviews locally!)");
+        alert("Thank you! Your review has been submitted successfully. It will be published after approval.");
         
         reviewForm.reset();
         resetStarsSelector();

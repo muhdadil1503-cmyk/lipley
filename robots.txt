@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://lipley-y4p6.vercel.app/sitemap.xml

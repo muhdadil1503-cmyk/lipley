@@ -3,8 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIPLEY | Premium Luxury Skincare & Cosmetics</title>
-    <meta name="description" content="Discover LIPLEY, a high-end luxury cosmetic brand. Everyday lip nourishment crafted with natural ingredients, elegance, and simplicity.">
+    <title>LIPLEY | Premium Tinted Strawberry Beetroot Lip Balm</title>
+    <meta name="description" content="Discover LIPLEY Premium Strawberry Beetroot Tinted Lip Balm. Crafted with 100% natural ingredients, organic extracts, and rich plant oils for everyday luxury moisture.">
+    <meta name="keywords" content="lip balm, organic lip balm, beetroot lip balm, strawberry lip balm, tinted lip balm, lip nourishment, natural cosmetics, LIPLEY">
+    <link rel="canonical" href="https://lipleycare.com">
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://lipleycare.com">
+    <meta property="og:title" content="LIPLEY | Premium Tinted Strawberry Beetroot Lip Balm">
+    <meta property="og:description" content="Nourishing, organic, and beautifully tinted lips with LIPLEY Strawberry Beetroot Balm.">
+    <meta property="og:image" content="assets/images/lipley-balm-product.png">
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://lipleycare.com">
+    <meta property="twitter:title" content="LIPLEY | Premium Tinted Strawberry Beetroot Lip Balm">
+    <meta property="twitter:description" content="Nourishing, organic, and beautifully tinted lips with LIPLEY Strawberry Beetroot Balm.">
+    <meta property="twitter:image" content="assets/images/lipley-balm-product.png">
     <!-- Google Fonts - Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,7 +38,6 @@
                 <img src="assets/images/lipley-text.png" alt="LIPLEY Wordmark" class="intro-wordmark-large">
                 <div class="shine-effect"></div>
             </div>
-            <span class="intro-welcome">WELCOME</span>
         </div>
     </div>
 
@@ -99,99 +112,51 @@
         <div id="view-home" class="page-view active">
             <!-- HERO SECTION -->
             <section id="home" class="hero-section">
-                <div class="hero-container container">
-                    <div class="hero-info scroll-reveal reveal-fade-right">
-                        <span class="hero-tagline">EVERYDAY LIPS NOURISHMENT</span>
-                        <h2 class="hero-title">Experience Premium Lip Care</h2>
-                        <p class="hero-description">
-                            LIPLEY balms are crafted to offer luxurious moisture and deep nourishment. Pamper your lips with a rich, protective barrier and restore their natural healthy glow.
-                        </p>
-                        <div class="hero-actions">
-                            <button class="btn btn-primary" id="hero-buy-now">
-                                <span>BUY NOW</span>
+                <!-- Slider Background Slides -->
+                <div class="hero-slides">
+                    <div class="hero-slide active" style="background-image: url('assets/images/lipley-hero-banner.jpg'); background-position: center right;"></div>
+                    <div class="hero-slide" style="background-image: url('assets/images/lipley-product-slide.jpg'); background-position: center;"></div>
+                </div>
+                
+                <!-- Overlay to ensure high text contrast -->
+                <div class="hero-slides-overlay"></div>
+                
+                <!-- Fixed Hero Content -->
+                <div class="container hero-overlay-container">
+                    <div class="hero-content scroll-reveal reveal-fade-right">
+                        <span class="hero-brand">LIPLEY</span>
+                        <h1 class="hero-title-premium">Premium Organic Lip Care</h1>
+                        <p class="hero-subtitle-premium">Naturally Soft. Beautifully Tinted.</p>
+                        <div class="hero-actions-premium">
+                            <button class="btn btn-primary shop-now-trigger" id="hero-view-product" data-product-id="strawberry-beetroot">
+                                <span>View Product</span>
                                 <svg viewBox="0 0 24 24" class="btn-icon"><path fill="currentColor" d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
                             </button>
-                            <a href="#about" class="btn btn-secondary">Discover Brand</a>
                         </div>
                     </div>
-                    
-                    <div class="hero-visual scroll-reveal reveal-scale delay-1">
-                        <div class="floating-wrapper">
-                            <img src="assets/images/lipley-balm-product.png" alt="LIPLEY Premium Balm" class="hero-image">
-                        </div>
-                    </div>
+                </div>
+
+                <!-- Navigation Arrows -->
+                <button class="hero-arrow prev-arrow" id="hero-prev-btn" aria-label="Previous slide">
+                    <svg viewBox="0 0 24 24"><path fill="currentColor" d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                </button>
+                <button class="hero-arrow next-arrow" id="hero-next-btn" aria-label="Next slide">
+                    <svg viewBox="0 0 24 24"><path fill="currentColor" d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+                </button>
+
+                <!-- Navigation Dots -->
+                <div class="hero-dots">
+                    <span class="hero-dot active" data-slide="0"></span>
+                    <span class="hero-dot" data-slide="1"></span>
                 </div>
             </section>
 
-            <!-- PROMOTIONAL OFFER SECTION -->
-            <section id="promotional-offer" class="promo-section">
-                <div class="container">
-                    <div class="promo-card scroll-reveal reveal-scale">
-                        <!-- Subtle floating particles -->
-                        <div class="promo-particles" aria-hidden="true">
-                            <span class="promo-particle p1"></span>
-                            <span class="promo-particle p2"></span>
-                            <span class="promo-particle p3"></span>
-                            <span class="promo-particle p4"></span>
-                            <span class="promo-particle p5"></span>
-                        </div>
-                        
-                        <div class="promo-card-centered-content">
-                            <!-- Centered medium offer image with rounded corners and floating animation -->
-                            <div class="promo-banner-wrapper">
-                                <a href="https://wa.me/917591900437?text=Hello%20LIPLEY%2C%0A%0AI%20would%20like%20to%20order%20the%20Buy%202%20Get%201%20FREE%20offer." target="_blank" rel="noopener" class="promo-banner-link" aria-label="Order Buy 2 Get 1 FREE on WhatsApp">
-                                    <img src="assets/images/lipley-offer-banner.jpg" alt="LIPLEY Buy 2 Get 1 FREE Limited Time Offer Banner" class="promo-banner-img">
-                                </a>
-                            </div>
-                            
-                            <!-- Primary CTA Button -->
-                            <div class="promo-action-wrapper">
-                                <a href="https://wa.me/917591900437?text=Hello%20LIPLEY%2C%0A%0AI%20would%20like%20to%20order%20the%20Buy%202%20Get%201%20FREE%20offer." target="_blank" rel="noopener" class="btn btn-primary promo-btn">
-                                    <span>Message LIPLEY Care on WhatsApp</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- PROMOTIONAL OFFER SECTION -->
-            <section id="promotional-offer" class="promo-section">
-                <div class="container">
-                    <div class="promo-card scroll-reveal reveal-scale">
-                        <!-- Subtle floating particles -->
-                        <div class="promo-particles" aria-hidden="true">
-                            <span class="promo-particle p1"></span>
-                            <span class="promo-particle p2"></span>
-                            <span class="promo-particle p3"></span>
-                            <span class="promo-particle p4"></span>
-                            <span class="promo-particle p5"></span>
-                        </div>
-                        
-                        <div class="promo-card-centered-content">
-                            <!-- Centered medium offer image with rounded corners and floating animation -->
-                            <div class="promo-banner-wrapper">
-                                <a href="https://wa.me/917591900437?text=Hello%20LIPLEY%2C%0A%0AI%20would%20like%20to%20order%20the%20Buy%202%20Get%201%20FREE%20offer." target="_blank" rel="noopener" class="promo-banner-link" aria-label="Order Buy 2 Get 1 FREE on WhatsApp">
-                                    <img src="assets/images/lipley-offer.jpg" alt="LIPLEY Buy 2 Get 1 FREE Limited Time Offer Banner" class="promo-banner-img">
-                                </a>
-                            </div>
-                            
-                            <!-- Primary CTA Button -->
-                            <div class="promo-action-wrapper">
-                                <a href="https://wa.me/917591900437?text=Hello%20LIPLEY%2C%0A%0AI%20would%20like%20to%20order%20the%20Buy%202%20Get%201%20FREE%20offer." target="_blank" rel="noopener" class="btn btn-primary promo-btn">
-                                    <span>Message LIPLEY Care on WhatsApp</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
 
             <!-- TRUST BADGES SECTION -->
             <section class="trust-badges-section bg-light">
                 <div class="container">
                     <div class="trust-badges-grid">
-                        <!-- Badge 1: 100% Organic -->
+                        <!-- Badge 1: 100% Natural Ingredients -->
                         <div class="badge-item scroll-reveal reveal-fade-up">
                             <div class="badge-icon-box">
                                 <svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -199,19 +164,19 @@
                                     <path d="M9 13C9 13 13 13 16 10" />
                                 </svg>
                             </div>
-                            <h5>100% Organic</h5>
+                            <h5>100% Natural Ingredients</h5>
                             <p>Pure botanical extracts</p>
                         </div>
                         
-                        <!-- Badge 2: Premium Ingredients -->
+                        <!-- Badge 2: Handmade with Care -->
                         <div class="badge-item scroll-reveal reveal-fade-up delay-1">
                             <div class="badge-icon-box">
                                 <svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 22a7 7 0 0 0 7-7c0-4.3-7-13-7-13S5 10.7 5 15a7 7 0 0 0 7 7Z" />
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                                 </svg>
                             </div>
-                            <h5>Premium Ingredients</h5>
-                            <p>Handpicked natural oils</p>
+                            <h5>Handmade with Care</h5>
+                            <p>Crafted in small batches</p>
                         </div>
                         
                         <!-- Badge 3: Cruelty Free -->
@@ -225,23 +190,8 @@
                             <p>Ethically formulated</p>
                         </div>
                         
-                        <!-- Badge 4: Handmade -->
+                        <!-- Badge 4: Made in India -->
                         <div class="badge-item scroll-reveal reveal-fade-up">
-                            <div class="badge-icon-box">
-                                <svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 12m-3 0a3 3 0 1 0 6 0 3 3 0 1 0 -6 0" />
-                                    <path d="M12 2a4 4 0 0 0-4 4c0 2 4 6 4 6s4-4 4-6a4 4 0 0 0-4-4z" />
-                                    <path d="M12 22a4 4 0 0 0 4-4c0-2-4-6-4-6s-4 4-4 6a4 4 0 0 0 4 4z" />
-                                    <path d="M2 12a4 4 0 0 0 4 4c2 0 6-4 6-6s-4-4-6-4a4 4 0 0 0-4 4z" />
-                                    <path d="M22 12a4 4 0 0 0-4-4c-2 0-6 4-6 6s4 4 6 4a4 4 0 0 0 4-4z" />
-                                </svg>
-                            </div>
-                            <h5>Handmade</h5>
-                            <p>Crafted in small batches</p>
-                        </div>
-                        
-                        <!-- Badge 5: Made in India -->
-                        <div class="badge-item scroll-reveal reveal-fade-up delay-1">
                             <div class="badge-icon-box">
                                 <svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
@@ -252,16 +202,18 @@
                             <p>Proudly local</p>
                         </div>
                         
-                        <!-- Badge 6: Daily Lip Care -->
-                        <div class="badge-item scroll-reveal reveal-fade-up delay-2">
+                        <!-- Badge 5: Fast Shipping -->
+                        <div class="badge-item scroll-reveal reveal-fade-up delay-1">
                             <div class="badge-icon-box">
                                 <svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z" />
-                                    <path d="M12 7v5l3 3" />
+                                    <rect x="1" y="3" width="15" height="13" />
+                                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+                                    <circle cx="5.5" cy="18.5" r="2.5" />
+                                    <circle cx="18.5" cy="18.5" r="2.5" />
                                 </svg>
                             </div>
-                            <h5>Daily Lip Care</h5>
-                            <p>Round-the-clock moisture</p>
+                            <h5>Fast Shipping</h5>
+                            <p>Dispatched in 24 hours</p>
                         </div>
                     </div>
                 </div>
@@ -351,18 +303,7 @@
                                 <p class="product-desc">Premium organic lip balm enriched with Strawberry Extract and Beetroot Oil to help moisturize lips while providing a beautiful natural tinted finish.</p>
                                 
                                 <div class="product-links" style="width: 100%;">
-                                    <button class="btn btn-primary btn-small btn-full shop-now-trigger">View Product</button>
-                                </div>
-
-                                <div class="marketplace-buttons">
-                                    <a href="https://www.amazon.in/s?k=LIPLEY+Strawberry+Beetroot+Tinted+Lip+Balm" target="_blank" rel="noopener" class="marketplace-link amazon-link">
-                                        <span>Buy on Amazon</span>
-                                        <svg viewBox="0 0 24 24" class="arrow-icon"><path fill="currentColor" d="M5 13h11.86l-5.43 5.43 1.42 1.42L21.14 12l-8.29-8.29-1.42 1.42L16.86 11H5v2z"/></svg>
-                                    </a>
-                                    <a href="https://www.flipkart.com/search?q=LIPLEY+Strawberry+Beetroot+Tinted+Lip+Balm" target="_blank" rel="noopener" class="marketplace-link flipkart-link">
-                                        <span>Buy on Flipkart</span>
-                                        <svg viewBox="0 0 24 24" class="arrow-icon"><path fill="currentColor" d="M5 13h11.86l-5.43 5.43 1.42 1.42L21.14 12l-8.29-8.29-1.42 1.42L16.86 11H5v2z"/></svg>
-                                    </a>
+                                    <button class="btn btn-primary btn-small btn-full shop-now-trigger" data-product-id="strawberry-beetroot">View Product</button>
                                 </div>
                             </div>
                         </div>
@@ -612,6 +553,10 @@
                             <img src="assets/images/lipley-balm-product.png" alt="Instagram Post 3" class="instagram-img" style="filter: brightness(0.9);">
                             <div class="instagram-overlay"><span class="instagram-icon">View Post</span></div>
                         </a>
+                        <a href="https://www.instagram.com/lipleycare" target="_blank" rel="noopener" class="instagram-item scroll-reveal reveal-scale delay-3">
+                            <img src="assets/images/lipley-balm-product.png" alt="Instagram Post 4" class="instagram-img" style="filter: contrast(0.95);">
+                            <div class="instagram-overlay"><span class="instagram-icon">View Post</span></div>
+                        </a>
                     </div>
                 </div>
             </section>
@@ -619,70 +564,67 @@
             <!-- CONTACT SECTION -->
             <section id="contact" class="contact-section">
                 <div class="container">
-                    <div class="section-header scroll-reveal reveal-fade-up">
-                        <span class="section-tagline">CONNECT WITH US</span>
-                        <h2 class="section-title">We'd Love to Hear From You</h2>
-                        <p class="section-subtitle">Whether you have a query about our collection or need support, we are here to assist.</p>
-                    </div>
-
-                    <div class="contact-grid">
-                        <div class="contact-info-cards scroll-reveal reveal-fade-right">
-                            <!-- Card 1: Customer Care -->
-                            <div class="contact-card">
-                                <div class="contact-card-icon">
-                                    <svg viewBox="0 0 24 24" class="c-icon"><path fill="none" stroke="currentColor" stroke-width="2" d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+                    <div class="contact-modern-grid">
+                        
+                        <!-- Left Column: Contact Info -->
+                        <div class="contact-modern-info scroll-reveal reveal-fade-right">
+                            <span class="section-tagline">CONNECT WITH US</span>
+                            <h2 class="section-title-modern">Get In Touch</h2>
+                            <p class="contact-intro-text">Have a question about our organic products, orders, or custom gifting? We'd love to help. Reach out to us through any of these channels.</p>
+                            
+                             <div class="contact-details-list">
+                                <!-- Address -->
+                                <div class="contact-detail-item">
+                                    <div class="contact-detail-text">
+                                        <h4>Address</h4>
+                                        <p>Chettipadi, Malappuram, Kerala – 676319</p>
+                                    </div>
                                 </div>
-                                <h4 class="contact-card-title">Customer Care</h4>
-                                <p class="contact-card-value">7591900437</p>
-                                <a href="tel:7591900437" class="btn btn-secondary btn-small btn-full">CALL NOW</a>
-                            </div>
-
-                            <!-- Card 2: WhatsApp -->
-                            <div class="contact-card">
-                                <div class="contact-card-icon">
-                                    <svg viewBox="0 0 24 24" class="c-icon"><path fill="currentColor" d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.73-1.455L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.967C16.59 2.01 14.137.99 11.614.99c-5.442 0-9.87 4.372-9.875 9.802-.001 1.768.463 3.497 1.345 5.031L2.1 21.842l6.547-1.688z"/></svg>
-                                </div>
-                                <h4 class="contact-card-title">WhatsApp</h4>
-                                <p class="contact-card-value">Instant Support</p>
-                                <a href="https://wa.me/917591900437" target="_blank" rel="noopener" class="btn btn-secondary btn-small btn-full">CHAT NOW</a>
-                            </div>
-
-                            <!-- Card 3: Instagram -->
-                            <div class="contact-card">
-                                <div class="contact-card-icon">
-                                    <svg viewBox="0 0 24 24" class="c-icon"><path fill="currentColor" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324z"/></svg>
-                                </div>
-                                <h4 class="contact-card-title">Instagram</h4>
-                                <p class="contact-card-value">@lipleycare</p>
-                                <a href="https://www.instagram.com/lipleycare" target="_blank" rel="noopener" class="btn btn-secondary btn-small btn-full">FOLLOW US</a>
+                                
+                                <!-- WhatsApp -->
+                                <a href="https://wa.me/917591900431" target="_blank" rel="noopener" class="contact-detail-item interactive-item">
+                                    <div class="contact-detail-text">
+                                        <h4>WhatsApp</h4>
+                                        <p>+91 75919 00431</p>
+                                    </div>
+                                </a>
+                                
+                                <!-- Email -->
+                                <a href="mailto:hellolipley2026@gmail.com" class="contact-detail-item interactive-item">
+                                    <div class="contact-detail-text">
+                                        <h4>Email</h4>
+                                        <p>hellolipley2026@gmail.com</p>
+                                    </div>
+                                </a>
                             </div>
                         </div>
-
-                        <!-- Contact Us Form (Modern & Elegant Interface) -->
-                        <div class="contact-form-container scroll-reveal reveal-scale delay-1">
-                            <form id="lipley-contact-form" class="contact-form" onsubmit="event.preventDefault(); alert('Thank you for reaching out to LIPLEY. We will get back to you shortly.'); this.reset();">
-                                <h3 class="form-title">Send a Message</h3>
+                        
+                        <!-- Right Column: Form -->
+                        <div class="contact-modern-form-container scroll-reveal reveal-scale delay-1">
+                            <form id="lipley-contact-form" class="contact-modern-form" onsubmit="event.preventDefault(); alert('Thank you for reaching out to LIPLEY. We will get back to you shortly.'); this.reset();">
+                                <h3 class="form-title-modern">Send Message</h3>
                                 
-                                <div class="form-group">
-                                    <label for="name" class="form-label">Full Name</label>
-                                    <input type="text" id="name" name="name" class="form-input" placeholder="Your Name" required>
+                                <div class="form-group-modern">
+                                    <label for="c-name" class="form-label-modern">Full Name</label>
+                                    <input type="text" id="c-name" name="name" class="form-input-modern" placeholder="Your Name" required>
                                 </div>
-
-                                <div class="form-group">
-                                    <label for="email" class="form-label">Email Address</label>
-                                    <input type="email" id="email" name="email" class="form-input" placeholder="you@example.com" required>
+                                
+                                <div class="form-group-modern">
+                                    <label for="c-email" class="form-label-modern">Email Address</label>
+                                    <input type="email" id="c-email" name="email" class="form-input-modern" placeholder="you@example.com" required>
                                 </div>
-
-                                <div class="form-group">
-                                    <label for="message" class="form-label">Your Message</label>
-                                    <textarea id="message" name="message" class="form-input" rows="4" placeholder="How can we help you?" required></textarea>
+                                
+                                <div class="form-group-modern">
+                                    <label for="c-message" class="form-label-modern">Your Message</label>
+                                    <textarea id="c-message" name="message" class="form-input-modern" rows="4" placeholder="How can we help you?" required></textarea>
                                 </div>
-
-                                <button type="submit" class="btn btn-primary btn-full btn-submit">
+                                
+                                <button type="submit" class="btn btn-primary btn-full">
                                     <span>Send Message</span>
                                 </button>
                             </form>
                         </div>
+                        
                     </div>
                 </div>
             </section>
@@ -748,7 +690,7 @@
                         <!-- Purchase CTAs -->
                         <div class="p-purchase-block">
                             <div class="p-action-buttons" style="width: 100%;">
-                                <button class="btn btn-primary btn-full" id="btn-buy-now">BUY NOW</button>
+                                <button class="btn btn-primary btn-full" id="btn-buy-now" data-product-id="strawberry-beetroot">BUY NOW</button>
                             </div>
                         </div>
 
@@ -851,6 +793,8 @@
 
     </main>
 
+
+
     <!-- FOOTER -->
     <footer class="main-footer">
         <div class="container">
@@ -903,7 +847,9 @@
                 <p class="copyright">Copyright &copy; 2026 LIPLEY. All Rights Reserved.</p>
                 <div class="legal-links">
                     <a href="#" class="legal-link">Privacy Policy</a>
-                    <a href="#" class="legal-link">Terms of Service</a>
+                    <a href="#" class="legal-link">Shipping Policy</a>
+                    <a href="#" class="legal-link">Refund Policy</a>
+                    <a href="#" class="legal-link">Terms & Conditions</a>
                 </div>
             </div>
         </div>
@@ -925,6 +871,20 @@
         </div>
     </div>
 
+    <!-- POLICY MODAL -->
+    <div id="policy-modal" class="detail-drawer">
+        <div class="drawer-overlay" id="policy-overlay"></div>
+        <div class="drawer-panel" style="padding: 40px; max-width: 650px;">
+            <button class="drawer-close-btn" id="policy-close-btn" aria-label="Close policy modal" style="background: none; border: none; cursor: pointer; color: var(--color-primary); padding: 5px;">
+                <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+            <h3 id="policy-modal-title" class="drawer-title" style="margin-top: 15px; margin-bottom: 25px; font-size: 20px; font-weight: 600; text-transform: uppercase; color: var(--color-primary); border-bottom: 1px solid rgba(30,58,52,0.1); padding-bottom: 10px;">Policy</h3>
+            <div id="policy-modal-content" style="max-height: 75vh; overflow-y: auto; font-family: var(--font-sans); font-size: 13.5px; line-height: 1.6; color: var(--color-primary); padding-right: 15px;">
+                <!-- Policy text will be populated dynamically -->
+            </div>
+        </div>
+    </div>
+
     <!-- PURCHASE OPTIONS MODAL -->
     <div id="purchase-options-modal" class="purchase-modal-container">
         <div class="purchase-modal-backdrop" id="purchase-backdrop"></div>
@@ -932,39 +892,119 @@
             <button class="purchase-modal-close-btn" id="purchase-modal-close" aria-label="Close modal">
                 <svg viewBox="0 0 24 24" class="close-icon"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
             </button>
-            <h2 class="purchase-modal-title">Choose Where to Buy</h2>
-            <p class="purchase-modal-subtitle">Select your preferred shopping platform.</p>
+            <h2 class="purchase-modal-title">Place Your Order</h2>
+            <p class="purchase-modal-subtitle">Complete your details to place your order directly via WhatsApp.</p>
             
-            <div class="purchase-options-grid">
-                <!-- Amazon Card -->
-                <div class="purchase-option-card disabled">
-                    <span class="card-status-badge">Coming Soon</span>
-                    <div class="card-platform-icon">🛒</div>
-                    <h4 class="card-platform-name">Amazon</h4>
-                    <p class="card-platform-desc">Our Amazon store will be available soon.</p>
-                    <button class="btn btn-secondary btn-small btn-full" disabled>Coming Soon</button>
-                </div>
+            <div class="purchase-modal-content-grid">
+                <!-- Form Column -->
+                <form id="purchase-order-form" class="checkout-form-container">
+                    <h3 class="checkout-form-title">Delivery Details</h3>
+                    
+                    <div class="form-group">
+                        <label for="order-full-name" class="form-label">Full Name</label>
+                        <input type="text" id="order-full-name" class="form-input" placeholder="Your Full Name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="order-phone" class="form-label">Phone Number</label>
+                        <input type="tel" id="order-phone" class="form-input" placeholder="10-digit Mobile Number" required pattern="[0-9]{10}">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="order-house" class="form-label">House Name / Number</label>
+                        <input type="text" id="order-house" class="form-input" placeholder="House Name, Flat No., Building" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="order-address" class="form-label">Full Address</label>
+                        <input type="text" id="order-address" class="form-input" placeholder="Street Address, Area, Landmark" required>
+                    </div>
+                    
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label for="order-district" class="form-label">District</label>
+                            <input type="text" id="order-district" class="form-input" placeholder="District" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="order-state" class="form-label">State</label>
+                            <input type="text" id="order-state" class="form-input" placeholder="State" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 5px;">
+                        <label for="order-pin" class="form-label">PIN Code</label>
+                        <input type="text" id="order-pin" class="form-input" placeholder="6-digit PIN Code" required pattern="[0-9]{6}">
+                    </div>
+                </form>
                 
-                <!-- Flipkart Card -->
-                <div class="purchase-option-card disabled">
-                    <span class="card-status-badge">Coming Soon</span>
-                    <div class="card-platform-icon">🛒</div>
-                    <h4 class="card-platform-name">Flipkart</h4>
-                    <p class="card-platform-desc">Our Flipkart store will be available soon.</p>
-                    <button class="btn btn-secondary btn-small btn-full" disabled>Coming Soon</button>
-                </div>
-                
-                <!-- WhatsApp Card -->
-                <div class="purchase-option-card active">
-                    <span class="card-status-badge active">Available Now</span>
-                    <div class="card-platform-icon">💬</div>
-                    <h4 class="card-platform-name">WhatsApp</h4>
-                    <p class="card-platform-desc">Order directly from LIPLEY.</p>
-                    <a href="https://wa.me/917591900437?text=Hello%20LIPLEY%2C%0AI%20would%20like%20to%20order%20the%20LIPLEY%20Strawberry%20Beetroot%20Tinted%20Lip%20Balm." target="_blank" rel="noopener" class="btn btn-primary btn-small btn-full">Message LIPLEY Care on WhatsApp</a>
+                <!-- Summary Column -->
+                <div class="checkout-summary-card">
+                    <h3 class="checkout-form-title">Order Summary</h3>
+                    
+                    <div class="summary-items-list">
+                        <div class="summary-item" style="border-bottom: 1px solid rgba(30, 58, 52, 0.08); padding-bottom: 15px; margin-bottom: 15px;">
+                            <img src="assets/images/lipley-balm-product.png" alt="LIPLEY Strawberry Beetroot Tinted Lip Balm" class="summary-item-img">
+                            <div class="summary-item-details">
+                                <span class="summary-item-name">LIPLEY Strawberry Beetroot Tinted Lip Balm</span>
+                                <span class="summary-item-qty" style="margin-top: 4px; display: block; opacity: 0.85;">Strawberry + Beetroot Tinted</span>
+                                <div class="qty-control-row">
+                                    <span class="qty-label">Quantity:</span>
+                                    <div class="qty-selector-small">
+                                        <button type="button" class="qty-btn-s" id="checkout-qty-minus" aria-label="Decrease quantity">−</button>
+                                        <span class="qty-val-s" id="checkout-qty-display">1</span>
+                                        <button type="button" class="qty-btn-s" id="checkout-qty-plus" aria-label="Increase quantity">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="coupon-field-wrapper">
+                        <label class="form-label" for="coupon-code-input">Have a Coupon?</label>
+                        <div class="summary-promo-code">
+                            <input type="text" id="coupon-code-input" placeholder="ENTER COUPON" autocomplete="off">
+                            <button type="button" class="btn btn-secondary btn-small" id="apply-coupon-btn" style="height: 40px; padding: 0 16px; margin: 0; min-width: auto; font-size: 11px;">Apply</button>
+                        </div>
+                        <div id="coupon-feedback" class="promo-feedback-msg" style="display: none;"></div>
+                    </div>
+                    
+                    <div class="summary-bill-details">
+                        <div class="bill-row">
+                            <span>Product Price</span>
+                            <span id="bill-product-price">₹149</span>
+                        </div>
+                        <div class="bill-row">
+                            <span>Delivery Charge</span>
+                            <span id="bill-delivery-charge">₹30</span>
+                        </div>
+                        <div class="bill-row" id="bill-offer-row" style="display: none;">
+                            <span>Offer</span>
+                            <span class="free-shipping-tag" id="bill-offer-applied">Buy 2 Get 1 FREE</span>
+                        </div>
+                        <div class="bill-row" id="bill-discount-row" style="display: none; color: #4CAF50; font-weight: 500;">
+                            <span>Coupon Discount</span>
+                            <span id="bill-discount-value">-₹0</span>
+                        </div>
+                        <div class="bill-divider"></div>
+                        <div class="bill-row bill-total-row">
+                            <span>Grand Total</span>
+                            <span id="bill-grand-total">₹179</span>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" form="purchase-order-form" class="btn btn-primary btn-full" id="btn-submit-order" style="margin-top: 25px;">
+                        <span>Order on WhatsApp</span>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- BACK TO TOP BUTTON -->
+    <button id="back-to-top-btn" class="back-to-top-btn" aria-label="Back to top">
+        <svg viewBox="0 0 24 24" class="back-to-top-icon"><path fill="currentColor" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>
+    </button>
 
     <!-- Firebase SDK compat CDNs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>

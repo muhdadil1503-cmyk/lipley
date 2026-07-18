@@ -27,20 +27,23 @@ document.addEventListener('DOMContentLoaded', () => {
             particlesContainer.appendChild(particle);
         }
     }
-    setTimeout(() => {
-        // Unlock scroll and fade out overlay
+    let hasFinishedIntro = false;
+    let removeTimer = null;
+    
+    function finishIntro() {
+        if (hasFinishedIntro) return;
+        hasFinishedIntro = true;
         document.body.classList.remove('intro-active');
         if (introScreen) {
             introScreen.classList.add('fade-out');
         }
-        
-        // Fully remove intro from DOM after transition completes to preserve performance
-        setTimeout(() => {
+        removeTimer = setTimeout(() => {
             if (introScreen) {
                 introScreen.remove();
             }
         }, 1000);
-    }, 3500); // 3.5 seconds duration as requested (3-4s range)
+    }
+    setTimeout(finishIntro, 3500); // 3.5 seconds duration as requested (3-4s range)
 
 
     // --- 2. MOBILE NAVIGATION DRAWER ---
@@ -67,17 +70,109 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // --- 3. STICKY HEADER SCROLL TRIGGER ---
+    // --- 3. STICKY HEADER & BACK TO TOP CONTROLLER ---
     const header = document.getElementById('main-header');
+    const backToTopBtn = document.getElementById('back-to-top-btn');
     
-    // Add shadow/shrink on scroll
+    // Add shadow/shrink on scroll and control back to top button visibility
     window.addEventListener('scroll', () => {
         if (window.scrollY > 30) {
             header.classList.add('scrolled');
         } else {
             header.classList.remove('scrolled');
         }
+        
+        if (backToTopBtn) {
+            if (window.scrollY > 300) {
+                backToTopBtn.classList.add('visible');
+            } else {
+                backToTopBtn.classList.remove('visible');
+            }
+        }
     });
+
+    if (backToTopBtn) {
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+
+    // --- 3.1 HERO SLIDER CONTROLLER ---
+    const slides = document.querySelectorAll('.hero-slide');
+    const dots = document.querySelectorAll('.hero-dot');
+    const prevBtn = document.getElementById('hero-prev-btn');
+    const nextBtn = document.getElementById('hero-next-btn');
+    let currentSlide = 0;
+    let slideInterval = null;
+
+    function showSlide(index) {
+        if (slides.length === 0) return;
+        
+        if (index >= slides.length) index = 0;
+        if (index < 0) index = slides.length - 1;
+        
+        currentSlide = index;
+        
+        slides.forEach((slide, i) => {
+            if (i === currentSlide) {
+                slide.classList.add('active');
+            } else {
+                slide.classList.remove('active');
+            }
+        });
+        
+        dots.forEach((dot, i) => {
+            if (i === currentSlide) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+    }
+
+    function nextSlide() {
+        showSlide(currentSlide + 1);
+    }
+
+    function prevSlide() {
+        showSlide(currentSlide - 1);
+    }
+
+    function startSlideShow() {
+        stopSlideShow();
+        slideInterval = setInterval(nextSlide, 5500); // Switch every 5.5s
+    }
+
+    function stopSlideShow() {
+        if (slideInterval) {
+            clearInterval(slideInterval);
+        }
+    }
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            prevSlide();
+            startSlideShow();
+        });
+    }
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            nextSlide();
+            startSlideShow();
+        });
+    }
+
+    dots.forEach((dot, i) => {
+        dot.addEventListener('click', () => {
+            showSlide(i);
+            startSlideShow();
+        });
+    });
+
+    if (slides.length > 0) {
+        startSlideShow();
+    }
 
 
     // --- 4. SCROLL REVEAL (FADE / SLIDE ENTRANCE) ---
@@ -128,6 +223,107 @@ document.addEventListener('DOMContentLoaded', () => {
     scrollSections.forEach(sec => activeLinkObserver.observe(sec));
 
 
+    // --- 5.1 FUTURE-READY DYNAMIC PRODUCT DATA MODEL ---
+    window.products = {
+        "strawberry-beetroot": {
+            id: "strawberry-beetroot",
+            name: "LIPLEY Strawberry Beetroot Tinted Lip Balm",
+            type: "Organic Lip Balm",
+            tagline: "Organic Ingredients. Natural Nourishment. Beautifully Tinted Lips.",
+            price: 149,
+            description: "Premium organic lip balm enriched with Strawberry Extract and Beetroot Oil to help moisturize lips while providing a beautiful natural tinted finish.",
+            variant: "Strawberry + Beetroot Tinted",
+            image: "assets/images/lipley-balm-product.png",
+            ingredients: ["Beeswax", "Shea Butter", "Cocoa Butter", "Almond Oil", "Jojoba Oil", "Castor Oil", "Beetroot Oil", "Coconut Oil", "Alkanet Root", "Manjistha", "Vitamin E", "Strawberry Oil"],
+            benefits: [
+                "Helps deeply moisturize dry lips.",
+                "Helps reduce the appearance of lip dryness and flakiness.",
+                "Helps improve the appearance of uneven lip tone.",
+                "Helps reduce the appearance of dull-looking lips.",
+                "Provides a beautiful natural beetroot tinted finish.",
+                "Nourishes lips with natural oils and botanical ingredients.",
+                "Supports soft, smooth and healthy-looking lips.",
+                "Helps protect lips from everyday dryness.",
+                "Provides long-lasting hydration.",
+                "Rich in natural antioxidants to support healthy-looking lips.",
+                "Helps maintain the natural lip barrier.",
+                "Lightweight, non-sticky and comfortable for daily use.",
+                "Gives lips a fresh, naturally radiant appearance.",
+                "Free from harsh chemicals.",
+                "Suitable for Men & Women.",
+                "Suitable for everyday use."
+            ],
+            instructions: "Apply evenly on clean lips whenever needed.<br><br>Reapply throughout the day for continuous hydration and a natural tinted look.<br><br>Apply before bedtime for overnight nourishment."
+        }
+    };
+
+    let selectedProductId = "strawberry-beetroot";
+
+    window.loadProductDetails = function(productId) {
+        const product = window.products[productId];
+        if (!product) return;
+        
+        selectedProductId = productId;
+        
+        // Update breadcrumb
+        const breadcrumbActive = document.querySelector('.breadcrumb-active');
+        if (breadcrumbActive) breadcrumbActive.textContent = product.name;
+        
+        // Update images
+        const mainImg = document.getElementById('gallery-main-img');
+        if (mainImg) {
+            mainImg.src = product.image;
+            mainImg.alt = product.name;
+        }
+        
+        const galleryThumbs = document.querySelectorAll('.gallery-thumb img');
+        galleryThumbs.forEach(thumb => {
+            thumb.src = product.image;
+        });
+        
+        // Update metadata
+        const typeTag = document.querySelector('.p-type-tag');
+        if (typeTag) typeTag.textContent = product.type;
+        
+        const titleName = document.querySelector('.p-title-name');
+        if (titleName) titleName.textContent = product.name;
+        
+        const subtitleTagline = document.querySelector('.p-subtitle-tagline');
+        if (subtitleTagline) subtitleTagline.textContent = product.tagline;
+        
+        const priceVal = document.querySelector('.p-rating-price-bar .p-price');
+        if (priceVal) priceVal.textContent = `MRP: ₹${product.price}`;
+        
+        const descText = document.querySelector('.p-description-text');
+        if (descText) descText.textContent = product.description;
+        
+        const variantValue = document.querySelector('.p-variant-value');
+        if (variantValue) variantValue.textContent = product.variant;
+        
+        // Update ingredients
+        const ingredientsGrid = document.querySelector('.drawer-ingredients-grid');
+        if (ingredientsGrid && product.ingredients) {
+            ingredientsGrid.innerHTML = product.ingredients.map(ing => `<span class="ingredient-pill">${ing}</span>`).join('');
+        }
+        
+        // Update benefits
+        const benefitsList = document.querySelector('#tab-benefits .drawer-bullet-list');
+        if (benefitsList && product.benefits) {
+            benefitsList.innerHTML = product.benefits.map(ben => `<li>${ben}</li>`).join('');
+        }
+        
+        // Update instructions
+        const instructionsText = document.querySelector('#tab-instructions .tab-desc-text');
+        if (instructionsText) {
+            instructionsText.innerHTML = product.instructions;
+        }
+        
+        // Trigger recalculation if checkout calculation function exists
+        if (typeof calculateOrder === 'function') {
+            calculateOrder();
+        }
+    };
+
     // --- 6. E-COMMERCE SPA ROUTER ---
     const viewHome = document.getElementById('view-home');
     const viewProduct = document.getElementById('view-product');
@@ -150,6 +346,10 @@ document.addEventListener('DOMContentLoaded', () => {
     shopNowTriggers.forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
+            const productId = btn.getAttribute('data-product-id') || 'strawberry-beetroot';
+            if (typeof window.loadProductDetails === 'function') {
+                window.loadProductDetails(productId);
+            }
             showView('view-product');
             updateNavActive('nav-shop-link');
         });
@@ -314,6 +514,37 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Premium dynamic magnifying inspect hover effect
+    const galleryMain = document.querySelector('.gallery-main');
+    if (galleryMain && mainGalleryImg) {
+        galleryMain.style.overflow = 'hidden';
+        galleryMain.style.position = 'relative';
+        mainGalleryImg.style.transition = 'transform 0.15s ease-out, filter 0.3s ease';
+        
+        galleryMain.addEventListener('mousemove', (e) => {
+            const rect = galleryMain.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width) * 100;
+            const y = ((e.clientY - rect.top) / rect.height) * 100;
+            
+            mainGalleryImg.style.transformOrigin = `${x}% ${y}%`;
+            mainGalleryImg.style.transform = 'scale(2)';
+        });
+        
+        galleryMain.addEventListener('mouseleave', () => {
+            // Revert to active thumbnail scale/state
+            const activeThumb = document.querySelector('.gallery-thumb.active');
+            const zoomMode = activeThumb ? activeThumb.getAttribute('data-zoom') : '';
+            mainGalleryImg.style.transformOrigin = 'center';
+            if (zoomMode === 'close') {
+                mainGalleryImg.style.transform = 'scale(1.5)';
+            } else if (zoomMode === 'pack') {
+                mainGalleryImg.style.transform = 'scale(1.15)';
+            } else {
+                mainGalleryImg.style.transform = 'scale(1)';
+            }
+        });
+    }
+
     const tabHeaders = document.querySelectorAll('.tab-header');
     const tabPanes = document.querySelectorAll('.tab-pane');
 
@@ -423,12 +654,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- 13. BUY NOW EVENT LISTENER ---
-    const buyNowButtons = ['btn-buy-now', 'hero-buy-now'];
+    const buyNowButtons = ['btn-buy-now'];
     buyNowButtons.forEach(id => {
         const btn = document.getElementById(id);
         if (btn) {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
+                const productId = btn.getAttribute('data-product-id') || 'strawberry-beetroot';
+                if (typeof window.loadProductDetails === 'function') {
+                    window.loadProductDetails(productId);
+                }
                 window.openPurchaseOptions();
             });
         }
@@ -818,4 +1053,370 @@ document.addEventListener('DOMContentLoaded', () => {
         );
     }
 
+    // --- 12.1 CHECKOUT & ORDER SYSTEM CONTROLLER ---
+    const checkoutQtyMinus = document.getElementById('checkout-qty-minus');
+    const checkoutQtyPlus = document.getElementById('checkout-qty-plus');
+    const checkoutQtyDisplay = document.getElementById('checkout-qty-display');
+    
+    const billProductPrice = document.getElementById('bill-product-price');
+    const billDeliveryCharge = document.getElementById('bill-delivery-charge');
+    const billOfferRow = document.getElementById('bill-offer-row');
+    const billOfferApplied = document.getElementById('bill-offer-applied');
+    const billDiscountRow = document.getElementById('bill-discount-row');
+    const billDiscountValue = document.getElementById('bill-discount-value');
+    const billGrandTotal = document.getElementById('bill-grand-total');
+    
+    const couponCodeInput = document.getElementById('coupon-code-input');
+    const applyCouponBtn = document.getElementById('apply-coupon-btn');
+    const couponFeedback = document.getElementById('coupon-feedback');
+    
+    const purchaseOrderForm = document.getElementById('purchase-order-form');
+    
+    let currentQty = 1;
+    let couponApplied = false;
+    let validCouponCode = 'LIPLEY001';
+    let discountPercent = 0.15; // 15% Discount
+    
+    function calculateOrder() {
+        const product = window.products[selectedProductId] || { price: 149 };
+        const itemPrice = product.price;
+        let productTotal = currentQty * itemPrice;
+        let deliveryCharge = 30;
+        let offerText = '';
+        let discountAmount = 0;
+        
+        // Quantity discounts & delivery logic
+        if (currentQty >= 2) {
+            deliveryCharge = 0; // FREE Delivery
+            offerText = `Free Delivery`;
+        } else {
+            // If qty < 2, coupon is not allowed. Reset if it was applied.
+            if (couponApplied) {
+                couponApplied = false;
+                if (couponFeedback) {
+                    couponFeedback.style.display = 'block';
+                    couponFeedback.textContent = 'Coupon is available only for orders of 2 or more products.';
+                    couponFeedback.className = 'promo-feedback-msg error';
+                }
+                if (couponCodeInput) {
+                    couponCodeInput.value = '';
+                }
+            }
+        }
+        
+        // Coupon discount logic
+        if (couponApplied) {
+            discountAmount = Math.round(productTotal * discountPercent);
+        }
+        
+        let grandTotal = productTotal + deliveryCharge - discountAmount;
+        
+        // Update display elements
+        if (billProductPrice) billProductPrice.textContent = `₹${productTotal}`;
+        if (billDeliveryCharge) {
+            billDeliveryCharge.textContent = deliveryCharge === 0 ? 'FREE' : `₹${deliveryCharge}`;
+            if (deliveryCharge === 0) {
+                billDeliveryCharge.classList.add('free-shipping-tag');
+            } else {
+                billDeliveryCharge.classList.remove('free-shipping-tag');
+            }
+        }
+        
+        if (billOfferRow && billOfferApplied) {
+            if (offerText) {
+                billOfferApplied.textContent = offerText;
+                billOfferRow.style.display = 'flex';
+            } else {
+                billOfferRow.style.display = 'none';
+            }
+        }
+        
+        if (billDiscountRow && billDiscountValue) {
+            if (discountAmount > 0) {
+                billDiscountValue.textContent = `-₹${discountAmount}`;
+                billDiscountRow.style.display = 'flex';
+            } else {
+                billDiscountRow.style.display = 'none';
+            }
+        }
+        
+        if (billGrandTotal) billGrandTotal.textContent = `₹${grandTotal}`;
+    }
+    
+    // Qty minus event
+    if (checkoutQtyMinus) {
+        checkoutQtyMinus.addEventListener('click', () => {
+            if (currentQty > 1) {
+                currentQty--;
+                if (checkoutQtyDisplay) checkoutQtyDisplay.textContent = currentQty;
+                calculateOrder();
+            }
+        });
+    }
+    
+    // Qty plus event
+    if (checkoutQtyPlus) {
+        checkoutQtyPlus.addEventListener('click', () => {
+            currentQty++;
+            if (checkoutQtyDisplay) checkoutQtyDisplay.textContent = currentQty;
+            calculateOrder();
+        });
+    }
+    
+    // Coupon Apply Event
+    if (applyCouponBtn && couponCodeInput) {
+        applyCouponBtn.addEventListener('click', () => {
+            if (currentQty < 2) {
+                couponFeedback.style.display = 'block';
+                couponFeedback.textContent = 'Coupon is available only for orders of 2 or more products.';
+                couponFeedback.className = 'promo-feedback-msg error';
+                couponApplied = false;
+                calculateOrder();
+                return;
+            }
+            
+            const enteredCode = couponCodeInput.value.trim().toUpperCase();
+            
+            if (enteredCode === '') {
+                couponFeedback.style.display = 'block';
+                couponFeedback.textContent = 'Please enter a coupon code.';
+                couponFeedback.className = 'promo-feedback-msg error';
+                couponApplied = false;
+                calculateOrder();
+                return;
+            }
+            
+            if (enteredCode === validCouponCode) {
+                couponFeedback.style.display = 'block';
+                couponFeedback.textContent = 'Coupon applied successfully! Saved 15% on your items.';
+                couponFeedback.className = 'promo-feedback-msg success';
+                couponApplied = true;
+            } else {
+                couponFeedback.style.display = 'block';
+                couponFeedback.textContent = 'Invalid coupon code. (Discount not applied)';
+                couponFeedback.className = 'promo-feedback-msg error';
+                couponApplied = false;
+            }
+            calculateOrder();
+        });
+    }
+    
+    // Form Submit Event
+    if (purchaseOrderForm) {
+        purchaseOrderForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Gather delivery fields
+            const fullName = document.getElementById('order-full-name').value.trim();
+            const phone = document.getElementById('order-phone').value.trim();
+            const house = document.getElementById('order-house').value.trim();
+            const address = document.getElementById('order-address').value.trim();
+            const district = document.getElementById('order-district').value.trim();
+            const state = document.getElementById('order-state').value.trim();
+            const pin = document.getElementById('order-pin').value.trim();
+            
+            const product = window.products[selectedProductId] || { name: "LIPLEY Strawberry Beetroot Tinted Lip Balm", price: 149 };
+            const productName = product.name;
+            const itemPrice = product.price;
+            const productTotal = currentQty * itemPrice;
+            const deliveryCharge = currentQty >= 2 ? 0 : 30;
+            const discountAmount = couponApplied ? Math.round(productTotal * discountPercent) : 0;
+            const grandTotal = productTotal + deliveryCharge - discountAmount;
+            
+            // Offer details
+            let offerString = '';
+            if (currentQty >= 2) {
+                offerString = `Free Delivery`;
+            }
+            
+            // Format WhatsApp Message
+            let message = `Hello LIPLEY,\n\n`;
+            message += `I would like to place an order for:\n`;
+            message += `*Product:* ${productName}\n`;
+            message += `*Quantity:* ${currentQty}\n`;
+            if (offerString) {
+                message += `*Offer:* ${offerString}\n`;
+            }
+            message += `*Product Price:* ₹${productTotal}\n`;
+            message += `*Delivery Charge:* ${deliveryCharge === 0 ? 'FREE' : '₹' + deliveryCharge}\n`;
+            if (couponApplied) {
+                message += `*Coupon Code:* ${validCouponCode} (Saved ₹${discountAmount})\n`;
+            }
+            message += `*Grand Total:* ₹${grandTotal}\n\n`;
+            
+            message += `*Customer Details:*\n`;
+            message += `*Name:* ${fullName}\n`;
+            message += `*Phone:* ${phone}\n`;
+            message += `*Address:* ${house}, ${address}, ${district}, ${state} - PIN: ${pin}\n`;
+            
+            // URL encode message and open WhatsApp
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/917591900437?text=${encodedMessage}`;
+            
+            window.open(whatsappUrl, '_blank');
+        });
+    }
+
+    // --- 14. DYNAMIC INSTAGRAM FEED CONTROLLER ---
+    const instagramGrid = document.querySelector('.instagram-grid');
+    const localFallbackPosts = [
+        {
+            "url": "https://www.instagram.com/lipleycare",
+            "image": "assets/images/lipley-balm-product.png",
+            "alt": "LIPLEY Strawberry Beetroot Balm closeup",
+            "filter": "none"
+        },
+        {
+            "url": "https://www.instagram.com/lipleycare",
+            "image": "assets/images/lipley-balm-product.png",
+            "alt": "LIPLEY Organic Ingredients display",
+            "filter": "saturate(0.85)"
+        },
+        {
+            "url": "https://www.instagram.com/lipleycare",
+            "image": "assets/images/lipley-balm-product.png",
+            "alt": "LIPLEY Luxury skincare routine",
+            "filter": "brightness(0.9)"
+        },
+        {
+            "url": "https://www.instagram.com/lipleycare",
+            "image": "assets/images/lipley-balm-product.png",
+            "alt": "LIPLEY Tinted shade swatch",
+            "filter": "contrast(0.95)"
+        }
+    ];
+
+    function renderInstagramFeed(posts) {
+        if (!instagramGrid) return;
+        instagramGrid.innerHTML = posts.map((post, index) => `
+            <a href="${post.url}" target="_blank" rel="noopener" class="instagram-item scroll-reveal reveal-scale delay-${index % 4}">
+                <img src="${post.image}" alt="${post.alt}" class="instagram-img" loading="lazy" style="filter: ${post.filter || 'none'};">
+                <div class="instagram-overlay"><span class="instagram-icon">View Post</span></div>
+            </a>
+        `).join('');
+        
+        // Re-trigger scroll reveal observer if present
+        if (typeof revealObserver !== 'undefined') {
+            const newRevealElements = instagramGrid.querySelectorAll('.scroll-reveal');
+            newRevealElements.forEach(el => revealObserver.observe(el));
+        }
+    }
+
+    if (instagramGrid) {
+        fetch('gallery.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (Array.isArray(data)) {
+                    renderInstagramFeed([...data].reverse());
+                } else {
+                    renderInstagramFeed([...localFallbackPosts].reverse());
+                }
+            })
+            .catch(error => {
+                console.warn('Could not load gallery.json (this is normal when running locally via file:// protocol). Using local fallback data.', error);
+                renderInstagramFeed(localFallbackPosts);
+            });
+    }
+
+    // --- 15. POLICY MODAL CONTROLLER ---
+    const policyModal = document.getElementById('policy-modal');
+    const policyCloseBtn = document.getElementById('policy-close-btn');
+    const policyOverlay = document.getElementById('policy-overlay');
+    const policyTitle = document.getElementById('policy-modal-title');
+    const policyContent = document.getElementById('policy-modal-content');
+    
+    const policyData = {
+        "Privacy Policy": `
+            <p><strong>Last Updated: 2026</strong></p>
+            <br>
+            <p>At LIPLEY, we value your privacy. This policy outlines how we collect, use, and protect your information when you visit our website and place an order.</p>
+            <br>
+            <h3>1. Information We Collect</h3>
+            <p>We collect essential customer details to fulfill your orders, including:</p>
+            <ul>
+                <li>Full Name</li>
+                <li>Phone Number</li>
+                <li>Delivery Address (House Name, District, State, PIN Code)</li>
+            </ul>
+            <br>
+            <h3>2. How We Use Your Information</h3>
+            <p>We use this information solely to process orders, calculate pricing and discounts, and direct you to WhatsApp to complete your purchase. We do not sell or lease your data.</p>
+            <br>
+            <h3>3. Security</h3>
+            <p>Your details are formatted securely and shared directly with us via WhatsApp, ensuring safe personal transaction data processing.</p>
+        `,
+        "Shipping Policy": `
+            <p><strong>Shipping & Delivery Policy</strong></p>
+            <br>
+            <p>Thank you for choosing LIPLEY. Here are our shipping terms:</p>
+            <br>
+            <h3>1. Order Dispatch</h3>
+            <p>All orders are processed and dispatched within 24 hours of confirmation.</p>
+            <br>
+            <h3>2. Shipping Rates</h3>
+            <ul>
+                <li><strong>Quantity 1:</strong> ₹30 Delivery Charge.</li>
+                <li><strong>Quantity 2 or more:</strong> FREE Delivery.</li>
+            </ul>
+            <br>
+            <h3>3. Estimated Delivery Times</h3>
+            <p>Delivery times typically range between <strong>3 to 7 business days</strong> across India, depending on your location.</p>
+        `,
+        "Refund Policy": `
+            <p><strong>Refund & Return Policy</strong></p>
+            <br>
+            <p>We stand behind the quality of LIPLEY cosmetics. Due to the hygiene nature of personal care products, we follow a strict return policy:</p>
+            <br>
+            <h3>1. Returns & Replacements</h3>
+            <p>We do not accept returns on used or opened cosmetics. However, if you receive a damaged, leaked, or incorrect product, we will issue a free replacement.</p>
+            <br>
+            <h3>2. How to Claim</h3>
+            <p>Please contact us on WhatsApp at <strong>+91 7591900437</strong> within <strong>48 hours</strong> of delivery with a photo/video showing the damage. We will verify and process a replacement instantly.</p>
+        `,
+        "Terms & Conditions": `
+            <p><strong>Terms and Conditions of Use</strong></p>
+            <br>
+            <p>By using the LIPLEY website, you agree to these terms:</p>
+            <br>
+            <h3>1. Orders & Pricing</h3>
+            <p>All product prices are listed in INR (₹). We reserve the right to cancel orders with incomplete address configurations or invalid phone listings.</p>
+            <br>
+            <h3>2. User Conduct</h3>
+            <p>Customers must provide accurate name, contact, and delivery details. Abuse of promotional systems or invalid coupon attempts may result in order cancellation.</p>
+            <br>
+            <h3>3. WhatsApp Purchases</h3>
+            <p>Our ordering process routes details to WhatsApp. A sale is final only upon manual confirmation and payment settlement on WhatsApp.</p>
+        `
+    };
+
+    const legalLinks = document.querySelectorAll('.legal-link');
+    legalLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const text = link.textContent.trim();
+            if (policyData[text] && policyModal) {
+                policyTitle.textContent = text;
+                policyContent.innerHTML = policyData[text];
+                policyModal.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            }
+        });
+    });
+
+    function closePolicyModal() {
+        if (policyModal) {
+            policyModal.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+    }
+
+    if (policyCloseBtn) policyCloseBtn.addEventListener('click', closePolicyModal);
+    if (policyOverlay) policyOverlay.addEventListener('click', closePolicyModal);
+
 });
+

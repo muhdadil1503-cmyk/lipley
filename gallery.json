@@ -1,0 +1,26 @@
+[
+  {
+    "url": "https://www.instagram.com/lipleycare",
+    "image": "assets/images/lipley-balm-product.png",
+    "alt": "LIPLEY Strawberry Beetroot Balm closeup",
+    "filter": "none"
+  },
+  {
+    "url": "https://www.instagram.com/lipleycare",
+    "image": "assets/images/lipley-balm-product.png",
+    "alt": "LIPLEY Organic Ingredients display",
+    "filter": "saturate(0.85)"
+  },
+  {
+    "url": "https://www.instagram.com/lipleycare",
+    "image": "assets/images/lipley-balm-product.png",
+    "alt": "LIPLEY Luxury skincare routine",
+    "filter": "brightness(0.9)"
+  },
+  {
+    "url": "https://www.instagram.com/lipleycare",
+    "image": "assets/images/lipley-balm-product.png",
+    "alt": "LIPLEY Tinted shade swatch",
+    "filter": "contrast(0.95)"
+  }
+]

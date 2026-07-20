@@ -4,6 +4,79 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
+    // Global quantity state variables
+    let currentQty = 1;
+    let productPageQty = 1;
+
+    function showToast(message, type = 'success') {
+        let toastContainer = document.getElementById('luxury-toast-container');
+        if (!toastContainer) {
+            toastContainer = document.createElement('div');
+            toastContainer.id = 'luxury-toast-container';
+            toastContainer.style.position = 'fixed';
+            toastContainer.style.bottom = '30px';
+            toastContainer.style.right = '30px';
+            toastContainer.style.zIndex = '99999';
+            toastContainer.style.display = 'flex';
+            toastContainer.style.flexDirection = 'column';
+            toastContainer.style.gap = '10px';
+            document.body.appendChild(toastContainer);
+        }
+
+        const toast = document.createElement('div');
+        toast.className = `luxury-toast ${type}`;
+        toast.style.background = 'var(--color-primary)';
+        toast.style.color = '#ffffff';
+        toast.style.border = '1px solid var(--color-accent)';
+        toast.style.padding = '14px 24px';
+        toast.style.borderRadius = '4px';
+        toast.style.fontSize = '13px';
+        toast.style.fontFamily = 'var(--font-sans)';
+        toast.style.boxShadow = 'var(--shadow-luxury)';
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(20px)';
+        toast.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+        toast.style.minWidth = '250px';
+        toast.style.display = 'flex';
+        toast.style.alignItems = 'center';
+        toast.style.justifyContent = 'space-between';
+        
+        if (type === 'error') {
+            toast.style.background = '#8B2635';
+            toast.style.border = '1px solid #dc3545';
+        }
+
+        toast.innerHTML = `
+            <span>${message}</span>
+            <button style="background:none; border:none; color:inherit; font-size:16px; cursor:pointer; margin-left:15px; padding:0; line-height:1;">&times;</button>
+        `;
+
+        toastContainer.appendChild(toast);
+
+        // Close button click
+        toast.querySelector('button').addEventListener('click', () => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(-20px)';
+            setTimeout(() => toast.remove(), 400);
+        });
+
+        // Trigger animation
+        setTimeout(() => {
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateY(0)';
+        }, 50);
+
+        // Auto remove
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-20px)';
+                setTimeout(() => toast.remove(), 400);
+            }
+        }, 4000);
+    }
+    window.showToast = showToast;
+
     // --- 1. INTRO SCREEN CONTROLLER ---
     const introScreen = document.getElementById('intro-screen');
     
@@ -329,7 +402,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const viewProduct = document.getElementById('view-product');
     const viewElements = [viewHome, viewProduct];
 
-    function showView(viewId) {
+    // --- 6.1 SPA ROUTING HISTORY AND BACK NAVIGATION ---
+    const navigationHistory = [];
+
+    window.pushNavigationState = function(type, id, extra = null) {
+        const current = navigationHistory[navigationHistory.length - 1];
+        if (current && current.type === type && current.id === id && current.extra === extra) {
+            return;
+        }
+        navigationHistory.push({ type, id, extra });
+    };
+
+    function showView(viewId, pushState = true, scrollTop = true) {
         viewElements.forEach(view => {
             if (view) {
                 view.classList.remove('active');
@@ -338,7 +422,90 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (scrollTop) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        if (pushState) {
+            window.pushNavigationState('view', viewId);
+        }
+    }
+
+    // Initialize state
+    if (viewHome && viewHome.classList.contains('active')) {
+        window.pushNavigationState('view', 'view-home');
+    } else if (viewProduct && viewProduct.classList.contains('active')) {
+        window.pushNavigationState('view', 'view-product');
+    }
+
+    window.goBack = function() {
+        if (navigationHistory.length <= 1) {
+            if (viewProduct && viewProduct.classList.contains('active')) {
+                showView('view-home');
+            }
+            return;
+        }
+
+        const currentState = navigationHistory.pop();
+        
+        if (currentState.type === 'popup' || currentState.type === 'policy') {
+            closePopupById(currentState.id);
+        }
+
+        const prevState = navigationHistory[navigationHistory.length - 1];
+        if (prevState) {
+            if (prevState.type === 'view') {
+                showView(prevState.id, false);
+                if (prevState.id === 'view-home') {
+                    updateNavActive('nav-home-link');
+                } else if (prevState.id === 'view-product') {
+                    updateNavActive('nav-shop-link');
+                }
+            } else if (prevState.type === 'popup') {
+                openPopupById(prevState.id, false);
+            } else if (prevState.type === 'policy') {
+                openPolicyById(prevState.id, prevState.extra, false);
+            }
+        }
+    };
+
+    function openPopupById(id, pushState = true) {
+        if (id === 'purchase-options-modal') {
+            if (purchaseModal) purchaseModal.classList.add('open');
+            document.body.classList.add('intro-active');
+        } else if (id === 'wishlist-drawer') {
+            if (wishlistDrawer) wishlistDrawer.classList.add('open');
+            document.body.classList.add('intro-active');
+        }
+        if (pushState) {
+            window.pushNavigationState('popup', id);
+        }
+    }
+
+    function openPolicyById(id, text, pushState = true) {
+        if (id === 'policy-modal') {
+            if (policyData[text] && policyModal) {
+                policyTitle.textContent = text;
+                policyContent.innerHTML = policyData[text];
+                policyModal.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        if (pushState) {
+            window.pushNavigationState('policy', id, text);
+        }
+    }
+
+    function closePopupById(id) {
+        if (id === 'purchase-options-modal') {
+            if (purchaseModal) purchaseModal.classList.remove('open');
+            document.body.classList.remove('intro-active');
+        } else if (id === 'policy-modal') {
+            if (policyModal) policyModal.classList.remove('open');
+            document.body.style.overflow = '';
+        } else if (id === 'wishlist-drawer') {
+            if (wishlistDrawer) wishlistDrawer.classList.remove('open');
+            document.body.classList.remove('intro-active');
+        }
     }
 
     // Connect page routing triggers
@@ -378,8 +545,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const targetEl = document.getElementById(href.substring(1));
             if (targetEl) {
                 e.preventDefault();
-                if (!viewHome.classList.contains('active')) {
-                    showView('view-home');
+                const wasHomeActive = viewHome.classList.contains('active');
+                if (!wasHomeActive) {
+                    showView('view-home', true, false);
                 }
                 const navLinks = document.querySelectorAll('.desktop-nav .nav-link');
                 navLinks.forEach(nl => {
@@ -388,7 +556,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         nl.classList.add('active');
                     }
                 });
-                targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                
+                // Allow view transition / layout display to complete before scrolling
+                setTimeout(() => {
+                    targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, wasHomeActive ? 0 : 50);
             }
         }
     });
@@ -416,14 +588,38 @@ document.addEventListener('DOMContentLoaded', () => {
     const wishlistBodyContent = document.getElementById('wishlist-body-content');
     const wishlistBadge = document.getElementById('wishlist-badge');
 
-    function toggleWishlist() {
-        wishlistDrawer.classList.toggle('open');
-        document.body.classList.toggle('intro-active');
-    }
+    window.openWishlist = function() {
+        if (wishlistDrawer) {
+            wishlistDrawer.classList.add('open');
+            document.body.classList.add('intro-active');
+            window.pushNavigationState('popup', 'wishlist-drawer');
+        }
+    };
 
-    if (wishlistToggleBtn) wishlistToggleBtn.addEventListener('click', toggleWishlist);
-    if (wishlistClose) wishlistClose.addEventListener('click', toggleWishlist);
-    if (wishlistOverlay) wishlistOverlay.addEventListener('click', toggleWishlist);
+    window.closeWishlist = function() {
+        const current = navigationHistory[navigationHistory.length - 1];
+        if (current && current.type === 'popup' && current.id === 'wishlist-drawer') {
+            window.goBack();
+        } else {
+            if (wishlistDrawer) {
+                wishlistDrawer.classList.remove('open');
+                document.body.classList.remove('intro-active');
+            }
+        }
+    };
+
+    if (wishlistToggleBtn) {
+        wishlistToggleBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (wishlistDrawer && wishlistDrawer.classList.contains('open')) {
+                window.closeWishlist();
+            } else {
+                window.openWishlist();
+            }
+        });
+    }
+    if (wishlistClose) wishlistClose.addEventListener('click', window.closeWishlist);
+    if (wishlistOverlay) wishlistOverlay.addEventListener('click', window.closeWishlist);
 
     const pWishlistBtn = document.getElementById('p-wishlist-btn');
     if (pWishlistBtn) {
@@ -614,13 +810,19 @@ document.addEventListener('DOMContentLoaded', () => {
         if (purchaseModal) {
             purchaseModal.classList.add('open');
             document.body.classList.add('intro-active');
+            window.pushNavigationState('popup', 'purchase-options-modal');
         }
     };
 
     window.closePurchaseOptions = function() {
-        if (purchaseModal) {
-            purchaseModal.classList.remove('open');
-            document.body.classList.remove('intro-active');
+        const current = navigationHistory[navigationHistory.length - 1];
+        if (current && current.type === 'popup' && current.id === 'purchase-options-modal') {
+            window.goBack();
+        } else {
+            if (purchaseModal) {
+                purchaseModal.classList.remove('open');
+                document.body.classList.remove('intro-active');
+            }
         }
     };
 
@@ -631,10 +833,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             if (wishlistDrawer && wishlistDrawer.classList.contains('open')) {
-                toggleWishlist();
+                window.closeWishlist();
             }
             if (purchaseModal && purchaseModal.classList.contains('open')) {
                 window.closePurchaseOptions();
+            }
+            if (policyModal && policyModal.classList.contains('open')) {
+                window.closePolicyModal();
             }
         }
     });
@@ -645,15 +850,34 @@ document.addEventListener('DOMContentLoaded', () => {
         pShareBtn.addEventListener('click', () => {
             navigator.clipboard.writeText(window.location.href)
                 .then(() => {
-                    alert('Store link copied to clipboard! Feel free to share.');
+                    showToast('Store link copied to clipboard! Feel free to share.');
                 })
                 .catch(() => {
-                    alert('LIPLEY Cosmetics: ' + window.location.href);
+                    showToast('LIPLEY Cosmetics: ' + window.location.href);
                 });
         });
     }
 
-    // --- 13. BUY NOW EVENT LISTENER ---
+    // --- 13. BUY NOW EVENT LISTENER & PRODUCT PAGE QUANTITY SELECTOR ---
+    const pQtyMinus = document.getElementById('p-qty-minus');
+    const pQtyPlus = document.getElementById('p-qty-plus');
+    const pQtyDisplay = document.getElementById('p-qty-display');
+
+    if (pQtyMinus && pQtyPlus && pQtyDisplay) {
+        pQtyMinus.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (productPageQty > 1) {
+                productPageQty--;
+                pQtyDisplay.textContent = productPageQty;
+            }
+        });
+        pQtyPlus.addEventListener('click', (e) => {
+            e.preventDefault();
+            productPageQty++;
+            pQtyDisplay.textContent = productPageQty;
+        });
+    }
+
     const buyNowButtons = ['btn-buy-now'];
     buyNowButtons.forEach(id => {
         const btn = document.getElementById(id);
@@ -664,6 +888,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (typeof window.loadProductDetails === 'function') {
                     window.loadProductDetails(productId);
                 }
+                
+                // Sync quantity from product page to checkout modal
+                currentQty = productPageQty;
+                const checkoutQtyDisplay = document.getElementById('checkout-qty-display');
+                if (checkoutQtyDisplay) {
+                    checkoutQtyDisplay.textContent = currentQty;
+                }
+                if (typeof calculateOrder === 'function') {
+                    calculateOrder();
+                }
+                
                 window.openPurchaseOptions();
             });
         }
@@ -815,6 +1050,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 reviewsGrid.innerHTML = publicReviews.map(r => {
                     const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
                     const formattedDate = formatReviewDate(r.date);
+                    
+                    let imagesMarkup = '';
+                    if (r.beforeImg || r.afterImg) {
+                        imagesMarkup = `
+                            <div class="review-images-comparison" style="display: flex; gap: 15px; margin: 15px 0;">
+                                ${r.beforeImg ? `
+                                    <div class="review-img-box" style="flex: 1; text-align: center; border: 1px solid rgba(30,58,52,0.1); border-radius: 4px; padding: 4px; background: #fff;">
+                                        <span style="font-size: 9px; text-transform: uppercase; font-weight: 600; color: #777; display: block; margin-bottom: 2px;">Before</span>
+                                        <img src="${r.beforeImg}" alt="Before" style="width: 100%; max-height: 120px; object-fit: cover; border-radius: 2px;">
+                                    </div>
+                                ` : ''}
+                                ${r.afterImg ? `
+                                    <div class="review-img-box" style="flex: 1; text-align: center; border: 1px solid rgba(30,58,52,0.1); border-radius: 4px; padding: 4px; background: #fff;">
+                                        <span style="font-size: 9px; text-transform: uppercase; font-weight: 600; color: #777; display: block; margin-bottom: 2px;">After</span>
+                                        <img src="${r.afterImg}" alt="After" style="width: 100%; max-height: 120px; object-fit: cover; border-radius: 2px;">
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+                    }
+
                     return `
                         <div class="review-card scroll-reveal reveal-fade-up">
                             <div class="review-rating" style="color: var(--color-accent); font-size: 15px; margin-bottom: 8px;">${stars}</div>
@@ -823,27 +1079,75 @@ document.addEventListener('DOMContentLoaded', () => {
                                 ${r.verified ? `<span class="verified-tag" style="color: var(--color-accent); font-size: 11px; font-weight: normal; margin-left: 8px; letter-spacing: 0.05em;">✓ Verified Buyer</span>` : ''}
                             </h4>
                             <p class="review-text" style="font-size: 13.5px; opacity: 0.85; line-height: 1.5; font-style: italic;">"${escapeHTML(r.comment)}"</p>
+                            ${imagesMarkup}
                             <span class="review-date" style="display: block; font-size: 10px; opacity: 0.5; margin-top: 12px;">${formattedDate}</span>
+                            
+                            <div class="review-actions-row" style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; border-top: 1px solid rgba(30,58,52,0.06); padding-top: 10px;">
+                                <button class="report-review-btn" data-date="${r.date}" data-name="${r.name}" style="background: none; border: none; font-size: 11px; color: #888; cursor: pointer; text-decoration: underline; padding: 0;">
+                                    ${r.reported ? '🚩 Flagged' : 'Report Review'}
+                                </button>
+                                ${isAdmin ? `
+                                    <div style="display: flex; gap: 8px;">
+                                        <button class="admin-hide-btn" data-date="${r.date}" data-name="${r.name}" style="background: rgba(212,175,87,0.15); border: 1px solid var(--color-accent); color: var(--color-primary); padding: 4px 10px; font-size: 10px; font-weight: 600; cursor: pointer; border-radius: 3px;">Hide</button>
+                                        <button class="admin-delete-btn" data-date="${r.date}" data-name="${r.name}" style="background: rgba(220,53,69,0.1); border: 1px solid rgba(220,53,69,0.5); color: #dc3545; padding: 4px 10px; font-size: 10px; font-weight: 600; cursor: pointer; border-radius: 3px;">Delete</button>
+                                    </div>
+                                ` : ''}
+                            </div>
                         </div>
                     `;
                 }).join('');
+
+                // Bind actions
+                reviewsGrid.querySelectorAll('.report-review-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const name = btn.getAttribute('data-name');
+                        const date = btn.getAttribute('data-date');
+                        reportReview(name, date);
+                    });
+                });
+                if (isAdmin) {
+                    reviewsGrid.querySelectorAll('.admin-hide-btn').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const name = btn.getAttribute('data-name');
+                            const date = btn.getAttribute('data-date');
+                            hideReview(name, date);
+                        });
+                    });
+                    reviewsGrid.querySelectorAll('.admin-delete-btn').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const name = btn.getAttribute('data-name');
+                            const date = btn.getAttribute('data-date');
+                            deleteReview(name, date);
+                        });
+                    });
+                }
             }
         }
 
-        // Render Admin Moderation Panel if isAdmin is true
+        // Render Admin Moderation Panel if isAdmin is true (shows reported/hidden reviews)
         if (isAdmin && modQueueContainer) {
             modQueueContainer.style.display = 'block';
-            const pendingReviews = allReviews.filter(r => r.approved !== true);
+            modQueueContainer.querySelector('h3').textContent = '🔒 Admin Moderation Queue (Reported or Hidden)';
+            const flaggedReviews = allReviews.filter(r => r.approved !== true || r.reported === true);
             
             if (modPendingList) {
-                if (pendingReviews.length === 0) {
-                    modPendingList.innerHTML = `<p style="opacity: 0.7; font-size: 13px;">No pending reviews in approval queue.</p>`;
+                if (flaggedReviews.length === 0) {
+                    modPendingList.innerHTML = `<p style="opacity: 0.7; font-size: 13px;">No hidden or reported reviews to moderate.</p>`;
                 } else {
-                    modPendingList.innerHTML = pendingReviews.map((r, idx) => {
+                    modPendingList.innerHTML = flaggedReviews.map(r => {
                         const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
                         const formattedDate = formatReviewDate(r.date);
-                        // Use document ID for Firebase or index for localStorage
-                        const reviewId = useFirebase ? r.id : idx;
+                        
+                        let imagesMarkup = '';
+                        if (r.beforeImg || r.afterImg) {
+                            imagesMarkup = `
+                                <div class="review-images-comparison" style="display: flex; gap: 15px; margin: 10px 0;">
+                                    ${r.beforeImg ? `<img src="${r.beforeImg}" style="max-height: 80px; border-radius: 4px;">` : ''}
+                                    ${r.afterImg ? `<img src="${r.afterImg}" style="max-height: 80px; border-radius: 4px;">` : ''}
+                                </div>
+                            `;
+                        }
+
                         return `
                             <div class="pending-review-card" style="background-color: var(--color-secondary); padding: 15px; border-radius: 6px; border: 1px solid rgba(30,58,52,0.1); margin-bottom: 12px; display: flex; flex-direction: column; gap: 8px;">
                                 <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -851,26 +1155,32 @@ document.addEventListener('DOMContentLoaded', () => {
                                     <span style="font-size: 10px; opacity: 0.6;">${formattedDate}</span>
                                 </div>
                                 <p style="font-size: 12.5px; font-style: italic; opacity: 0.8;">"${escapeHTML(r.comment)}"</p>
+                                ${imagesMarkup}
+                                <div style="font-size: 11px; color: #dc3545; font-weight: 600;">
+                                    ${r.reported ? '⚠️ Flagged by customer' : ''} ${!r.approved ? '🚫 Hidden from public view' : ''}
+                                </div>
                                 <div style="display: flex; gap: 10px; margin-top: 8px;">
-                                    <button class="btn btn-primary btn-small approve-btn" data-id="${reviewId}" style="padding: 6px 12px; font-size: 10px; width: auto;">Approve</button>
-                                    <button class="btn btn-secondary btn-small delete-btn" data-id="${reviewId}" style="padding: 6px 12px; font-size: 10px; width: auto; background-color: transparent; border-color: rgba(220,53,69,0.7); color: rgba(220,53,69,0.9);">Delete</button>
+                                    <button class="btn btn-primary btn-small approve-btn" data-date="${r.date}" data-name="${r.name}" style="padding: 6px 12px; font-size: 10px; width: auto;">Publish / Keep</button>
+                                    <button class="btn btn-secondary btn-small delete-btn" data-date="${r.date}" data-name="${r.name}" style="padding: 6px 12px; font-size: 10px; width: auto; background-color: transparent; border-color: rgba(220,53,69,0.7); color: rgba(220,53,69,0.9);">Delete</button>
                                 </div>
                             </div>
                         `;
                     }).join('');
 
-                    // Bind moderator buttons
+                    // Bind moderator queue buttons
                     modPendingList.querySelectorAll('.approve-btn').forEach(btn => {
                         btn.addEventListener('click', () => {
-                            const id = btn.getAttribute('data-id');
-                            approvePendingReview(id, allReviews);
+                            const name = btn.getAttribute('data-name');
+                            const date = btn.getAttribute('data-date');
+                            approveReview(name, date);
                         });
                     });
 
                     modPendingList.querySelectorAll('.delete-btn').forEach(btn => {
                         btn.addEventListener('click', () => {
-                            const id = btn.getAttribute('data-id');
-                            deletePendingReview(id, allReviews);
+                            const name = btn.getAttribute('data-name');
+                            const date = btn.getAttribute('data-date');
+                            deleteReview(name, date);
                         });
                     });
                 }
@@ -878,41 +1188,83 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function approvePendingReview(id, allReviews) {
+    function reportReview(name, date) {
         if (useFirebase && db) {
-            db.collection("reviews").doc(id).update({ approved: true })
-              .then(() => console.log("Review approved in Firestore"))
-              .catch(err => console.error("Firestore approval error", err));
+            db.collection("reviews").where("name", "==", name).where("date", "==", date).get()
+              .then(snap => {
+                  snap.forEach(doc => {
+                      doc.ref.update({ reported: true })
+                        .then(() => showToast("Thank you, this review has been reported for moderation."));
+                  });
+              });
         } else {
             let localList = JSON.parse(localStorage.getItem("lipley_reviews_db") || "[]");
-            localList.sort((a, b) => new Date(b.date) - new Date(a.date));
-            const pendingList = localList.filter(r => r.approved !== true);
-            const target = pendingList[id];
-            if (target) {
-                const originalIdx = localList.findIndex(r => r.date === target.date && r.name === target.name);
-                if (originalIdx !== -1) {
-                    localList[originalIdx].approved = true;
-                    localStorage.setItem("lipley_reviews_db", JSON.stringify(localList));
-                    loadLocalReviews();
-                }
+            const idx = localList.findIndex(r => r.name === name && r.date === date);
+            if (idx !== -1) {
+                localList[idx].reported = true;
+                localStorage.setItem("lipley_reviews_db", JSON.stringify(localList));
+                showToast("Thank you, this review has been reported for moderation.");
+                loadLocalReviews();
             }
         }
     }
 
-    function deletePendingReview(id, allReviews) {
+    function hideReview(name, date) {
         if (useFirebase && db) {
-            db.collection("reviews").doc(id).delete()
-              .then(() => console.log("Review deleted from Firestore"))
-              .catch(err => console.error("Firestore deletion error", err));
+            db.collection("reviews").where("name", "==", name).where("date", "==", date).get()
+              .then(snap => {
+                  snap.forEach(doc => {
+                      doc.ref.update({ approved: false })
+                        .then(() => console.log("Review hidden"));
+                  });
+              });
         } else {
             let localList = JSON.parse(localStorage.getItem("lipley_reviews_db") || "[]");
-            localList.sort((a, b) => new Date(b.date) - new Date(a.date));
-            const pendingList = localList.filter(r => r.approved !== true);
-            const target = pendingList[id];
-            if (target) {
-                const originalIdx = localList.findIndex(r => r.date === target.date && r.name === target.name);
-                if (originalIdx !== -1) {
-                    localList.splice(originalIdx, 1);
+            const idx = localList.findIndex(r => r.name === name && r.date === date);
+            if (idx !== -1) {
+                localList[idx].approved = false;
+                localStorage.setItem("lipley_reviews_db", JSON.stringify(localList));
+                loadLocalReviews();
+            }
+        }
+    }
+
+    function approveReview(name, date) {
+        if (useFirebase && db) {
+            db.collection("reviews").where("name", "==", name).where("date", "==", date).get()
+              .then(snap => {
+                  snap.forEach(doc => {
+                      doc.ref.update({ approved: true, reported: false })
+                        .then(() => console.log("Review approved/published"));
+                  });
+              });
+        } else {
+            let localList = JSON.parse(localStorage.getItem("lipley_reviews_db") || "[]");
+            const idx = localList.findIndex(r => r.name === name && r.date === date);
+            if (idx !== -1) {
+                localList[idx].approved = true;
+                localList[idx].reported = false;
+                localStorage.setItem("lipley_reviews_db", JSON.stringify(localList));
+                loadLocalReviews();
+            }
+        }
+    }
+
+    function deleteReview(name, date) {
+        if (confirm("Are you sure you want to permanently delete this review?")) {
+            if (useFirebase && db) {
+                db.collection("reviews").where("name", "==", name).where("date", "==", date).get()
+                  .then(snap => {
+                      snap.forEach(doc => {
+                          doc.ref.delete()
+                            .then(() => console.log("Review deleted"));
+                      });
+                  });
+            } else {
+                let localList = JSON.parse(localStorage.getItem("lipley_reviews_db") || "[]");
+                const idx = localList.findIndex(r => r.name === name && r.date === date);
+                if (idx !== -1) {
+                    localList.splice(idx, 1);
                     localStorage.setItem("lipley_reviews_db", JSON.stringify(localList));
                     loadLocalReviews();
                 }
@@ -968,36 +1320,53 @@ document.addEventListener('DOMContentLoaded', () => {
             const ratingVal = parseInt(starRatingVal.value);
             const commentVal = document.getElementById('review-comment').value.trim();
             
+            const beforeFile = document.getElementById('review-before-img').files[0];
+            const afterFile = document.getElementById('review-after-img').files[0];
+            
             if (!nameVal || !ratingVal || !commentVal) {
-                alert("Please fill in all fields.");
+                showToast("Please fill in all fields.", "error");
                 return;
             }
 
-            const newReview = {
-                name: nameVal,
-                rating: ratingVal,
-                comment: commentVal,
-                date: new Date().toISOString(),
-                verified: true, // Default to verified buyer for client review form
-                approved: false // Set to false to support moderation approval before publication!
+            const readAsDataURL = (file) => {
+                return new Promise((resolve) => {
+                    if (!file) return resolve(null);
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.readAsDataURL(file);
+                });
             };
 
-            if (useFirebase && db) {
-                db.collection("reviews").add(newReview)
-                  .then(() => {
-                      alert("Thank you! Your review has been submitted successfully and is pending administrator moderation.");
-                      reviewForm.reset();
-                      resetStarsSelector();
-                      reviewFormContainer.style.display = 'none';
-                      if (toggleFormBtn) toggleFormBtn.textContent = 'Write a Review';
-                  })
-                  .catch(err => {
-                      console.error("Firestore submit failed. Submitting locally.", err);
+            Promise.all([readAsDataURL(beforeFile), readAsDataURL(afterFile)])
+              .then(([beforeBase64, afterBase64]) => {
+                  const newReview = {
+                      name: nameVal,
+                      rating: ratingVal,
+                      comment: commentVal,
+                      beforeImg: beforeBase64,
+                      afterImg: afterBase64,
+                      date: new Date().toISOString(),
+                      verified: true, // Verified Purchase system
+                      approved: true // Publish automatically!
+                  };
+
+                  if (useFirebase && db) {
+                      db.collection("reviews").add(newReview)
+                        .then(() => {
+                            showToast("Thank you! Your review has been published successfully.");
+                            reviewForm.reset();
+                            resetStarsSelector();
+                            reviewFormContainer.style.display = 'none';
+                            if (toggleFormBtn) toggleFormBtn.textContent = 'Write a Review';
+                        })
+                        .catch(err => {
+                            console.error("Firestore submit failed. Submitting locally.", err);
+                            submitLocally(newReview);
+                        });
+                  } else {
                       submitLocally(newReview);
-                  });
-            } else {
-                submitLocally(newReview);
-            }
+                  }
+              });
         });
     }
 
@@ -1006,7 +1375,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localList.push(newReview);
         localStorage.setItem("lipley_reviews_db", JSON.stringify(localList));
         
-        alert("Thank you! Your review has been submitted successfully and is pending administrator moderation.\n\n(Moderator Tip: Open the page with ?admin=true to approve or delete reviews locally!)");
+        showToast("Thank you! Your review has been published successfully.");
         
         reviewForm.reset();
         resetStarsSelector();
@@ -1072,7 +1441,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const purchaseOrderForm = document.getElementById('purchase-order-form');
     
-    let currentQty = 1;
+    currentQty = 1;
     let couponApplied = false;
     let validCouponCode = 'LIPLEY001';
     let discountPercent = 0.15; // 15% Discount
@@ -1400,23 +1769,25 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const text = link.textContent.trim();
             if (policyData[text] && policyModal) {
-                policyTitle.textContent = text;
-                policyContent.innerHTML = policyData[text];
-                policyModal.classList.add('open');
-                document.body.style.overflow = 'hidden';
+                openPolicyById('policy-modal', text);
             }
         });
     });
 
-    function closePolicyModal() {
-        if (policyModal) {
-            policyModal.classList.remove('open');
-            document.body.style.overflow = '';
+    window.closePolicyModal = function() {
+        const current = navigationHistory[navigationHistory.length - 1];
+        if (current && current.type === 'policy' && current.id === 'policy-modal') {
+            window.goBack();
+        } else {
+            if (policyModal) {
+                policyModal.classList.remove('open');
+                document.body.style.overflow = '';
+            }
         }
-    }
+    };
 
-    if (policyCloseBtn) policyCloseBtn.addEventListener('click', closePolicyModal);
-    if (policyOverlay) policyOverlay.addEventListener('click', closePolicyModal);
+    if (policyCloseBtn) policyCloseBtn.addEventListener('click', window.closePolicyModal);
+    if (policyOverlay) policyOverlay.addEventListener('click', window.closePolicyModal);
 
 });
 

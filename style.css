@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
 /* ==========================================================================
    LIPLEY PREMIUM COSMETICS - STYLING SYSTEM
    ========================================================================== */
@@ -25,7 +27,8 @@
     --text-light: #F8F6F1;
     
     /* Fonts */
-    --font-brand: 'Hitalica', 'Playfair Display', 'Didot', 'Georgia', serif;
+    --font-brand: 'Cormorant Garamond', 'Playfair Display', 'Didot', 'Georgia', serif;
+    --font-serif: 'Cormorant Garamond', 'Playfair Display', 'Didot', 'Georgia', serif;
     --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     
     /* Grid Spacing */
@@ -563,13 +566,14 @@ body.intro-active {
 
 /* --- HERO SECTION --- */
 .hero-section {
-    min-height: 100vh;
-    padding-top: 100px;
-    display: flex;
-    align-items: center;
+    width: 100%;
+    aspect-ratio: 16 / 9;
     background-color: #0a1c18;
     position: relative;
     overflow: hidden;
+    margin-top: 80px; /* Push below header */
+    display: flex;
+    align-items: center;
 }
 
 .hero-slides {
@@ -588,6 +592,7 @@ body.intro-active {
     width: 100%;
     height: 100%;
     background-size: cover;
+    background-position: center;
     background-repeat: no-repeat;
     opacity: 0;
     transition: opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -603,7 +608,7 @@ body.intro-active {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to right, rgba(10, 28, 24, 0.92) 35%, rgba(10, 28, 24, 0.5) 65%, rgba(10, 28, 24, 0.15) 100%);
+    background: linear-gradient(to right, rgba(10, 28, 24, 0.92) 35%, rgba(10, 28, 24, 0.4) 65%, rgba(10, 28, 24, 0.15) 100%);
     z-index: 2;
     pointer-events: none;
 }
@@ -612,42 +617,50 @@ body.intro-active {
     position: relative;
     z-index: 3;
     width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
 }
 
 .hero-content {
     max-width: 40%;
     position: relative;
-    padding: 20px 0;
+    text-align: left;
 }
 
 .hero-brand {
-    font-size: 15px;
+    font-size: clamp(10px, 1.2vw, 15px);
     font-weight: 700;
     letter-spacing: 0.35em;
     color: var(--color-accent);
     text-transform: uppercase;
     display: block;
-    margin-bottom: 20px;
+    margin-bottom: clamp(6px, 1.2vw, 20px);
 }
 
 .hero-title-premium {
-    font-size: clamp(38px, 5.2vw, 64px);
+    font-size: clamp(16px, 3.8vw, 64px);
     font-weight: 600;
     line-height: 1.15;
     color: #ffffff;
-    margin-bottom: 24px;
+    margin-bottom: clamp(8px, 1.5vw, 24px);
 }
 
 .hero-subtitle-premium {
-    font-size: clamp(16px, 1.8vw, 22px);
+    font-size: clamp(9px, 1.5vw, 22px);
     font-weight: 400;
     color: rgba(255, 255, 255, 0.95);
-    margin-bottom: 40px;
+    margin-bottom: clamp(12px, 2.5vw, 40px);
     line-height: 1.4;
 }
 
 .hero-actions-premium {
     display: flex;
+}
+
+.hero-actions-premium .btn {
+    padding: clamp(6px, 1vw, 15px) clamp(12px, 2vw, 32px);
+    font-size: clamp(8px, 0.9vw, 12px);
 }
 
 /* Slider Nav Controls */
@@ -658,8 +671,8 @@ body.intro-active {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.12);
     color: #ffffff;
-    width: 48px;
-    height: 48px;
+    width: clamp(24px, 3vw, 48px);
+    height: clamp(24px, 3vw, 48px);
     border-radius: 50%;
     cursor: pointer;
     display: flex;
@@ -677,31 +690,31 @@ body.intro-active {
 }
 
 .prev-arrow {
-    left: 40px;
+    left: clamp(15px, 2.5vw, 40px);
 }
 
 .next-arrow {
-    right: 40px;
+    right: clamp(15px, 2.5vw, 40px);
 }
 
 .hero-arrow svg {
-    width: 24px;
-    height: 24px;
+    width: clamp(12px, 1.5vw, 24px);
+    height: clamp(12px, 1.5vw, 24px);
 }
 
 .hero-dots {
     position: absolute;
-    bottom: 35px;
+    bottom: clamp(10px, 2vw, 35px);
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 12px;
+    gap: clamp(6px, 1vw, 12px);
     z-index: 4;
 }
 
 .hero-dot {
-    width: 8px;
-    height: 8px;
+    width: clamp(5px, 0.6vw, 8px);
+    height: clamp(5px, 0.6vw, 8px);
     border-radius: 50%;
     background-color: rgba(255, 255, 255, 0.3);
     cursor: pointer;
@@ -1370,7 +1383,7 @@ body.intro-active {
     margin-bottom: 8px;
 }
 
-.form-input-modern {
+.form-input-modern, .form-input {
     width: 100%;
     padding: 12px 16px;
     background-color: #ffffff;
@@ -1381,16 +1394,19 @@ body.intro-active {
     color: var(--color-primary);
     transition: border-color 0.25s ease, box-shadow 0.25s ease;
     box-sizing: border-box;
+    -webkit-appearance: none;
+    appearance: none;
 }
 
-.form-input-modern:focus {
+.form-input-modern:focus, .form-input:focus {
     outline: none;
     border-color: var(--color-accent);
     box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
 }
 
-textarea.form-input-modern {
+textarea.form-input-modern, textarea.form-input {
     resize: vertical;
+    font-family: var(--font-sans);
 }
 
 /* --- FOOTER --- */
@@ -1879,37 +1895,29 @@ textarea.form-input-modern {
     
     /* Hero Changes */
     .hero-section {
-        min-height: 85vh;
-        align-items: flex-end;
-        padding-bottom: 60px;
-        padding-top: 120px;
+        margin-top: 70px;
+        aspect-ratio: auto;
+        min-height: 320px;
     }
-    
-    .hero-slides-overlay {
-        background: linear-gradient(to bottom, rgba(10, 28, 24, 0.35) 0%, rgba(10, 28, 24, 0.95) 80%);
-    }
-    
-    .hero-slide {
-        background-position: 65% center;
-    }
-    
     .hero-content {
-        max-width: 100%;
-        text-align: center;
-        width: 100%;
+        max-width: 85%;
+        padding: 0 10px;
     }
-    
-    .hero-actions-premium {
-        justify-content: center;
-        width: 100%;
+    .hero-brand {
+        font-size: 11px;
+        margin-bottom: 8px;
     }
-    
+    .hero-title-premium {
+        font-size: 24px;
+        margin-bottom: 12px;
+    }
+    .hero-subtitle-premium {
+        font-size: 13px;
+        margin-bottom: 20px;
+    }
     .hero-actions-premium .btn {
-        width: 100%;
-    }
-    
-    .hero-arrow {
-        display: none;
+        padding: 10px 20px;
+        font-size: 11px;
     }
     
     /* Grid Adjustments */
@@ -2150,6 +2158,50 @@ textarea.form-input-modern {
     margin: 0;
 }
 
+/* Before/After Review Images comparison */
+.review-images-comparison {
+    display: flex;
+    gap: 15px;
+    margin: 15px 0;
+}
+
+.review-img-box {
+    position: relative;
+    flex: 1;
+    text-align: center;
+    border: 1px solid rgba(30, 58, 52, 0.08);
+    border-radius: 6px;
+    padding: 6px;
+    background: #ffffff;
+    overflow: hidden;
+    transition: transform 0.25s ease;
+}
+
+.review-img-box:hover {
+    transform: scale(1.03);
+}
+
+.review-img-box span {
+    font-size: 9px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--color-primary);
+    background: rgba(212, 175, 55, 0.12);
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    padding: 3px 8px;
+    border-radius: 12px;
+    display: inline-block;
+    margin-bottom: 6px;
+    letter-spacing: 0.05em;
+}
+
+.review-img-box img {
+    width: 100%;
+    max-height: 140px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
 /* Accordion FAQs */
 .faq-section {
     padding: 80px 0;
@@ -2369,6 +2421,14 @@ textarea.form-input-modern {
     display: flex;
     flex-direction: column;
     gap: 20px;
+}
+
+@media (min-width: 992px) {
+    .product-gallery-container {
+        position: sticky;
+        top: 100px; /* Align below desktop header */
+        height: fit-content;
+    }
 }
 
 .main-gallery-visual {
@@ -3777,7 +3837,62 @@ textarea.form-input-modern {
 @media (max-width: 576px) {
     .form-grid-2 {
         grid-template-columns: 1fr;
-        gap: 0;
+        gap: 15px;
+    }
+}
+
+/* --- POPUP CHECKOUT FORM FIELDS --- */
+.checkout-form-container .form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.checkout-form-container .form-input {
+    width: 100%;
+    padding: 12px 16px;
+    background-color: #ffffff;
+    border: 1px solid rgba(30, 58, 52, 0.15);
+    border-radius: 4px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--color-primary);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    box-sizing: border-box;
+    display: block;
+    margin-top: 4px;
+}
+
+.checkout-form-container .form-input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+@media (max-width: 768px) {
+    .purchase-modal-card {
+        padding: 24px 20px;
+        max-width: 95%;
+        border-radius: 8px;
+    }
+    .purchase-modal-title {
+        font-size: clamp(20px, 4.5vw, 24px);
+    }
+    .purchase-modal-subtitle {
+        font-size: 13px;
+        margin-bottom: 15px;
+    }
+    .purchase-modal-content-grid {
+        gap: 20px;
+    }
+    .checkout-form-title {
+        font-size: 16px;
+        margin-bottom: 16px;
+    }
+    .order-form-container {
+        padding: 16px;
+    }
+    .checkout-summary-card {
+        padding: 16px;
     }
 }
 

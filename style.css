@@ -54,6 +54,12 @@
     padding: 0;
 }
 
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+    width: 100%;
+}
+
 html {
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
@@ -1850,7 +1856,7 @@ textarea.form-input-modern, textarea.form-input {
         gap: 40px;
     }
     
-    .contact-grid {
+    .contact-modern-grid, .contact-grid {
         grid-template-columns: 1fr;
         gap: 50px;
     }
@@ -2044,8 +2050,8 @@ textarea.form-input-modern, textarea.form-input {
 /* Trust Badges Grid */
 .trust-badges-section {
     padding: 60px 0;
-    border-top: 1px solid rgba(30, 58, 52, 0.05);
-    border-bottom: 1px solid rgba(30, 58, 52, 0.05);
+    border-top: 1px solid rgba(212, 175, 55, 0.12);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.12);
 }
 
 .trust-badges-grid {
@@ -3957,31 +3963,19 @@ textarea.form-input-modern, textarea.form-input {
     height: 22px;
 }
 
-/* --- GLOBAL MOBILE SCROLL & OVERFLOW RESET --- */
-html, body {
-    max-width: 100%;
-    overflow-x: hidden;
-    width: 100%;
-}
+/* --- ADDED COMPATIBILITY & RESPONSIVE LAYOUT OVERRIDES --- */
 
-/* --- RESPONSIVE SECTION SPACING & BORDERS --- */
+/* Clean Section Padding & Spacing */
 .ingredients-section,
 .how-to-use-section,
 .instagram-feed-section,
 .faq-section,
 .contact-section {
     padding: var(--section-padding);
-    border-top: 1px solid rgba(212, 175, 55, 0.08);
-}
-
-/* --- TRUST BADGES SPACING --- */
-.trust-badges-section {
-    padding: var(--section-padding);
     border-top: 1px solid rgba(212, 175, 55, 0.12);
-    border-bottom: 1px solid rgba(212, 175, 55, 0.12);
 }
 
-/* --- HOMEPAGE GRIDS SPACING & RESPONSIVENESS --- */
+/* Custom Grids layout rules */
 .homepage-ingredients-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -4018,12 +4012,34 @@ html, body {
     height: auto;
 }
 
-/* --- MOBILE SPECIFIC LAYOUT REFINEMENTS --- */
+/* Back-to-top and Modal safe areas/iOS support */
+.back-to-top-btn {
+    bottom: calc(30px + env(safe-area-inset-bottom, 0px));
+    right: calc(30px + env(safe-area-inset-right, 0px));
+}
+
+.purchase-modal-container {
+    align-items: flex-start;
+}
+
+/* Mobile responsive styles */
 @media (max-width: 768px) {
-    .homepage-ingredients-grid,
-    .homepage-use-steps {
-        grid-template-columns: 1fr;
-        gap: 20px;
+    .trust-badges-section {
+        padding: 40px 0;
+    }
+    
+    .contact-modern-form-container {
+        padding: 24px 20px;
+    }
+    
+    .purchase-modal-card {
+        margin: 20px auto;
+    }
+    
+    /* Smooth inertial scrolling for drawer body on iOS */
+    .drawer-panel,
+    .purchase-modal-container {
+        -webkit-overflow-scrolling: touch;
     }
 }
 
@@ -4035,7 +4051,6 @@ html, body {
     
     .p-action-buttons {
         grid-template-columns: 1fr;
-        gap: 10px;
     }
 }
 

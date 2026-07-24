@@ -503,16 +503,12 @@
                                 <textarea id="review-comment" class="form-input" rows="4" placeholder="How was your experience?" required></textarea>
                             </div>
 
-                            <!-- Optional Before/After Images -->
-                            <div class="form-group review-images-upload-grid">
-                                <div>
-                                    <label class="form-label upload-label">Before Image (Optional)</label>
-                                    <input type="file" id="review-before-img" accept="image/*" class="form-input upload-input">
-                                </div>
-                                <div>
-                                    <label class="form-label upload-label">After Image (Optional)</label>
-                                    <input type="file" id="review-after-img" accept="image/*" class="form-input upload-input">
-                                </div>
+                            <!-- Product Selector -->
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label for="review-product" class="form-label">Select Product</label>
+                                <select id="review-product" class="form-input" style="padding: 12px 16px; height: auto; box-sizing: border-box; background: #fff; width: 100%; border: 1px solid rgba(30, 58, 52, 0.15); border-radius: 4px; display: block; margin-top: 4px;">
+                                    <option value="Lip Balm" selected>LIPLEY Strawberry Beetroot Tinted Lip Balm</option>
+                                </select>
                             </div>
 
                             <button type="submit" class="btn btn-primary btn-submit">
@@ -533,11 +529,16 @@
                     <div class="reviews-grid" id="reviews-list-grid">
                         <!-- Loaded dynamically via LocalDB or Firebase -->
                     </div>
+
+                    <!-- See More Reviews Button -->
+                    <div class="see-more-reviews-container" id="see-more-reviews-container" style="text-align: center; margin-top: 30px; display: none;">
+                        <button class="btn btn-secondary btn-small" id="see-more-reviews-btn" style="padding: 10px 24px; font-size: 12px; font-weight: 600; text-transform: uppercase; border: 1px solid rgba(212, 175, 55, 0.25);">See More Reviews</button>
+                    </div>
                 </div>
             </section>
 
-            <!-- INSTAGRAM SECTION -->
-            <section class="instagram-feed-section bg-light">
+            <!-- INSTAGRAM GALLERY SECTION (RECREATED) -->
+            <section class="instagram-feed-section bg-light" style="border-top: 1px solid rgba(212, 175, 55, 0.08); padding: 80px 0;">
                 <div class="container">
                     <div class="section-header scroll-reveal reveal-fade-up">
                         <span class="section-tagline">INSTAGRAM</span>
@@ -546,19 +547,19 @@
                     </div>
                     <div class="instagram-grid">
                         <a href="https://www.instagram.com/lipleycare" target="_blank" rel="noopener" class="instagram-item scroll-reveal reveal-scale">
-                            <img src="assets/images/lipley-balm-product.png" alt="Instagram Post 1" class="instagram-img" loading="lazy">
+                            <img src="assets/images/instagram-featured.jpg?v=2" alt="LIPLEY Featured Banner Poster" class="instagram-img" loading="lazy">
                             <div class="instagram-overlay"><span class="instagram-icon">View Post</span></div>
                         </a>
                         <a href="https://www.instagram.com/lipleycare" target="_blank" rel="noopener" class="instagram-item scroll-reveal reveal-scale delay-1">
-                            <img src="assets/images/lipley-balm-product.png" alt="Instagram Post 2" class="instagram-img" style="filter: saturate(0.85);" loading="lazy">
+                            <img src="assets/images/instagram-model.jpg?v=2" alt="LIPLEY Tinted Lip Balm Model Showcase" class="instagram-img" loading="lazy">
                             <div class="instagram-overlay"><span class="instagram-icon">View Post</span></div>
                         </a>
                         <a href="https://www.instagram.com/lipleycare" target="_blank" rel="noopener" class="instagram-item scroll-reveal reveal-scale delay-2">
-                            <img src="assets/images/lipley-balm-product.png" alt="Instagram Post 3" class="instagram-img" style="filter: brightness(0.9);" loading="lazy">
+                            <img src="assets/images/instagram-essential.jpg?v=2" alt="LIPLEY Lip Balm Product Showcase" class="instagram-img" loading="lazy">
                             <div class="instagram-overlay"><span class="instagram-icon">View Post</span></div>
                         </a>
                         <a href="https://www.instagram.com/lipleycare" target="_blank" rel="noopener" class="instagram-item scroll-reveal reveal-scale delay-3">
-                            <img src="assets/images/lipley-balm-product.png" alt="Instagram Post 4" class="instagram-img" style="filter: contrast(0.95);" loading="lazy">
+                            <img src="assets/images/instagram-pyramid.jpg?v=2" alt="LIPLEY Lip Balm Stack Showcase" class="instagram-img" loading="lazy">
                             <div class="instagram-overlay"><span class="instagram-icon">View Post</span></div>
                         </a>
                     </div>
@@ -653,7 +654,7 @@
                         
                         <!-- Right Column: Form -->
                         <div class="contact-modern-form-container scroll-reveal reveal-scale delay-1">
-                            <form id="lipley-contact-form" class="contact-modern-form" onsubmit="event.preventDefault(); showToast('Thank you for reaching out to LIPLEY. We will get back to you shortly.'); this.reset();">
+                            <form id="lipley-contact-form" class="contact-modern-form">
                                 <h3 class="form-title-modern">Send Message</h3>
                                 
                                 <div class="form-group-modern">
@@ -1104,6 +1105,9 @@
     <!-- Firebase SDK compat CDNs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <!-- EmailJS SDK CDN -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
     <!-- Scripts -->
     <script src="main.js"></script>

@@ -931,32 +931,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    const defaultReviews = [
-        {
-            name: "Aaradhya S.",
-            rating: 5,
-            comment: "The beetroot tint is so natural and gorgeous. I use it every day instead of lipstick. Highly moisturizing!",
-            date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-            verified: true,
-            approved: true
-        },
-        {
-            name: "Kabir M.",
-            rating: 5,
-            comment: "Finally a balm that doesn't feel sticky but keeps my lips hydrated for hours. Clean ingredients make a huge difference.",
-            date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-            verified: true,
-            approved: true
-        },
-        {
-            name: "Priya R.",
-            rating: 5,
-            comment: "Helped clear up my chapped lips in just two days. The natural strawberry scent is lovely and not overpowering.",
-            date: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
-            verified: true,
-            approved: true
-        }
-    ];
+    // Reset/clear reviews on new version
+    if (!localStorage.getItem("lipley_reviews_reset_v4")) {
+        localStorage.removeItem("lipley_reviews_db");
+        localStorage.setItem("lipley_reviews_reset_v4", "true");
+    }
+
+    const defaultReviews = [];
+    let showAllReviews = false;
 
     const reviewsGrid = document.getElementById('reviews-list-grid');
     const avgStarsDisplay = document.getElementById('avg-stars-display');
@@ -976,6 +958,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load initial reviews
     fetchReviews();
 
+    // See More Reviews Click handler
+    const seeMoreBtn = document.getElementById('see-more-reviews-btn');
+    if (seeMoreBtn) {
+        seeMoreBtn.addEventListener('click', () => {
+            showAllReviews = true;
+            fetchReviews();
+        });
+    }
+
     function fetchReviews() {
         if (useFirebase && db) {
             db.collection("reviews")
@@ -986,25 +977,13 @@ document.addEventListener('DOMContentLoaded', () => {
                       data.id = doc.id; // Store ID for moderator approvals
                       reviewsList.push(data);
                   });
-                  if (reviewsList.length === 0) {
-                      seedDefaultReviewsFirebase();
-                  } else {
-                      processAndRenderReviews(reviewsList);
-                  }
+                  processAndRenderReviews(reviewsList);
               }, err => {
                   console.error("Firestore read error. Falling back to local storage.", err);
                   loadLocalReviews();
               });
         } else {
             loadLocalReviews();
-        }
-    }
-
-    function seedDefaultReviewsFirebase() {
-        if (db) {
-            defaultReviews.forEach(r => {
-                db.collection("reviews").add(r);
-            });
         }
     }
 
@@ -1025,7 +1004,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Filter approved reviews for public
         const publicReviews = allReviews.filter(r => r.approved === true);
 
-        // Update stats
+        // Update stats based on all public reviews
         if (publicReviews.length > 0) {
             const sum = publicReviews.reduce((acc, curr) => acc + curr.rating, 0);
             const avg = (sum / publicReviews.length).toFixed(1);
@@ -1042,54 +1021,61 @@ document.addEventListener('DOMContentLoaded', () => {
             if (avgStarsDisplay) avgStarsDisplay.textContent = "☆☆☆☆☆";
         }
 
+        // Show/Hide See More Reviews Button
+        const seeMoreContainer = document.getElementById('see-more-reviews-container');
+        if (seeMoreContainer) {
+            if (publicReviews.length > 3 && !showAllReviews) {
+                seeMoreContainer.style.display = 'block';
+            } else {
+                seeMoreContainer.style.display = 'none';
+            }
+        }
+
+        // Slice reviews to show only 3 if not showAllReviews
+        const displayedReviews = showAllReviews ? publicReviews : publicReviews.slice(0, 3);
+
         // Render Public Grid
         if (reviewsGrid) {
-            if (publicReviews.length === 0) {
+            if (displayedReviews.length === 0) {
                 reviewsGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; opacity: 0.7; padding: 40px 0;">No reviews yet. Be the first to share your feedback!</p>`;
             } else {
-                reviewsGrid.innerHTML = publicReviews.map(r => {
+                const myReviews = JSON.parse(localStorage.getItem("my_owned_reviews") || "[]");
+                
+                reviewsGrid.innerHTML = displayedReviews.map(r => {
                     const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
                     const formattedDate = formatReviewDate(r.date);
+                    const isOwner = r.id && myReviews.includes(r.id);
                     
-                    let imagesMarkup = '';
-                    if (r.beforeImg || r.afterImg) {
-                        imagesMarkup = `
-                            <div class="review-images-comparison" style="display: flex; gap: 15px; margin: 15px 0;">
-                                ${r.beforeImg ? `
-                                    <div class="review-img-box" style="flex: 1; text-align: center; border: 1px solid rgba(30,58,52,0.1); border-radius: 4px; padding: 4px; background: #fff;">
-                                        <span style="font-size: 9px; text-transform: uppercase; font-weight: 600; color: #777; display: block; margin-bottom: 2px;">Before</span>
-                                        <img src="${r.beforeImg}" alt="Before" style="width: 100%; max-height: 120px; object-fit: cover; border-radius: 2px;">
-                                    </div>
-                                ` : ''}
-                                ${r.afterImg ? `
-                                    <div class="review-img-box" style="flex: 1; text-align: center; border: 1px solid rgba(30,58,52,0.1); border-radius: 4px; padding: 4px; background: #fff;">
-                                        <span style="font-size: 9px; text-transform: uppercase; font-weight: 600; color: #777; display: block; margin-bottom: 2px;">After</span>
-                                        <img src="${r.afterImg}" alt="After" style="width: 100%; max-height: 120px; object-fit: cover; border-radius: 2px;">
-                                    </div>
-                                ` : ''}
-                            </div>
-                        `;
-                    }
-
                     return `
                         <div class="review-card scroll-reveal reveal-fade-up">
-                            <div class="review-rating" style="color: var(--color-accent); font-size: 15px; margin-bottom: 8px;">${stars}</div>
-                            <h4 class="review-author" style="font-family: var(--font-sans); font-size: 14px; font-weight: 600; color: var(--color-primary); margin-bottom: 6px;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                <div class="review-rating" style="color: var(--color-accent); font-size: 14px; margin-bottom: 0;">${stars}</div>
+                                ${r.verified ? `<span class="verified-tag" style="color: #4CAF50; font-size: 9px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;">✓ Verified Buyer</span>` : ''}
+                            </div>
+                            <h4 class="review-author" style="font-family: var(--font-sans); font-size: 13.5px; font-weight: 600; color: var(--color-primary); margin-bottom: 4px;">
                                 ${escapeHTML(r.name)} 
-                                ${r.verified ? `<span class="verified-tag" style="color: var(--color-accent); font-size: 11px; font-weight: normal; margin-left: 8px; letter-spacing: 0.05em;">✓ Verified Buyer</span>` : ''}
                             </h4>
-                            <p class="review-text" style="font-size: 13.5px; opacity: 0.85; line-height: 1.5; font-style: italic;">"${escapeHTML(r.comment)}"</p>
-                            ${imagesMarkup}
-                            <span class="review-date" style="display: block; font-size: 10px; opacity: 0.5; margin-top: 12px;">${formattedDate}</span>
+                            <div class="review-product" style="font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--color-accent); margin-bottom: 8px; letter-spacing: 0.05em;">
+                                Product: ${escapeHTML(r.product || 'Lip Balm')}
+                            </div>
+                            <p class="review-text" style="font-size: 13px; opacity: 0.85; line-height: 1.45; font-style: italic; margin-bottom: 10px;">"${escapeHTML(r.comment)}"</p>
+                            <span class="review-date" style="display: block; font-size: 10px; opacity: 0.5; margin-top: 10px;">${formattedDate}</span>
                             
-                            <div class="review-actions-row" style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; border-top: 1px solid rgba(30,58,52,0.06); padding-top: 10px;">
-                                <button class="report-review-btn" data-date="${r.date}" data-name="${r.name}" style="background: none; border: none; font-size: 11px; color: #888; cursor: pointer; text-decoration: underline; padding: 0;">
-                                    ${r.reported ? '🚩 Flagged' : 'Report Review'}
-                                </button>
+                            <div class="review-actions-row" style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; border-top: 1px solid rgba(30,58,52,0.06); padding-top: 8px;">
+                                <div style="display: flex; gap: 12px; align-items: center;">
+                                    <button class="report-review-btn" data-id="${r.id || ''}" data-date="${r.date}" data-name="${r.name}" style="background: none; border: none; font-size: 11px; color: #888; cursor: pointer; text-decoration: underline; padding: 0;">
+                                        ${r.reported ? '🚩 Flagged' : 'Report Review'}
+                                    </button>
+                                    ${isOwner ? `
+                                        <button class="customer-delete-btn" data-id="${r.id}" style="background: none; border: none; font-size: 11px; color: #dc3545; cursor: pointer; text-decoration: underline; padding: 0; display: flex; align-items: center; gap: 3px;">
+                                            🗑️ Delete my Review
+                                        </button>
+                                    ` : ''}
+                                </div>
                                 ${isAdmin ? `
                                     <div style="display: flex; gap: 8px;">
-                                        <button class="admin-hide-btn" data-date="${r.date}" data-name="${r.name}" style="background: rgba(212,175,87,0.15); border: 1px solid var(--color-accent); color: var(--color-primary); padding: 4px 10px; font-size: 10px; font-weight: 600; cursor: pointer; border-radius: 3px;">Hide</button>
-                                        <button class="admin-delete-btn" data-date="${r.date}" data-name="${r.name}" style="background: rgba(220,53,69,0.1); border: 1px solid rgba(220,53,69,0.5); color: #dc3545; padding: 4px 10px; font-size: 10px; font-weight: 600; cursor: pointer; border-radius: 3px;">Delete</button>
+                                        <button class="admin-hide-btn" data-id="${r.id || ''}" data-date="${r.date}" data-name="${r.name}" style="background: rgba(212,175,87,0.15); border: 1px solid var(--color-accent); color: var(--color-primary); padding: 4px 10px; font-size: 10px; font-weight: 600; cursor: pointer; border-radius: 3px;">Hide</button>
+                                        <button class="admin-delete-btn" data-id="${r.id || ''}" data-date="${r.date}" data-name="${r.name}" style="background: rgba(220,53,69,0.1); border: 1px solid rgba(220,53,69,0.5); color: #dc3545; padding: 4px 10px; font-size: 10px; font-weight: 600; cursor: pointer; border-radius: 3px;">Delete</button>
                                     </div>
                                 ` : ''}
                             </div>
@@ -1105,6 +1091,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         reportReview(name, date);
                     });
                 });
+                
+                reviewsGrid.querySelectorAll('.customer-delete-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const id = btn.getAttribute('data-id');
+                        deleteCustomerReview(id);
+                    });
+                });
+
                 if (isAdmin) {
                     reviewsGrid.querySelectorAll('.admin-hide-btn').forEach(btn => {
                         btn.addEventListener('click', () => {
@@ -1117,9 +1111,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         btn.addEventListener('click', () => {
                             const name = btn.getAttribute('data-name');
                             const date = btn.getAttribute('data-date');
-                            deleteReview(name, date);
+                            const id = btn.getAttribute('data-id');
+                            deleteReview(name, date, id);
                         });
                     });
+                }
+                
+                // Re-trigger scroll reveal observer for new review cards
+                if (typeof revealObserver !== 'undefined') {
+                    const newRevealElements = reviewsGrid.querySelectorAll('.scroll-reveal');
+                    newRevealElements.forEach(el => revealObserver.observe(el));
                 }
             }
         }
@@ -1250,22 +1251,47 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function deleteReview(name, date) {
+    function deleteReview(name, date, id) {
         if (confirm("Are you sure you want to permanently delete this review?")) {
             if (useFirebase && db) {
-                db.collection("reviews").where("name", "==", name).where("date", "==", date).get()
-                  .then(snap => {
-                      snap.forEach(doc => {
-                          doc.ref.delete()
-                            .then(() => console.log("Review deleted"));
-                      });
-                  });
+                const docRef = id ? db.collection("reviews").doc(id) : null;
+                const deletePromise = docRef ? docRef.delete() : db.collection("reviews").where("name", "==", name).where("date", "==", date).get().then(snap => {
+                    snap.forEach(doc => doc.ref.delete());
+                });
+                deletePromise.then(() => {
+                    showToast("Review deleted successfully.");
+                });
             } else {
                 let localList = JSON.parse(localStorage.getItem("lipley_reviews_db") || "[]");
-                const idx = localList.findIndex(r => r.name === name && r.date === date);
+                const idx = id ? localList.findIndex(r => r.id === id) : localList.findIndex(r => r.name === name && r.date === date);
                 if (idx !== -1) {
                     localList.splice(idx, 1);
                     localStorage.setItem("lipley_reviews_db", JSON.stringify(localList));
+                    showToast("Review deleted successfully.");
+                    loadLocalReviews();
+                }
+            }
+        }
+    }
+
+    function deleteCustomerReview(id) {
+        if (confirm("Are you sure you want to permanently delete your review?")) {
+            if (useFirebase && db) {
+                db.collection("reviews").doc(id).delete()
+                    .then(() => {
+                        showToast("Your review has been deleted.");
+                    })
+                    .catch((err) => {
+                        console.error("Firebase deletion failed:", err);
+                        showToast("Failed to delete review. Please try again.", "error");
+                    });
+            } else {
+                let localList = JSON.parse(localStorage.getItem("lipley_reviews_db") || "[]");
+                const idx = localList.findIndex(r => r.id === id);
+                if (idx !== -1) {
+                    localList.splice(idx, 1);
+                    localStorage.setItem("lipley_reviews_db", JSON.stringify(localList));
+                    showToast("Your review has been deleted.");
                     loadLocalReviews();
                 }
             }
@@ -1319,54 +1345,44 @@ document.addEventListener('DOMContentLoaded', () => {
             const nameVal = document.getElementById('review-name').value.trim();
             const ratingVal = parseInt(starRatingVal.value);
             const commentVal = document.getElementById('review-comment').value.trim();
-            
-            const beforeFile = document.getElementById('review-before-img').files[0];
-            const afterFile = document.getElementById('review-after-img').files[0];
+            const productVal = document.getElementById('review-product') ? document.getElementById('review-product').value : 'Lip Balm';
             
             if (!nameVal || !ratingVal || !commentVal) {
                 showToast("Please fill in all fields.", "error");
                 return;
             }
 
-            const readAsDataURL = (file) => {
-                return new Promise((resolve) => {
-                    if (!file) return resolve(null);
-                    const reader = new FileReader();
-                    reader.onload = (e) => resolve(e.target.result);
-                    reader.readAsDataURL(file);
-                });
+            const newReview = {
+                id: 'rev_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                name: nameVal,
+                rating: ratingVal,
+                comment: commentVal,
+                product: productVal,
+                date: new Date().toISOString(),
+                verified: true, // Verified Purchase system
+                approved: true // Publish automatically!
             };
 
-            Promise.all([readAsDataURL(beforeFile), readAsDataURL(afterFile)])
-              .then(([beforeBase64, afterBase64]) => {
-                  const newReview = {
-                      name: nameVal,
-                      rating: ratingVal,
-                      comment: commentVal,
-                      beforeImg: beforeBase64,
-                      afterImg: afterBase64,
-                      date: new Date().toISOString(),
-                      verified: true, // Verified Purchase system
-                      approved: true // Publish automatically!
-                  };
+            if (useFirebase && db) {
+                db.collection("reviews").add(newReview)
+                  .then((docRef) => {
+                      let myReviews = JSON.parse(localStorage.getItem("my_owned_reviews") || "[]");
+                      myReviews.push(docRef.id);
+                      localStorage.setItem("my_owned_reviews", JSON.stringify(myReviews));
 
-                  if (useFirebase && db) {
-                      db.collection("reviews").add(newReview)
-                        .then(() => {
-                            showToast("Thank you! Your review has been published successfully.");
-                            reviewForm.reset();
-                            resetStarsSelector();
-                            reviewFormContainer.style.display = 'none';
-                            if (toggleFormBtn) toggleFormBtn.textContent = 'Write a Review';
-                        })
-                        .catch(err => {
-                            console.error("Firestore submit failed. Submitting locally.", err);
-                            submitLocally(newReview);
-                        });
-                  } else {
+                      showToast("Thank you! Your review has been published successfully.");
+                      reviewForm.reset();
+                      resetStarsSelector();
+                      reviewFormContainer.style.display = 'none';
+                      if (toggleFormBtn) toggleFormBtn.textContent = 'Write a Review';
+                  })
+                  .catch(err => {
+                      console.error("Firestore submit failed. Submitting locally.", err);
                       submitLocally(newReview);
-                  }
-              });
+                  });
+            } else {
+                submitLocally(newReview);
+            }
         });
     }
 
@@ -1374,6 +1390,10 @@ document.addEventListener('DOMContentLoaded', () => {
         let localList = JSON.parse(localStorage.getItem("lipley_reviews_db") || "[]");
         localList.push(newReview);
         localStorage.setItem("lipley_reviews_db", JSON.stringify(localList));
+        
+        let myReviews = JSON.parse(localStorage.getItem("my_owned_reviews") || "[]");
+        myReviews.push(newReview.id);
+        localStorage.setItem("my_owned_reviews", JSON.stringify(myReviews));
         
         showToast("Thank you! Your review has been published successfully.");
         
@@ -1631,27 +1651,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const localFallbackPosts = [
         {
             "url": "https://www.instagram.com/lipleycare",
-            "image": "assets/images/lipley-balm-product.png",
-            "alt": "LIPLEY Strawberry Beetroot Balm closeup",
+            "image": "assets/images/instagram-featured.jpg?v=2",
+            "alt": "LIPLEY Featured Banner Poster",
             "filter": "none"
         },
         {
             "url": "https://www.instagram.com/lipleycare",
-            "image": "assets/images/lipley-balm-product.png",
-            "alt": "LIPLEY Organic Ingredients display",
-            "filter": "saturate(0.85)"
+            "image": "assets/images/instagram-model.jpg?v=2",
+            "alt": "LIPLEY Tinted Lip Balm Model Showcase",
+            "filter": "none"
         },
         {
             "url": "https://www.instagram.com/lipleycare",
-            "image": "assets/images/lipley-balm-product.png",
-            "alt": "LIPLEY Luxury skincare routine",
-            "filter": "brightness(0.9)"
+            "image": "assets/images/instagram-essential.jpg?v=2",
+            "alt": "LIPLEY Lip Balm Product Showcase",
+            "filter": "none"
         },
         {
             "url": "https://www.instagram.com/lipleycare",
-            "image": "assets/images/lipley-balm-product.png",
-            "alt": "LIPLEY Tinted shade swatch",
-            "filter": "contrast(0.95)"
+            "image": "assets/images/instagram-pyramid.jpg?v=2",
+            "alt": "LIPLEY Lip Balm Stack Showcase",
+            "filter": "none"
         }
     ];
 
@@ -1681,9 +1701,9 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .then(data => {
                 if (Array.isArray(data)) {
-                    renderInstagramFeed([...data].reverse());
+                    renderInstagramFeed(data);
                 } else {
-                    renderInstagramFeed([...localFallbackPosts].reverse());
+                    renderInstagramFeed(localFallbackPosts);
                 }
             })
             .catch(error => {
@@ -1785,6 +1805,62 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     };
+
+    // --- 15. EMAILJS CONTACT SUBMISSION ---
+    if (typeof emailjs !== 'undefined') {
+        emailjs.init("U2SbavD5Sfe3OsSVe");
+    }
+
+    const contactForm = document.getElementById('lipley-contact-form');
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = contactForm.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn ? submitBtn.innerHTML : 'Send Message';
+            
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span>Sending...</span>';
+            }
+            
+            if (typeof emailjs === 'undefined') {
+                showToast("Email service is currently unavailable. Please try again later.", "error");
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                }
+                return;
+            }
+            
+            const nameVal = document.getElementById('c-name').value.trim();
+            const emailVal = document.getElementById('c-email').value.trim();
+            const messageVal = document.getElementById('c-message').value.trim();
+            
+            const templateParams = {
+                from_name: nameVal,
+                reply_to: emailVal,
+                message: messageVal,
+                to_email: "hellolipley2026@gmail.com"
+            };
+            
+            emailjs.send("service_q0e7e45", "template_fg6cxbr", templateParams)
+                .then(() => {
+                    showToast("Thank you! Your message has been sent successfully.");
+                    contactForm.reset();
+                })
+                .catch((error) => {
+                    console.error("EmailJS send failed:", error);
+                    showToast("Failed to send message. Please try again.", "error");
+                })
+                .finally(() => {
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnText;
+                    }
+                });
+        });
+    }
 
     if (policyCloseBtn) policyCloseBtn.addEventListener('click', window.closePolicyModal);
     if (policyOverlay) policyOverlay.addEventListener('click', window.closePolicyModal);

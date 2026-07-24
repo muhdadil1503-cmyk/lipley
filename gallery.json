@@ -1,26 +1,26 @@
 [
   {
     "url": "https://www.instagram.com/lipleycare",
-    "image": "assets/images/lipley-balm-product.png",
-    "alt": "LIPLEY Strawberry Beetroot Balm closeup",
+    "image": "assets/images/instagram-featured.jpg?v=2",
+    "alt": "LIPLEY Featured Banner Poster",
     "filter": "none"
   },
   {
     "url": "https://www.instagram.com/lipleycare",
-    "image": "assets/images/lipley-balm-product.png",
-    "alt": "LIPLEY Organic Ingredients display",
-    "filter": "saturate(0.85)"
+    "image": "assets/images/instagram-model.jpg?v=2",
+    "alt": "LIPLEY Tinted Lip Balm Model Showcase",
+    "filter": "none"
   },
   {
     "url": "https://www.instagram.com/lipleycare",
-    "image": "assets/images/lipley-balm-product.png",
-    "alt": "LIPLEY Luxury skincare routine",
-    "filter": "brightness(0.9)"
+    "image": "assets/images/instagram-essential.jpg?v=2",
+    "alt": "LIPLEY Lip Balm Product Showcase",
+    "filter": "none"
   },
   {
     "url": "https://www.instagram.com/lipleycare",
-    "image": "assets/images/lipley-balm-product.png",
-    "alt": "LIPLEY Tinted shade swatch",
-    "filter": "contrast(0.95)"
+    "image": "assets/images/instagram-pyramid.jpg?v=2",
+    "alt": "LIPLEY Lip Balm Stack Showcase",
+    "filter": "none"
   }
 ]

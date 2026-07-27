@@ -1,0 +1,8 @@
+# Design source files
+*.psd
+*.ai
+*.sketch
+
+# OS generated files
+.DS_Store
+Thumbs.db

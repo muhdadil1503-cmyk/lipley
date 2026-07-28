@@ -306,7 +306,12 @@ document.addEventListener('DOMContentLoaded', () => {
             price: 149,
             description: "Premium organic lip balm enriched with Strawberry Extract and Beetroot Oil to help moisturize lips while providing a beautiful natural tinted finish.",
             variant: "Strawberry + Beetroot Tinted",
-            image: "assets/images/lipley-balm-product.png",
+            image: "assets/images/lipley-gallery-closed.jpg",
+            gallery: [
+                "assets/images/lipley-gallery-closed.jpg",
+                "assets/images/lipley-gallery-open.jpg",
+                "assets/images/lipley-gallery-hand.jpg"
+            ],
             ingredients: ["Beeswax", "Shea Butter", "Cocoa Butter", "Almond Oil", "Jojoba Oil", "Castor Oil", "Beetroot Oil", "Coconut Oil", "Alkanet Root", "Manjistha", "Vitamin E", "Strawberry Oil"],
             benefits: [
                 "Helps deeply moisturize dry lips.",
@@ -345,14 +350,29 @@ document.addEventListener('DOMContentLoaded', () => {
         // Update images
         const mainImg = document.getElementById('gallery-main-img');
         if (mainImg) {
-            mainImg.src = product.image;
+            mainImg.src = product.image + '?v=2';
             mainImg.alt = product.name;
         }
         
-        const galleryThumbs = document.querySelectorAll('.gallery-thumb img');
-        galleryThumbs.forEach(thumb => {
-            thumb.src = product.image;
-        });
+        const galleryThumbs = document.querySelectorAll('.gallery-thumb');
+        if (product.gallery && galleryThumbs.length >= product.gallery.length) {
+            galleryThumbs.forEach((thumb, idx) => {
+                const imgPath = product.gallery[idx] + '?v=2';
+                thumb.setAttribute('data-img', imgPath);
+                
+                const thumbImg = thumb.querySelector('img');
+                if (thumbImg) {
+                    thumbImg.src = imgPath;
+                }
+                
+                // Reset active class to the first one
+                if (idx === 0) {
+                    thumb.classList.add('active');
+                } else {
+                    thumb.classList.remove('active');
+                }
+            });
+        }
         
         // Update metadata
         const typeTag = document.querySelector('.p-type-tag');
@@ -691,31 +711,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     galleryThumbs.forEach(thumb => {
         thumb.addEventListener('click', () => {
+            if (!mainGalleryImg) return;
+            
             galleryThumbs.forEach(t => t.classList.remove('active'));
             thumb.classList.add('active');
             
-            const zoomMode = thumb.getAttribute('data-zoom');
-            if (mainGalleryImg) {
-                mainGalleryImg.style.transform = 'none';
-                mainGalleryImg.style.filter = 'none';
-
-                if (zoomMode === 'close') {
-                    mainGalleryImg.style.transform = 'scale(1.5)';
-                    mainGalleryImg.style.transformOrigin = 'center';
-                } else if (zoomMode === 'pack') {
-                    mainGalleryImg.style.transform = 'scale(1.15)';
-                    mainGalleryImg.style.filter = 'brightness(1.05)';
-                }
-            }
+            const newImgSrc = thumb.getAttribute('data-img');
+            
+            // Smooth fade transition
+            mainGalleryImg.style.opacity = '0';
+            setTimeout(() => {
+                mainGalleryImg.src = newImgSrc;
+                mainGalleryImg.style.opacity = '1';
+            }, 200);
         });
     });
 
     // Premium dynamic magnifying inspect hover effect
-    const galleryMain = document.querySelector('.gallery-main');
+    const galleryMain = document.querySelector('.main-gallery-visual');
     if (galleryMain && mainGalleryImg) {
         galleryMain.style.overflow = 'hidden';
         galleryMain.style.position = 'relative';
-        mainGalleryImg.style.transition = 'transform 0.15s ease-out, filter 0.3s ease';
+        mainGalleryImg.style.transition = 'transform 0.15s ease-out, opacity 0.25s ease';
         
         galleryMain.addEventListener('mousemove', (e) => {
             const rect = galleryMain.getBoundingClientRect();
@@ -727,17 +744,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         galleryMain.addEventListener('mouseleave', () => {
-            // Revert to active thumbnail scale/state
-            const activeThumb = document.querySelector('.gallery-thumb.active');
-            const zoomMode = activeThumb ? activeThumb.getAttribute('data-zoom') : '';
             mainGalleryImg.style.transformOrigin = 'center';
-            if (zoomMode === 'close') {
-                mainGalleryImg.style.transform = 'scale(1.5)';
-            } else if (zoomMode === 'pack') {
-                mainGalleryImg.style.transform = 'scale(1.15)';
-            } else {
-                mainGalleryImg.style.transform = 'scale(1)';
-            }
+            mainGalleryImg.style.transform = 'scale(1)';
         });
     }
 

@@ -331,7 +331,44 @@ document.addEventListener('DOMContentLoaded', () => {
                 "Suitable for Men & Women.",
                 "Suitable for everyday use."
             ],
-            instructions: "Apply evenly on clean lips whenever needed.<br><br>Reapply throughout the day for continuous hydration and a natural tinted look.<br><br>Apply before bedtime for overnight nourishment."
+            instructions: "Apply evenly on clean lips whenever needed.<br><br>Reapply throughout the day for continuous hydration and a natural tinted look.<br><br>Apply before bedtime for overnight nourishment.",
+            reviews: [
+                { text: "My lips have never felt softer! The beetroot tint is so natural and pretty.", author: "Anjali R." },
+                { text: "Truly organic. It stays hydrated for hours without feeling sticky.", author: "Siddharth M." }
+            ]
+        },
+        "hair-oil": {
+            id: "hair-oil",
+            name: "Lipley Hair Oil",
+            type: "Hair Care",
+            tagline: "100% Ayurvedic. Root Strength. Healthy Growth.",
+            price: 249,
+            description: "Experience the power of Ayurveda with Lipley Hair Oil. Formulated with a rich blend of traditional herbs like Amla, Bhringraj, Hibiscus, Rosemary, Brahmi, Neem, Fenugreek, Aloe Vera, and pure Virgin Coconut Oil. This 100% Ayurvedic herbal oil deeply nourishes the scalp, strengthens roots to reduce hair fall, repairs damage, and supports healthy, voluminous hair growth for men, women, and children.",
+            variant: "100% Ayurvedic Herbal Oil",
+            image: "assets/images/lipley-hair-oil.jpg",
+            gallery: [
+                "assets/images/lipley-hair-oil.jpg"
+            ],
+            ingredients: [
+                "Virgin Coconut Oil", "Amla", "Hibiscus", "Bhringraj", "Brahmi", "Neem Leaves", "Curry Leaves", "Rosemary Leaf", "Fenugreek", "Aloe Vera", "Manjistha", "Alkanet Root", "Vetiver", "Tulsi", "Betel Leaves", "Henna", "Black Pepper", "Black Cumins", "Karpooram"
+            ],
+            benefits: [
+                "Nourishes the scalp deeply.",
+                "Strengthens hair roots and follicles.",
+                "Helps reduce hair fall and split ends.",
+                "Supports healthy and active hair growth.",
+                "Helps control dandruff and scalp itchiness.",
+                "Supports natural thickness and volume.",
+                "Supports soft, shiny, and smooth hair textures.",
+                "Rich in natural herbs to prevent everyday scalp dryness.",
+                "Lightweight, non-greasy formula for comfortable use.",
+                "Suitable for men, women, and children."
+            ],
+            instructions: "Massage gently onto your scalp and hair roots.<br><br>Leave it on for at least 30-60 minutes, or overnight for deep conditioning.<br><br>Wash off with a mild Ayurvedic shampoo.",
+            reviews: [
+                { text: "My hair fall has reduced significantly. Highly recommend this natural hair oil!", author: "Rohan S." },
+                { text: "Smells wonderful and leaves my hair feeling super soft and shiny.", author: "Meera K." }
+            ]
         }
     };
 
@@ -342,6 +379,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!product) return;
         
         selectedProductId = productId;
+        
+        const buyNowBtn = document.getElementById('btn-buy-now');
+        if (buyNowBtn) {
+            buyNowBtn.setAttribute('data-product-id', productId);
+        }
         
         // Update breadcrumb
         const breadcrumbActive = document.querySelector('.breadcrumb-active');
@@ -354,22 +396,38 @@ document.addEventListener('DOMContentLoaded', () => {
             mainImg.alt = product.name;
         }
         
+        // Dynamic thumbnails show/hide based on gallery length
         const galleryThumbs = document.querySelectorAll('.gallery-thumb');
-        if (product.gallery && galleryThumbs.length >= product.gallery.length) {
-            galleryThumbs.forEach((thumb, idx) => {
-                const imgPath = product.gallery[idx] + '?v=2';
-                thumb.setAttribute('data-img', imgPath);
-                
-                const thumbImg = thumb.querySelector('img');
-                if (thumbImg) {
-                    thumbImg.src = imgPath;
-                }
-                
-                // Reset active class to the first one
-                if (idx === 0) {
-                    thumb.classList.add('active');
+        const thumbsGrid = document.querySelector('.thumbnail-gallery-grid');
+        
+        if (product.gallery && galleryThumbs.length > 0) {
+            if (thumbsGrid) {
+                if (product.gallery.length <= 1) {
+                    thumbsGrid.style.display = 'none';
                 } else {
-                    thumb.classList.remove('active');
+                    thumbsGrid.style.display = 'grid';
+                }
+            }
+            
+            galleryThumbs.forEach((thumb, idx) => {
+                if (idx < product.gallery.length) {
+                    thumb.style.display = 'flex';
+                    const imgPath = product.gallery[idx] + '?v=2';
+                    thumb.setAttribute('data-img', imgPath);
+                    
+                    const thumbImg = thumb.querySelector('img');
+                    if (thumbImg) {
+                        thumbImg.src = imgPath;
+                    }
+                    
+                    // Reset active class
+                    if (idx === 0) {
+                        thumb.classList.add('active');
+                    } else {
+                        thumb.classList.remove('active');
+                    }
+                } else {
+                    thumb.style.display = 'none';
                 }
             });
         }
@@ -384,8 +442,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const subtitleTagline = document.querySelector('.p-subtitle-tagline');
         if (subtitleTagline) subtitleTagline.textContent = product.tagline;
         
-        const priceVal = document.querySelector('.p-rating-price-bar .p-price');
-        if (priceVal) priceVal.textContent = `MRP: ₹${product.price}`;
+        const priceVal = document.querySelector('.price-value');
+        if (priceVal) priceVal.textContent = `₹${product.price}`;
+        
+        // Update sidebar shipping details
+        const sidebarShipping = document.querySelector('.p-shipping-list');
+        if (sidebarShipping) {
+            const shippingCostText = product.id === 'hair-oil' ? '<strong>Shipping:</strong> Free Delivery on All Orders' : '<strong>Shipping:</strong> ₹30 (Free Delivery on 2 or more)';
+            sidebarShipping.innerHTML = `
+                <li style="display: flex; gap: 6px;"><strong>Processing:</strong> Dispatched within 24 hours.</li>
+                <li style="display: flex; gap: 6px;"><strong>Delivery Time:</strong> 2–7 business days across India.</li>
+                <li style="display: flex; gap: 6px;">${shippingCostText}</li>
+                <li style="display: flex; gap: 6px;"><strong>Tracking:</strong> Shared immediately post dispatch.</li>
+                <li style="display: flex; gap: 6px;"><strong>Support:</strong> Active WhatsApp hotline assistance.</li>
+            `;
+        }
         
         const descText = document.querySelector('.p-description-text');
         if (descText) descText.textContent = product.description;
@@ -396,21 +467,80 @@ document.addEventListener('DOMContentLoaded', () => {
         // Update ingredients
         const ingredientsGrid = document.querySelector('.drawer-ingredients-grid');
         if (ingredientsGrid && product.ingredients) {
-            ingredientsGrid.innerHTML = product.ingredients.map(ing => `<span class="ingredient-pill">${ing}</span>`).join('');
+            ingredientsGrid.innerHTML = product.ingredients.map(ing => `<span class="ingredient-pill" style="font-size: 12px; padding: 6px 12px; background: rgba(30, 58, 52, 0.05); border: 1px solid rgba(30, 58, 52, 0.1); border-radius: 20px; color: var(--color-primary);">${ing}</span>`).join('');
         }
         
-        // Update benefits
+        // Update tab benefits
         const benefitsList = document.querySelector('#tab-benefits .drawer-bullet-list');
         if (benefitsList && product.benefits) {
             benefitsList.innerHTML = product.benefits.map(ben => `<li>${ben}</li>`).join('');
         }
         
-        // Update instructions
+        // Update tab instructions
         const instructionsText = document.querySelector('#tab-instructions .tab-desc-text');
         if (instructionsText) {
             instructionsText.innerHTML = product.instructions;
         }
         
+        // Update sidebar benefits
+        const sidebarBenefits = document.querySelector('.p-benefits-list');
+        if (sidebarBenefits && product.benefits) {
+            sidebarBenefits.innerHTML = product.benefits.slice(0, 5).map(ben => `
+                <li style="font-size: 14px; line-height: 1.5; color: var(--color-primary); display: flex; align-items: flex-start; gap: 8px;">
+                    <span style="color: var(--color-accent); font-weight: 700;">✓</span>
+                    <span>${ben}</span>
+                </li>
+            `).join('');
+        }
+        
+        // Update sidebar how to use
+        const sidebarSteps = document.querySelector('.p-steps');
+        if (sidebarSteps && product.instructions) {
+            const steps = product.instructions.split('<br><br>');
+            sidebarSteps.innerHTML = steps.map((step, idx) => `
+                <div class="step-item" style="font-size: 13.5px; line-height: 1.5; color: var(--color-primary);">
+                    <strong>Step ${idx + 1}:</strong> ${step.replace(/Step \d+:\s*/i, '')}
+                </div>
+            `).join('');
+        }
+        
+        // Update sidebar reviews quotes
+        const sidebarQuotes = document.querySelector('.p-review-quotes');
+        if (sidebarQuotes && product.reviews) {
+            sidebarQuotes.innerHTML = product.reviews.map(rev => `
+                <div class="review-quote-item" style="background: rgba(30, 58, 52, 0.02); border-left: 3px solid var(--color-accent); padding: 10px 15px; border-radius: 0 4px 4px 0;">
+                    <p style="font-style: italic; font-size: 13px; line-height: 1.5; margin: 0 0 5px 0; color: var(--color-primary);">"${rev.text}"</p>
+                    <span style="font-size: 11px; font-weight: 600; color: var(--color-primary); opacity: 0.85;">— ${rev.author}</span>
+                </div>
+            `).join('');
+        }
+
+        // Update checkout summary item details
+        const checkoutImg = document.querySelector('.summary-item-img');
+        if (checkoutImg) {
+            checkoutImg.src = product.image + '?v=2';
+            checkoutImg.alt = product.name;
+        }
+        const checkoutName = document.querySelector('.summary-item-name');
+        if (checkoutName) {
+            checkoutName.textContent = product.name;
+        }
+        const checkoutQtyDesc = document.querySelector('.summary-item-qty');
+        if (checkoutQtyDesc) {
+            checkoutQtyDesc.textContent = product.variant;
+        }
+        
+        // Select active product option in review dropdown form
+        const reviewProductSelect = document.getElementById('review-product');
+        if (reviewProductSelect) {
+            reviewProductSelect.value = productId === 'hair-oil' ? 'Hair Oil' : 'Lip Balm';
+        }
+        
+        // Trigger reviews refetch to filter by active product dynamically
+        if (typeof fetchReviews === 'function') {
+            fetchReviews();
+        }
+
         // Trigger recalculation if checkout calculation function exists
         if (typeof calculateOrder === 'function') {
             calculateOrder();
@@ -1009,8 +1139,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // Sort newest first
         allReviews.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-        // Filter approved reviews for public
-        const publicReviews = allReviews.filter(r => r.approved === true);
+        // Filter approved reviews for public and by product (Lip Balm vs Hair Oil)
+        const activeProductLabel = selectedProductId === 'hair-oil' ? 'Hair Oil' : 'Lip Balm';
+        const publicReviews = allReviews.filter(r => {
+            const isApproved = r.approved === true;
+            const reviewProduct = r.product || 'Lip Balm';
+            return isApproved && (reviewProduct.toLowerCase() === activeProductLabel.toLowerCase());
+        });
 
         // Update stats based on all public reviews
         if (publicReviews.length > 0) {
@@ -1482,12 +1617,17 @@ document.addEventListener('DOMContentLoaded', () => {
         let offerText = '';
         let discountAmount = 0;
         
-        // Quantity discounts & delivery logic
-        if (currentQty >= 2) {
-            deliveryCharge = 0; // FREE Delivery
+        // Delivery charges logic
+        if (selectedProductId === 'hair-oil') {
+            deliveryCharge = 0;
             offerText = `Free Delivery`;
-        } else {
-            // If qty < 2, coupon is not allowed. Reset if it was applied.
+        } else if (currentQty >= 2) {
+            deliveryCharge = 0; // FREE Delivery for 2+ Lip Balms
+            offerText = `Free Delivery`;
+        }
+        
+        // Coupon code requirement validation (qty >= 2 for all products)
+        if (currentQty < 2) {
             if (couponApplied) {
                 couponApplied = false;
                 if (couponFeedback) {
@@ -1616,13 +1756,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const productName = product.name;
             const itemPrice = product.price;
             const productTotal = currentQty * itemPrice;
-            const deliveryCharge = currentQty >= 2 ? 0 : 30;
+            const deliveryCharge = (selectedProductId === 'hair-oil' || currentQty >= 2) ? 0 : 30;
             const discountAmount = couponApplied ? Math.round(productTotal * discountPercent) : 0;
             const grandTotal = productTotal + deliveryCharge - discountAmount;
             
             // Offer details
             let offerString = '';
-            if (currentQty >= 2) {
+            if (selectedProductId === 'hair-oil' || currentQty >= 2) {
                 offerString = `Free Delivery`;
             }
             
@@ -1630,14 +1770,15 @@ document.addEventListener('DOMContentLoaded', () => {
             let message = `Hello LIPLEY,\n\n`;
             message += `I would like to place an order for:\n`;
             message += `*Product:* ${productName}\n`;
+            message += `*Price:* ₹${itemPrice}\n`;
             message += `*Quantity:* ${currentQty}\n`;
             if (offerString) {
                 message += `*Offer:* ${offerString}\n`;
             }
-            message += `*Product Price:* ₹${productTotal}\n`;
+            message += `*Product Total:* ₹${productTotal}\n`;
             message += `*Delivery Charge:* ${deliveryCharge === 0 ? 'FREE' : '₹' + deliveryCharge}\n`;
             if (couponApplied) {
-                message += `*Coupon Code:* ${validCouponCode} (Saved ₹${discountAmount})\n`;
+                message += `*Coupon Discount:* -₹${discountAmount} (${validCouponCode})\n`;
             }
             message += `*Grand Total:* ₹${grandTotal}\n\n`;
             

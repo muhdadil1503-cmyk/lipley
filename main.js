@@ -350,21 +350,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 "assets/images/lipley-hair-oil.jpg"
             ],
             ingredients: [
-                "Virgin Coconut Oil", "Amla", "Hibiscus", "Bhringraj", "Brahmi", "Neem Leaves", "Curry Leaves", "Rosemary Leaf", "Fenugreek", "Aloe Vera", "Manjistha", "Alkanet Root", "Vetiver", "Tulsi", "Betel Leaves", "Henna", "Black Pepper", "Black Cumins", "Karpooram"
+                "Virgin Coconut Oil", "Amla", "Hibiscus", "Bhringraj", "Brahmi", "Neem Leaves", "Curry Leaves", "Rosemary Leaf", "Fenugreek", "Aloe Vera", "Manjistha", "Alkanet Root", "Vetiver", "Tulsi", "Betel Leaves", "Henna", "Black Pepper", "Black Cumins", "Karpooram", "Vitamin E"
             ],
             benefits: [
-                "Nourishes the scalp deeply.",
-                "Strengthens hair roots and follicles.",
-                "Helps reduce hair fall and split ends.",
-                "Supports healthy and active hair growth.",
-                "Helps control dandruff and scalp itchiness.",
-                "Supports natural thickness and volume.",
-                "Supports soft, shiny, and smooth hair textures.",
-                "Rich in natural herbs to prevent everyday scalp dryness.",
-                "Lightweight, non-greasy formula for comfortable use.",
-                "Suitable for men, women, and children."
+                "Helps Reduce Hair Fall",
+                "Helps Promote Healthy Hair Growth",
+                "Helps Control Dandruff",
+                "Nourishes Hair & Scalp",
+                "Strengthens Hair Roots",
+                "Adds Natural Shine & Softness",
+                "Helps Reduce Scalp Dryness",
+                "Suitable for Men, Women & Children",
+                "Suitable for Regular Use"
             ],
-            instructions: "Massage gently onto your scalp and hair roots.<br><br>Leave it on for at least 30-60 minutes, or overnight for deep conditioning.<br><br>Wash off with a mild Ayurvedic shampoo.",
+            instructions: "• Apply evenly to the scalp and hair.<br><br>• Gently massage for 5–10 minutes.<br><br>• Leave on for 30–45 minutes or overnight for deeper nourishment.<br><br>• Wash with a mild shampoo.<br><br>• Use 2–3 times a week for best results.",
             reviews: [
                 { text: "My hair fall has reduced significantly. Highly recommend this natural hair oil!", author: "Rohan S." },
                 { text: "Smells wonderful and leaves my hair feeling super soft and shiny.", author: "Meera K." }

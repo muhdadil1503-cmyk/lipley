@@ -170,84 +170,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 3.1 HERO SLIDER CONTROLLER ---
-    const slides = document.querySelectorAll('.hero-slide');
-    const dots = document.querySelectorAll('.hero-dot');
-    const prevBtn = document.getElementById('hero-prev-btn');
-    const nextBtn = document.getElementById('hero-next-btn');
-    let currentSlide = 0;
-    let slideInterval = null;
-
-    function showSlide(index) {
-        if (slides.length === 0) return;
-        
-        if (index >= slides.length) index = 0;
-        if (index < 0) index = slides.length - 1;
-        
-        currentSlide = index;
-        
-        slides.forEach((slide, i) => {
-            if (i === currentSlide) {
-                slide.classList.add('active');
-            } else {
-                slide.classList.remove('active');
-            }
-        });
-        
-        dots.forEach((dot, i) => {
-            if (i === currentSlide) {
-                dot.classList.add('active');
-            } else {
-                dot.classList.remove('active');
-            }
-        });
-    }
-
-    function nextSlide() {
-        showSlide(currentSlide + 1);
-    }
-
-    function prevSlide() {
-        showSlide(currentSlide - 1);
-    }
-
-    function startSlideShow() {
-        stopSlideShow();
-        slideInterval = setInterval(nextSlide, 5500); // Switch every 5.5s
-    }
-
-    function stopSlideShow() {
-        if (slideInterval) {
-            clearInterval(slideInterval);
-        }
-    }
-
-    if (prevBtn) {
-        prevBtn.addEventListener('click', () => {
-            prevSlide();
-            startSlideShow();
-        });
-    }
-
-    if (nextBtn) {
-        nextBtn.addEventListener('click', () => {
-            nextSlide();
-            startSlideShow();
-        });
-    }
-
-    dots.forEach((dot, i) => {
-        dot.addEventListener('click', () => {
-            showSlide(i);
-            startSlideShow();
-        });
-    });
-
-    if (slides.length > 0) {
-        startSlideShow();
-    }
-
-
     // --- 4. SCROLL REVEAL (FADE / SLIDE ENTRANCE) ---
     const revealElements = document.querySelectorAll('.scroll-reveal');
     
@@ -378,8 +300,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!product) return;
         
         selectedProductId = productId;
-        isComboOrder = false;
-        productPageQty = 1;
         
         const buyNowBtn = document.getElementById('btn-buy-now');
         if (buyNowBtn) {
@@ -997,114 +917,23 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 13. BUY NOW EVENT LISTENER & CROSS-SELL POPUP INTERCEPTOR ---
-    let isComboOrder = false;
+    // --- 13. BUY NOW EVENT LISTENER & PRODUCT PAGE QUANTITY SELECTOR ---
+    const pQtyMinus = document.getElementById('p-qty-minus');
+    const pQtyPlus = document.getElementById('p-qty-plus');
+    const pQtyDisplay = document.getElementById('p-qty-display');
 
-    const crossSellModal = document.getElementById('cross-sell-modal');
-    const crossSellClose = document.getElementById('cross-sell-close');
-    const crossSellBackdrop = document.getElementById('cross-sell-backdrop');
-    const btnCrossSellAdd = document.getElementById('btn-cross-sell-add');
-    const btnCrossSellSkip = document.getElementById('btn-cross-sell-skip');
-
-    window.openCrossSell = function() {
-        if (!crossSellModal) return;
-        
-        const crossSellTitle = document.getElementById('cross-sell-title');
-        const crossSellImg = document.getElementById('cross-sell-product-img');
-        const crossSellName = document.getElementById('cross-sell-product-name');
-        const crossSellPrice = document.getElementById('cross-sell-product-price');
-        const crossSellBenefits = document.getElementById('cross-sell-benefits');
-        
-        if (selectedProductId === 'strawberry-beetroot') {
-            // Recommend Hair Oil
-            if (crossSellTitle) crossSellTitle.textContent = "Complete Your Routine";
-            if (crossSellImg) crossSellImg.src = "assets/images/lipley-hair-oil.jpg?v=2";
-            if (crossSellName) crossSellName.textContent = "Lipley Hair Oil";
-            if (crossSellPrice) crossSellPrice.textContent = "₹249";
-            if (crossSellBenefits) {
-                crossSellBenefits.innerHTML = `
-                    <li style="display: flex; gap: 8px; align-items: center;"><span style="color: var(--color-accent); font-weight: 700;">✓</span> Nourishes Hair & Scalp</li>
-                    <li style="display: flex; gap: 8px; align-items: center;"><span style="color: var(--color-accent); font-weight: 700;">✓</span> Helps Reduce Hair Fall</li>
-                    <li style="display: flex; gap: 8px; align-items: center;"><span style="color: var(--color-accent); font-weight: 700;">✓</span> Free Delivery</li>
-                `;
-            }
-            if (btnCrossSellAdd) btnCrossSellAdd.textContent = "Add Hair Oil & Checkout";
-            if (btnCrossSellSkip) btnCrossSellSkip.textContent = "Continue with Lip Balm";
-        } else {
-            // Recommend Lip Balm
-            if (crossSellTitle) crossSellTitle.textContent = "Complete Your Routine";
-            if (crossSellImg) crossSellImg.src = "assets/images/lipley-gallery-closed.jpg?v=2";
-            if (crossSellName) crossSellName.textContent = "Lipley Beetroot Lip Balm";
-            if (crossSellPrice) crossSellPrice.textContent = "₹149";
-            if (crossSellBenefits) {
-                crossSellBenefits.innerHTML = `
-                    <li style="display: flex; gap: 8px; align-items: center;"><span style="color: var(--color-accent); font-weight: 700;">✓</span> Quenches Dry & Chapped Lips</li>
-                    <li style="display: flex; gap: 8px; align-items: center;"><span style="color: var(--color-accent); font-weight: 700;">✓</span> Beautiful Natural Pink Tint</li>
-                    <li style="display: flex; gap: 8px; align-items: center;"><span style="color: var(--color-accent); font-weight: 700;">✓</span> Free Delivery</li>
-                `;
-            }
-            if (btnCrossSellAdd) btnCrossSellAdd.textContent = "Add Lip Balm & Checkout";
-            if (btnCrossSellSkip) btnCrossSellSkip.textContent = "Continue with Hair Oil";
-        }
-        
-        crossSellModal.classList.add('open');
-        document.body.classList.add('intro-active');
-        window.pushNavigationState('popup', 'cross-sell-modal');
-    };
-
-    window.closeCrossSell = function() {
-        const current = navigationHistory[navigationHistory.length - 1];
-        if (current && current.type === 'popup' && current.id === 'cross-sell-modal') {
-            window.goBack();
-        } else {
-            if (crossSellModal) {
-                crossSellModal.classList.remove('open');
-                document.body.classList.remove('intro-active');
-            }
-        }
-    };
-
-    if (crossSellClose) crossSellClose.addEventListener('click', window.closeCrossSell);
-    if (crossSellBackdrop) crossSellBackdrop.addEventListener('click', window.closeCrossSell);
-
-    // Cross-sell button actions
-    if (btnCrossSellAdd) {
-        btnCrossSellAdd.addEventListener('click', () => {
-            isComboOrder = true;
-            // Close cross-sell
-            if (crossSellModal) crossSellModal.classList.remove('open');
-            document.body.classList.remove('intro-active');
-            
-            // Sync quantity to 1 combo
-            currentQty = 1;
-            const checkoutQtyDisplay = document.getElementById('checkout-qty-display');
-            if (checkoutQtyDisplay) checkoutQtyDisplay.textContent = currentQty;
-            
-            // Open checkout modal
-            window.openPurchaseOptions();
-            if (typeof calculateOrder === 'function') {
-                calculateOrder();
+    if (pQtyMinus && pQtyPlus && pQtyDisplay) {
+        pQtyMinus.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (productPageQty > 1) {
+                productPageQty--;
+                pQtyDisplay.textContent = productPageQty;
             }
         });
-    }
-
-    if (btnCrossSellSkip) {
-        btnCrossSellSkip.addEventListener('click', () => {
-            isComboOrder = false;
-            // Close cross-sell
-            if (crossSellModal) crossSellModal.classList.remove('open');
-            document.body.classList.remove('intro-active');
-            
-            // Sync quantity from product page
-            currentQty = 1;
-            const checkoutQtyDisplay = document.getElementById('checkout-qty-display');
-            if (checkoutQtyDisplay) checkoutQtyDisplay.textContent = currentQty;
-            
-            // Open checkout modal
-            window.openPurchaseOptions();
-            if (typeof calculateOrder === 'function') {
-                calculateOrder();
-            }
+        pQtyPlus.addEventListener('click', (e) => {
+            e.preventDefault();
+            productPageQty++;
+            pQtyDisplay.textContent = productPageQty;
         });
     }
 
@@ -1119,8 +948,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.loadProductDetails(productId);
                 }
                 
-                // Show cross-sell modal instead of direct checkout!
-                window.openCrossSell();
+                // Sync quantity from product page to checkout modal
+                currentQty = productPageQty;
+                const checkoutQtyDisplay = document.getElementById('checkout-qty-display');
+                if (checkoutQtyDisplay) {
+                    checkoutQtyDisplay.textContent = currentQty;
+                }
+                if (typeof calculateOrder === 'function') {
+                    calculateOrder();
+                }
+                
+                window.openPurchaseOptions();
             });
         }
     });
@@ -1693,59 +1531,24 @@ document.addEventListener('DOMContentLoaded', () => {
     let discountPercent = 0.15; // 15% Discount
     
     function calculateOrder() {
-        let itemPrice = 0;
-        let productTotal = 0;
+        const product = window.products[selectedProductId] || { price: 149 };
+        const itemPrice = product.price;
+        let productTotal = currentQty * itemPrice;
         let deliveryCharge = 30;
         let offerText = '';
         let discountAmount = 0;
-        let productName = "";
-        let productVariant = "";
-        let productImg = "";
         
-        if (isComboOrder) {
-            // Combo contains 1 Lip Balm (₹149) + 1 Hair Oil (₹249)
-            itemPrice = 149 + 249; // ₹398
-            productTotal = currentQty * itemPrice;
+        // Delivery charges logic
+        if (selectedProductId === 'hair-oil') {
             deliveryCharge = 0;
-            offerText = "Free Delivery";
-            productName = "LIPLEY Combo: Lip Balm + Hair Oil";
-            productVariant = "1x Lip Balm + 1x Hair Oil";
-            productImg = "assets/images/lipley-hair-oil.jpg";
-        } else {
-            const product = window.products[selectedProductId] || { price: 149 };
-            itemPrice = product.price;
-            productTotal = currentQty * itemPrice;
-            productName = product.name;
-            productVariant = product.variant;
-            productImg = product.image;
-            
-            // Delivery charges logic
-            if (selectedProductId === 'hair-oil') {
-                deliveryCharge = 0;
-                offerText = `Free Delivery`;
-            } else if (currentQty >= 2) {
-                deliveryCharge = 0; // FREE Delivery for 2+ Lip Balms
-                offerText = `Free Delivery`;
-            }
+            offerText = `Free Delivery`;
+        } else if (currentQty >= 2) {
+            deliveryCharge = 0; // FREE Delivery for 2+ Lip Balms
+            offerText = `Free Delivery`;
         }
         
-        // Update checkout item details dynamically in order summary card
-        const checkoutImg = document.querySelector('.summary-item-img');
-        if (checkoutImg) {
-            checkoutImg.src = productImg + '?v=2';
-            checkoutImg.alt = productName;
-        }
-        const checkoutName = document.querySelector('.summary-item-name');
-        if (checkoutName) {
-            checkoutName.textContent = productName;
-        }
-        const checkoutQtyDesc = document.querySelector('.summary-item-qty');
-        if (checkoutQtyDesc) {
-            checkoutQtyDesc.textContent = productVariant;
-        }
-        
-        // Coupon code requirement validation (qty >= 2 or combo)
-        if (!isComboOrder && currentQty < 2) {
+        // Coupon code requirement validation (qty >= 2 for all products)
+        if (currentQty < 2) {
             if (couponApplied) {
                 couponApplied = false;
                 if (couponFeedback) {
@@ -1870,31 +1673,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const state = document.getElementById('order-state').value.trim();
             const pin = document.getElementById('order-pin').value.trim();
             
-            let productName = "";
-            let itemPrice = 0;
-            let productTotal = 0;
-            let deliveryCharge = 0;
-            let offerString = "";
-            
-            if (isComboOrder) {
-                productName = "LIPLEY Combo (Lip Balm + Hair Oil)";
-                itemPrice = 398;
-                productTotal = currentQty * itemPrice;
-                deliveryCharge = 0;
-                offerString = "Free Delivery";
-            } else {
-                const product = window.products[selectedProductId] || { name: "LIPLEY Strawberry Beetroot Tinted Lip Balm", price: 149 };
-                productName = product.name;
-                itemPrice = product.price;
-                productTotal = currentQty * itemPrice;
-                deliveryCharge = (selectedProductId === 'hair-oil' || currentQty >= 2) ? 0 : 30;
-                if (selectedProductId === 'hair-oil' || currentQty >= 2) {
-                    offerString = "Free Delivery";
-                }
-            }
-            
+            const product = window.products[selectedProductId] || { name: "LIPLEY Strawberry Beetroot Tinted Lip Balm", price: 149 };
+            const productName = product.name;
+            const itemPrice = product.price;
+            const productTotal = currentQty * itemPrice;
+            const deliveryCharge = (selectedProductId === 'hair-oil' || currentQty >= 2) ? 0 : 30;
             const discountAmount = couponApplied ? Math.round(productTotal * discountPercent) : 0;
             const grandTotal = productTotal + deliveryCharge - discountAmount;
+            
+            // Offer details
+            let offerString = '';
+            if (selectedProductId === 'hair-oil' || currentQty >= 2) {
+                offerString = `Free Delivery`;
+            }
             
             // Format WhatsApp Message
             let message = `Hello LIPLEY,\n\n`;

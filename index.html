@@ -113,45 +113,51 @@
         <div id="view-home" class="page-view active">
             <!-- HERO SECTION -->
             <section id="home" class="hero-section">
-                <!-- Slider Background Slides -->
+                <!-- Slider Background Slides (using the luxury banner image) -->
                 <div class="hero-slides">
                     <div class="hero-slide active" style="background-image: url('assets/images/lipley-hero-banner.jpg'); background-position: center right;"></div>
-                    <div class="hero-slide" style="background-image: url('assets/images/lipley-hair-oil.jpg'); background-position: center;"></div>
                 </div>
                 
                 <!-- Overlay to ensure high text contrast -->
-                <div class="hero-slides-overlay"></div>
+                <div class="hero-slides-overlay" style="background: linear-gradient(135deg, rgba(10, 28, 24, 0.95) 45%, rgba(10, 28, 24, 0.7) 100%);"></div>
                 
                 <!-- Fixed Hero Content -->
-                <div class="container hero-overlay-container">
-                    <div class="hero-content scroll-reveal reveal-fade-right">
-                        <span class="hero-brand">LIPLEY</span>
-                        <h1 class="hero-title-premium">Ayurvedic Personal Care</h1>
-                        <p class="hero-subtitle-premium">Pure Botanicals. Luxury Self-Care Rituals.</p>
-                        <div class="hero-actions-premium">
-                            <a href="#featured-product-section" class="btn btn-primary" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">
-                                <span>Explore Shop</span>
-                                <svg viewBox="0 0 24 24" class="btn-icon"><path fill="currentColor" d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
-                            </a>
+                <div class="container hero-brand-container">
+                    <div class="hero-brand-grid">
+                        <!-- Left: Brand Copy -->
+                        <div class="hero-brand-content scroll-reveal reveal-fade-right">
+                            <span class="hero-brand-tag">100% AYURVEDIC ESSENTIALS</span>
+                            <h1 class="hero-brand-title">Pure Botanical Wellness</h1>
+                            <p class="hero-brand-subtitle">Experience the luxury of premium Ayurvedic personal care crafted from carefully selected organic herbs, cold-pressed oils, and clean holistic formulations.</p>
+                            <div class="hero-actions-brand">
+                                <a href="#featured-product-section" class="btn btn-primary">
+                                    <span>Shop Now</span>
+                                    <svg viewBox="0 0 24 24" class="btn-icon"><path fill="currentColor" d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Right: Equal Showcase of Both Products -->
+                        <div class="hero-brand-showcase scroll-reveal reveal-fade-left">
+                            <!-- Lip Balm Card -->
+                            <div class="showcase-card">
+                                <div class="showcase-img-box">
+                                    <img src="assets/images/lipley-balm-product.png" alt="LIPLEY Lip Balm">
+                                </div>
+                                <h3 class="showcase-title">Beetroot Lip Balm</h3>
+                                <p class="showcase-tag">Nourishing Tint</p>
+                            </div>
+                            
+                            <!-- Hair Oil Card -->
+                            <div class="showcase-card">
+                                <div class="showcase-img-box">
+                                    <img src="assets/images/lipley-hair-oil.jpg" alt="LIPLEY Hair Oil">
+                                </div>
+                                <h3 class="showcase-title">Ayurvedic Hair Oil</h3>
+                                <p class="showcase-tag">Root Strength</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </section>
-                    </div>
-                </div>
-
-                <!-- Navigation Arrows -->
-                <button class="hero-arrow prev-arrow" id="hero-prev-btn" aria-label="Previous slide">
-                    <svg viewBox="0 0 24 24"><path fill="currentColor" d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-                </button>
-                <button class="hero-arrow next-arrow" id="hero-next-btn" aria-label="Next slide">
-                    <svg viewBox="0 0 24 24"><path fill="currentColor" d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
-                </button>
-
-                <!-- Navigation Dots -->
-                <div class="hero-dots">
-                    <span class="hero-dot active" data-slide="0"></span>
-                    <span class="hero-dot" data-slide="1"></span>
                 </div>
             </section>
 
@@ -164,10 +170,10 @@
                             <h2 class="section-title">The Story of LIPLEY</h2>
                             <div class="divider-gold"></div>
                             <p class="about-text">
-                                LIPLEY believes in clean beauty and premium skincare. Our brand was born out of a desire to create a minimalist yet luxury lip care ritual that is simple, clean, and highly effective.
+                                LIPLEY is a luxury Ayurvedic personal care brand dedicated to holistic wellness. We blend ancient Ayurvedic wisdom with modern skincare research to create clean, highly effective personal care rituals.
                             </p>
                             <p class="about-text">
-                                Our products are crafted using carefully selected, high-quality ingredients to provide everyday lip nourishment with elegance and simplicity. We bypass unnecessary fillers, prioritizing natural botanical emollients that synergize beautifully with your body's natural state.
+                                Every LIPLEY product is crafted with carefully selected botanicals, cold-pressed oils, and organic extracts that deeply nourish and restore your body. We bypass unnecessary chemical fillers, prioritizing pure, high-performance ingredients that align with your natural state.
                             </p>
                             <blockquote class="about-quote">
                                 "Luxury is not about having more, it's about having the purest essence of what matters most."
@@ -175,7 +181,7 @@
                         </div>
                         <div class="about-visual scroll-reveal reveal-fade-left delay-1">
                             <div class="about-logo-wrapper flex-center">
-                                <div class="about-logo-inner flex-center about-logo-rotating">
+                                <div class="about-logo-inner flex-center">
                                     <img src="assets/images/logo-lipley.png" alt="LIPLEY Icon" class="about-logo-icon" loading="lazy">
                                 </div>
                             </div>
@@ -277,7 +283,6 @@
                                     <span class="variant-value">Strawberry + Beetroot Tinted</span>
                                 </div>
                                 <p class="product-desc">Premium organic lip balm enriched with Strawberry Extract and Beetroot Oil to help moisturize lips while providing a beautiful natural tinted finish.</p>
-                                <div class="product-card-price" style="font-size: 18px; font-weight: 600; color: var(--color-primary); margin-bottom: 20px;">₹149</div>
                                 
                                 <div class="product-links" style="width: 100%;">
                                     <button class="btn btn-primary btn-small btn-full shop-now-trigger" data-product-id="strawberry-beetroot">View Product</button>
@@ -301,7 +306,6 @@
                                     <span class="variant-value">100% Ayurvedic Herbal Oil</span>
                                 </div>
                                 <p class="product-desc">Formulated with a rich blend of traditional herbs like Amla, Bhringraj, Hibiscus, Rosemary, Brahmi, Neem, Fenugreek, Aloe Vera, and pure Virgin Coconut Oil to help deeply nourish the scalp, strengthen roots, and support healthy hair growth.</p>
-                                <div class="product-card-price" style="font-size: 18px; font-weight: 600; color: var(--color-primary); margin-bottom: 20px;">₹249</div>
                                 
                                 <div class="product-links" style="width: 100%;">
                                     <button class="btn btn-primary btn-small btn-full shop-now-trigger" data-product-id="hair-oil">View Product</button>
@@ -312,6 +316,7 @@
                 </div>
             </section>
 
+            <!-- WHY CHOOSE LIPLEY (FEATURES) -->
             <!-- WHY CHOOSE LIPLEY (FEATURES) -->
             <section id="features" class="features-section">
                 <div class="container">
@@ -325,169 +330,146 @@
                             <div class="feature-icon-box">
                                 <svg viewBox="0 0 24 24" class="feature-icon"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 3v18M3 12h18M5 5l14 14M19 5L5 19"/></svg>
                             </div>
-                            <h3 class="feature-title">Natural Ingredients</h3>
-                            <p class="feature-desc">Formulated with organic botanicals for wholesome, clean lip care.</p>
+                            <h3 class="feature-title">100% Ayurvedic</h3>
+                            <p class="feature-desc">Formulated based on traditional Ayurvedic principles to align with your body's natural state.</p>
                         </div>
                         <div class="feature-card scroll-reveal reveal-fade-up delay-1">
                             <div class="feature-icon-box">
                                 <svg viewBox="0 0 24 24" class="feature-icon"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M8 12l3 3 5-5"/></svg>
                             </div>
-                            <h3 class="feature-title">Premium Quality</h3>
-                            <p class="feature-desc">Rigorous standards ensure the highest purity and cosmetic excellence.</p>
+                            <h3 class="feature-title">Natural Ingredients</h3>
+                            <p class="feature-desc">Crafted with pure organic extracts, cold-pressed oils, and zero chemical fillers.</p>
                         </div>
                         <div class="feature-card scroll-reveal reveal-fade-up delay-2">
                             <div class="feature-icon-box">
-                                <svg viewBox="0 0 24 24" class="feature-icon"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 21a9 9 0 009-9c0-5-4.5-9-9-9s-9 4-9 9a9 9 0 009 9z"/></svg>
+                                <svg viewBox="0 0 24 24" class="feature-icon"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M9 12l2 2 4-4"/></svg>
                             </div>
-                            <h3 class="feature-title">Daily Lip Care</h3>
-                            <p class="feature-desc">Gentle formulation designed for everyday protective shield and repair.</p>
+                            <h3 class="feature-title">Premium Quality</h3>
+                            <p class="feature-desc">Rigorous standards ensure the highest purity, cosmetic excellence, and stability.</p>
                         </div>
                         <div class="feature-card scroll-reveal reveal-fade-up">
-                            <div class="feature-icon-box">
-                                <svg viewBox="0 0 24 24" class="feature-icon"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                            </div>
-                            <h3 class="feature-title">Luxury Formula</h3>
-                            <p class="feature-desc">An elegant feel that absorbs seamlessly, leaving a subtle, refined sheen.</p>
-                        </div>
-                        <div class="feature-card scroll-reveal reveal-fade-up delay-1">
                             <div class="feature-icon-box">
                                 <svg viewBox="0 0 24 24" class="feature-icon"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 5C9.79 5 8 6.79 8 9c0 3.75 4 8 4 8s4-4.25 4-8c0-2.21-1.79-4-4-4z"/></svg>
                             </div>
                             <h3 class="feature-title">Cruelty Free</h3>
-                            <p class="feature-desc">Ethically produced and verified free of animal testing operations.</p>
+                            <p class="feature-desc">Ethically sourced ingredients and certified completely free from animal testing operations.</p>
+                        </div>
+                        <div class="feature-card scroll-reveal reveal-fade-up delay-1">
+                            <div class="feature-icon-box">
+                                <svg viewBox="0 0 24 24" class="feature-icon"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            </div>
+                            <h3 class="feature-title">Safe for Daily Use</h3>
+                            <p class="feature-desc">Hypoallergenic, dermatologist-tested formulas designed for regular personal care rituals.</p>
                         </div>
                         <div class="feature-card scroll-reveal reveal-fade-up delay-2">
                             <div class="feature-icon-box">
                                 <svg viewBox="0 0 24 24" class="feature-icon"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
                             </div>
-                            <h3 class="feature-title">Skin Friendly</h3>
-                            <p class="feature-desc">Hypoallergenic profile, thoroughly dermatologically tested for safety.</p>
+                            <h3 class="feature-title">Selected Botanicals</h3>
+                            <p class="feature-desc">Every single herb and active botanical is handpicked for its therapeutic properties.</p>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- BENEFITS SECTION -->
-            <section id="benefits" class="benefits-section">
+            <!-- WHY CUSTOMERS LOVE OUR PRODUCTS -->
+            <section id="why-love" class="love-section bg-light">
                 <div class="container">
                     <div class="section-header scroll-reveal reveal-fade-up">
-                        <span class="section-tagline">THE LIPLEY PROMISE</span>
-                        <h2 class="section-title">Key Nourishing Benefits</h2>
-                        <p class="section-subtitle">Real skincare results driven by carefully blended premium ingredients.</p>
+                        <span class="section-tagline">PRODUCT EXCELLENCE</span>
+                        <h2 class="section-title">Why Customers Love Our Products</h2>
+                        <p class="section-subtitle">Real results driven by high-performance Ayurvedic formulas and natural botanicals.</p>
                     </div>
 
-                    <div class="benefits-brand-container">
-                        <!-- Lip Balm Benefits Card -->
-                        <div class="benefits-product-card scroll-reveal reveal-fade-up">
-                            <h3 class="benefits-product-title">Lip Balm Key Benefits</h3>
-                            <ul class="benefits-list-premium">
+                    <div class="love-grid">
+                        <!-- Product Love Card: Lip Balm -->
+                        <div class="love-card scroll-reveal reveal-fade-right">
+                            <div class="love-card-header">
+                                <span class="love-card-tag">Ayurvedic Lip Care</span>
+                                <h3 class="love-card-title">Lipley Beetroot Lip Balm</h3>
+                            </div>
+                            <ul class="love-list">
                                 <li>
-                                    <span class="benefit-check-icon">✓</span>
+                                    <span class="love-list-check">✓</span>
                                     <div>
-                                        <strong>Intense Hydration</strong>
-                                        <p>Locks in deep moisture instantly to prevent scaling, cracking, and severe dryness.</p>
+                                        <strong>Deep Hydration</strong>
+                                        <p>Locks in moisture for 24-hour hydration to prevent dry, chapped lips.</p>
                                     </div>
                                 </li>
                                 <li>
-                                    <span class="benefit-check-icon">✓</span>
+                                    <span class="love-list-check">✓</span>
                                     <div>
-                                        <strong>Naturally Rosy Tint</strong>
-                                        <p>Enriched with natural beetroot extracts to restore a healthy, natural pink blush to your lips.</p>
+                                        <strong>Natural Beetroot Tint</strong>
+                                        <p>Provides a fresh, blushed natural pink glow without artificial pigments.</p>
                                     </div>
                                 </li>
                                 <li>
-                                    <span class="benefit-check-icon">✓</span>
+                                    <span class="love-list-check">✓</span>
                                     <div>
-                                        <strong>Smooth & Soft Texture</strong>
-                                        <p>Organic botanical waxes form an elegant, ultra-smooth protective barrier for comfortable everyday wear.</p>
+                                        <strong>Soft & Smooth Lips</strong>
+                                        <p>Restores lip elasticity and velvety smoothness immediately upon application.</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="love-list-check">✓</span>
+                                    <div>
+                                        <strong>Reduces Dryness</strong>
+                                        <p>Soothes severe chapping and roughness driven by cold-pressed oils.</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="love-list-check">✓</span>
+                                    <div>
+                                        <strong>Daily Lip Care</strong>
+                                        <p>A gentle protective barrier that is safe for constant everyday use.</p>
                                     </div>
                                 </li>
                             </ul>
                         </div>
 
-                        <!-- Hair Oil Benefits Card -->
-                        <div class="benefits-product-card scroll-reveal reveal-fade-up delay-1">
-                            <h3 class="benefits-product-title">Hair Oil Key Benefits</h3>
-                            <ul class="benefits-list-premium">
+                        <!-- Product Love Card: Hair Oil -->
+                        <div class="love-card scroll-reveal reveal-fade-left">
+                            <div class="love-card-header">
+                                <span class="love-card-tag">Ayurvedic Hair Care</span>
+                                <h3 class="love-card-title">Lipley Hair Oil</h3>
+                            </div>
+                            <ul class="love-list">
                                 <li>
-                                    <span class="benefit-check-icon">✓</span>
+                                    <span class="love-list-check">✓</span>
                                     <div>
-                                        <strong>Controls Hair Fall</strong>
-                                        <p>Bhringraj and Amla nourish root follicles to significantly reduce hair shedding and breakage.</p>
+                                        <strong>Helps Reduce Hair Fall</strong>
+                                        <p>Ayurvedic herbs minimize strand breakage and reduce excess hair fall.</p>
                                     </div>
                                 </li>
                                 <li>
-                                    <span class="benefit-check-icon">✓</span>
+                                    <span class="love-list-check">✓</span>
                                     <div>
-                                        <strong>Promotes Healthy Growth</strong>
-                                        <p>Stimulates active scalp microcirculation to accelerate new, thick hair strand growth.</p>
+                                        <strong>Strengthens Hair Roots</strong>
+                                        <p>Active botanicals nourish follicles to lock hair firmly into the scalp.</p>
                                     </div>
                                 </li>
                                 <li>
-                                    <span class="benefit-check-icon">✓</span>
+                                    <span class="love-list-check">✓</span>
                                     <div>
-                                        <strong>Eradicates Dandruff</strong>
-                                        <p>Neem and Tea tree properties eliminate flaky scalp build-up and ease dry irritation.</p>
+                                        <strong>Nourishes Scalp</strong>
+                                        <p>Deeply conditions the scalp to prevent dryness, irritation, and flaking.</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="love-list-check">✓</span>
+                                    <div>
+                                        <strong>Supports Healthy Hair Growth</strong>
+                                        <p>Promotes thicker, voluminous, and naturally vibrant shiny hair growth.</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="love-list-check">✓</span>
+                                    <div>
+                                        <strong>Helps Control Dandruff</strong>
+                                        <p>Soothes itchy scalp and helps control dandruff scaling effectively.</p>
                                     </div>
                                 </li>
                             </ul>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- INGREDIENTS SECTION -->
-            <section id="ingredients" class="ingredients-section bg-light">
-                <div class="container">
-                    <div class="section-header scroll-reveal reveal-fade-up">
-                        <span class="section-tagline">100% BOTANICALS</span>
-                        <h2 class="section-title">Pure Organic Ingredients</h2>
-                        <p class="section-subtitle">We select only the finest cold-pressed oils, organic waxes, and natural pigments.</p>
-                    </div>
-                    <div class="homepage-ingredients-grid">
-                        <div class="ingredient-card" style="background: #ffffff; border: 1px solid rgba(212, 175, 55, 0.15); border-radius: 8px; padding: 24px; text-align: center; box-shadow: var(--shadow-soft);">
-                            <h4 style="font-family: var(--font-sans); color: var(--color-primary); font-weight: 600; margin-bottom: 8px; text-transform: uppercase; font-size: 14px; letter-spacing: 0.05em;">Beetroot Oil</h4>
-                            <p style="font-size: 13.5px; line-height: 1.5; opacity: 0.85; margin: 0;">Rich in antioxidants, it provides our signature healthy, natural-looking pink flush.</p>
-                        </div>
-                        <div class="ingredient-card" style="background: #ffffff; border: 1px solid rgba(212, 175, 55, 0.15); border-radius: 8px; padding: 24px; text-align: center; box-shadow: var(--shadow-soft);">
-                            <h4 style="font-family: var(--font-sans); color: var(--color-primary); font-weight: 600; margin-bottom: 8px; text-transform: uppercase; font-size: 14px; letter-spacing: 0.05em;">Shea & Cocoa Butter</h4>
-                            <p style="font-size: 13.5px; line-height: 1.5; opacity: 0.85; margin: 0;">Deep-conditioning agents that form a silky protective moisture barrier over lips.</p>
-                        </div>
-                        <div class="ingredient-card" style="background: #ffffff; border: 1px solid rgba(212, 175, 55, 0.15); border-radius: 8px; padding: 24px; text-align: center; box-shadow: var(--shadow-soft);">
-                            <h4 style="font-family: var(--font-sans); color: var(--color-primary); font-weight: 600; margin-bottom: 8px; text-transform: uppercase; font-size: 14px; letter-spacing: 0.05em;">Sweet Almond & Jojoba</h4>
-                            <p style="font-size: 13.5px; line-height: 1.5; opacity: 0.85; margin: 0;">Cold-pressed botanical oils rich in vitamins that restore lip suppleness and elasticity.</p>
-                        </div>
-                        <div class="ingredient-card" style="background: #ffffff; border: 1px solid rgba(212, 175, 55, 0.15); border-radius: 8px; padding: 24px; text-align: center; box-shadow: var(--shadow-soft);">
-                            <h4 style="font-family: var(--font-sans); color: var(--color-primary); font-weight: 600; margin-bottom: 8px; text-transform: uppercase; font-size: 14px; letter-spacing: 0.05em;">Strawberry Extract</h4>
-                            <p style="font-size: 13.5px; line-height: 1.5; opacity: 0.85; margin: 0;">Infuses lips with natural fruit acids, leaving a fresh, subtle berry fragrance.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- HOW TO USE SECTION -->
-            <section id="how-to-use" class="how-to-use-section">
-                <div class="container">
-                    <div class="section-header scroll-reveal reveal-fade-up">
-                        <span class="section-tagline">DIRECTIONS FOR USE</span>
-                        <h2 class="section-title">How To Use</h2>
-                        <p class="section-subtitle">Follow these simple steps to lock in daily moisture and natural color.</p>
-                    </div>
-                    <div class="homepage-use-steps">
-                        <div class="step-card" style="padding: 20px;">
-                            <div class="step-num-icon" style="width: 50px; height: 50px; border-radius: 50%; background: var(--color-primary); color: var(--color-secondary); display: inline-flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; margin-bottom: 15px; border: 1px solid var(--color-accent);">01</div>
-                            <h4 style="font-family: var(--font-sans); font-size: 15px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-primary); margin-bottom: 8px;">Apply</h4>
-                            <p style="font-size: 13.5px; line-height: 1.5; opacity: 0.85; margin: 0;">Glide the balm evenly over clean, dry lips whenever needed.</p>
-                        </div>
-                        <div class="step-card" style="padding: 20px;">
-                            <div class="step-num-icon" style="width: 50px; height: 50px; border-radius: 50%; background: var(--color-primary); color: var(--color-secondary); display: inline-flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; margin-bottom: 15px; border: 1px solid var(--color-accent);">02</div>
-                            <h4 style="font-family: var(--font-sans); font-size: 15px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-primary); margin-bottom: 8px;">Layer</h4>
-                            <p style="font-size: 13.5px; line-height: 1.5; opacity: 0.85; margin: 0;">Build layers throughout the day to intensify the beetroot tint.</p>
-                        </div>
-                        <div class="step-card" style="padding: 20px;">
-                            <div class="step-num-icon" style="width: 50px; height: 50px; border-radius: 50%; background: var(--color-primary); color: var(--color-secondary); display: inline-flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; margin-bottom: 15px; border: 1px solid var(--color-accent);">03</div>
-                            <h4 style="font-family: var(--font-sans); font-size: 15px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-primary); margin-bottom: 8px;">Overnight</h4>
-                            <p style="font-size: 13.5px; line-height: 1.5; opacity: 0.85; margin: 0;">Apply a thick layer before bed as a hydrating overnight treatment.</p>
                         </div>
                     </div>
                 </div>
@@ -778,7 +760,15 @@
                             <span class="price-taxes" style="font-size: 12px; opacity: 0.7; margin-left: 10px;">(Inclusive of all taxes)</span>
                         </div>
                         
-                        <!-- Quantity (Removed for direct purchase) -->
+                        <!-- Quantity -->
+                        <div class="p-qty-selector-container" style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
+                            <span class="p-qty-label" style="font-size: 13px; font-weight: 600; text-transform: uppercase; color: var(--color-primary); letter-spacing: 0.05em;">Quantity:</span>
+                            <div class="qty-selector-modern" style="display: flex; align-items: center; border: 1px solid rgba(30, 58, 52, 0.15); border-radius: 4px; overflow: hidden; background: #ffffff; width: 120px; justify-content: space-between; height: 40px; box-sizing: border-box;">
+                                <button type="button" id="p-qty-minus" style="background: none; border: none; cursor: pointer; padding: 0; font-size: 16px; font-weight: 600; color: var(--color-primary); width: 40px; height: 100%; display: flex; align-items: center; justify-content: center; line-height: 1;">−</button>
+                                <span id="p-qty-display" style="font-size: 15px; font-weight: 600; color: var(--color-primary); min-width: 20px; text-align: center; display: inline-block;">1</span>
+                                <button type="button" id="p-qty-plus" style="background: none; border: none; cursor: pointer; padding: 0; font-size: 16px; font-weight: 600; color: var(--color-primary); width: 40px; height: 100%; display: flex; align-items: center; justify-content: center; line-height: 1;">+</button>
+                            </div>
+                        </div>
                         
                         <!-- Buy Now Button -->
                         <div class="p-purchase-block" style="margin-bottom: 35px;">
@@ -1003,42 +993,6 @@
             <h3 id="policy-modal-title" class="drawer-title" style="margin-top: 0; margin-bottom: 25px; font-size: 20px; font-weight: 600; text-transform: uppercase; color: var(--color-primary); border-bottom: 1px solid rgba(30,58,52,0.1); padding-bottom: 10px;">Policy</h3>
             <div id="policy-modal-content" style="max-height: 75vh; overflow-y: auto; font-family: var(--font-sans); font-size: 13.5px; line-height: 1.6; color: var(--color-primary); padding-right: 15px;">
                 <!-- Policy text will be populated dynamically -->
-            </div>
-        </div>
-    </div>
-
-    <!-- CROSS-SELL MODAL -->
-    <div id="cross-sell-modal" class="purchase-modal-container">
-        <div class="purchase-modal-backdrop" id="cross-sell-backdrop"></div>
-        <div class="purchase-modal-card" style="max-width: 500px; margin: 8vh auto;">
-            <div class="modal-header-actions" style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
-                <button class="purchase-modal-close-btn" id="cross-sell-close" aria-label="Close cross-sell" style="background: none; border: none; cursor: pointer; color: var(--color-primary); padding: 5px;">
-                    <svg viewBox="0 0 24 24" class="close-icon" style="width: 20px; height: 20px; display: block;"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
-                </button>
-            </div>
-            <h3 id="cross-sell-title" style="font-family: var(--font-brand); color: var(--color-primary); font-size: 20px; text-transform: uppercase; margin-bottom: 10px; text-align: center; letter-spacing: 0.05em; border-bottom: 1px solid rgba(30, 58, 52, 0.08); padding-bottom: 15px;">Complete Your Routine</h3>
-            
-            <!-- Recommended product preview -->
-            <div style="background: #ffffff; border: 1px solid rgba(212, 175, 55, 0.15); border-radius: 8px; padding: 20px; margin-bottom: 25px; text-align: left; box-shadow: var(--shadow-soft);">
-                <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 15px;">
-                    <img id="cross-sell-product-img" src="assets/images/lipley-hair-oil.jpg" alt="Recommended Product" style="width: 70px; height: 70px; object-fit: cover; border-radius: 4px; border: 1px solid rgba(30, 58, 52, 0.06);">
-                    <div>
-                        <h4 id="cross-sell-product-name" style="font-family: var(--font-sans); font-size: 15.5px; font-weight: 600; color: var(--color-primary); margin: 0 0 4px 0;">Lipley Hair Oil</h4>
-                        <span id="cross-sell-product-price" style="font-size: 14.5px; font-weight: 700; color: var(--color-accent);">₹249</span>
-                    </div>
-                </div>
-                <div style="border-top: 1px solid rgba(30, 58, 52, 0.06); padding-top: 15px;">
-                    <strong style="display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-accent); margin-bottom: 8px;">Key Advantages:</strong>
-                    <ul id="cross-sell-benefits" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--color-primary); line-height: 1.5;">
-                        <!-- Dynamic list -->
-                    </ul>
-                </div>
-            </div>
-            
-            <!-- Actions -->
-            <div style="display: flex; flex-direction: column; gap: 12px; text-align: center;">
-                <button id="btn-cross-sell-add" class="btn btn-primary btn-full" style="height: 48px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Add To Cart</button>
-                <button id="btn-cross-sell-skip" style="background: none; border: none; cursor: pointer; font-size: 12.5px; font-weight: 500; color: var(--color-primary); opacity: 0.7; padding: 8px; text-decoration: underline;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.7">Continue Checkout</button>
             </div>
         </div>
     </div>

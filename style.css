@@ -361,7 +361,7 @@ body.intro-active {
 }
 
 .header-logo-icon {
-    height: 65px; /* Enlarge to fill about 90% of left header space vertically */
+    height: 44px; /* 40-48px tall */
     width: auto;
     object-fit: contain;
     transition: var(--transition-quick);
@@ -373,7 +373,7 @@ body.intro-active {
 }
 
 .header-logo-wordmark {
-    height: 66px; /* Enlarge to fill about 90% of left header space vertically */
+    height: 45px; /* 42-50px tall, clearly readable */
     width: auto;
     object-fit: contain;
     transition: var(--transition-quick);
@@ -1246,14 +1246,24 @@ body.intro-active {
     border: 1px dashed rgba(212, 175, 55, 0.4);
     border-radius: 50%;
     background-color: var(--color-primary);
+    box-shadow: 0 0 35px rgba(212, 175, 55, 0.25);
 }
 
 .about-logo-icon {
     width: 50%;
     height: auto;
     object-fit: contain;
-    animation: float 6s ease-in-out infinite;
-    filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.2));
+    animation: rotateLogo 25s linear infinite;
+    filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.4));
+}
+
+@keyframes rotateLogo {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* --- CONTACT SECTION --- */
@@ -4054,106 +4064,216 @@ textarea.form-input-modern, textarea.form-input {
     }
 }
 
-/* --- REDESIGN COMPATIBILITY & RESPONSIVE LAYOUT OVERRIDES --- */
-
-/* Scrolled Header Logo Scaling */
-.main-header.scrolled .header-logo-icon {
-    height: 48px;
-}
-.main-header.scrolled .header-logo-wordmark {
-    height: 49px;
+/* --- MULTI-PRODUCT BRAND HERO SECTION --- */
+.hero-brand-container {
+    position: relative;
+    z-index: 3;
+    width: 100%;
 }
 
-/* Story of Lipley rotating logo animation */
-@keyframes rotateGlowLogo {
-    0% {
-        transform: rotate(0deg);
-        filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.2));
-    }
-    50% {
-        filter: drop-shadow(0 0 30px rgba(212, 175, 55, 0.45));
-    }
-    100% {
-        transform: rotate(360deg);
-        filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.2));
-    }
-}
-.about-logo-rotating {
-    animation: rotateGlowLogo 25s linear infinite;
-    transform-origin: center;
-}
-
-/* Benefits Dual Card Showcase Layout */
-.benefits-brand-container {
+.hero-brand-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-    margin-top: 40px;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 60px;
+    align-items: center;
 }
 
-.benefits-product-card {
-    background-color: #ffffff;
-    border: 1px solid rgba(212, 175, 55, 0.15);
-    border-radius: 12px;
-    padding: 40px;
-    box-shadow: var(--shadow-soft);
+.hero-brand-content {
     text-align: left;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.benefits-product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-luxury), 0 10px 20px rgba(212, 175, 55, 0.05);
-}
-
-.benefits-product-title {
-    font-family: var(--font-brand);
-    color: var(--color-primary);
-    font-size: 20px;
+.hero-brand-tag {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    color: var(--color-accent);
     text-transform: uppercase;
-    margin-bottom: 25px;
-    border-bottom: 1px solid rgba(30, 58, 52, 0.08);
-    padding-bottom: 15px;
+    display: block;
+    margin-bottom: 20px;
+}
+
+.hero-brand-title {
+    font-size: clamp(32px, 5vw, 60px);
+    font-weight: 600;
+    line-height: 1.15;
+    color: #ffffff;
+    margin-bottom: 24px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.hero-brand-subtitle {
+    font-size: clamp(14px, 1.5vw, 17px);
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 35px;
+    line-height: 1.6;
+}
+
+.hero-actions-brand {
+    display: flex;
+}
+
+.hero-brand-showcase {
+    display: flex;
+    gap: 25px;
+    justify-content: center;
+    align-items: center;
+}
+
+.showcase-card {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    border-radius: 8px;
+    padding: 20px 15px;
+    text-align: center;
+    transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.showcase-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--color-accent);
+    box-shadow: 0 15px 35px rgba(212, 175, 55, 0.15);
+}
+
+.showcase-img-box {
+    width: 100%;
+    aspect-ratio: 1/1;
+    overflow: hidden;
+    border-radius: 6px;
+    background-color: var(--color-secondary);
+    border: 1px solid rgba(212, 175, 55, 0.15);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+}
+
+.showcase-img-box img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+    transition: transform 0.4s ease;
+}
+
+.showcase-card:hover .showcase-img-box img {
+    transform: scale(1.05);
+}
+
+.showcase-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 6px;
+    text-transform: uppercase;
     letter-spacing: 0.05em;
 }
 
-.benefits-list-premium {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    padding: 0;
+.showcase-tag {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--color-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
     margin: 0;
 }
 
-.benefits-list-premium li {
-    display: flex;
-    gap: 15px;
-    align-items: flex-start;
+/* --- WHY CUSTOMERS LOVE OUR PRODUCTS --- */
+.love-section {
+    padding: var(--section-padding);
 }
 
-.benefit-check-icon {
-    color: var(--color-accent);
+.love-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 40px auto 0 auto;
+}
+
+.love-card {
+    background-color: #ffffff;
+    border: 1px solid rgba(212, 175, 55, 0.15);
+    border-radius: 8px;
+    padding: 40px;
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.love-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(30, 58, 52, 0.05);
+}
+
+.love-card-header {
+    margin-bottom: 30px;
+    border-bottom: 1px solid rgba(30, 58, 52, 0.06);
+    padding-bottom: 15px;
+}
+
+.love-card-tag {
+    font-size: 11px;
     font-weight: 700;
-    font-size: 16px;
-    background: rgba(212, 175, 55, 0.12);
+    color: var(--color-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.love-card-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--color-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    margin: 0;
+}
+
+.love-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.love-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    text-align: left;
+}
+
+.love-list-check {
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    display: inline-flex;
+    background-color: rgba(212, 175, 55, 0.12);
+    color: var(--color-accent);
+    display: flex;
     align-items: center;
     justify-content: center;
+    font-weight: bold;
     flex-shrink: 0;
+    font-size: 13px;
+    border: 1px solid rgba(212, 175, 55, 0.2);
 }
 
-.benefits-list-premium li strong {
-    display: block;
-    font-size: 14.5px;
+.love-list li strong {
+    font-size: 15px;
     color: var(--color-primary);
+    display: block;
     margin-bottom: 4px;
 }
 
-.benefits-list-premium li p {
+.love-list li p {
     font-size: 13.5px;
     line-height: 1.5;
     color: var(--color-primary);
@@ -4161,23 +4281,47 @@ textarea.form-input-modern, textarea.form-input {
     margin: 0;
 }
 
-/* Extra media overrides for redesign layouts */
-@media (max-width: 768px) {
-    .benefits-brand-container {
+/* RESPONSIVE LAYOUT FOR NEW SECTIONS */
+@media screen and (max-width: 991px) {
+    .hero-brand-grid {
+        grid-template-columns: 1fr;
+        gap: 50px;
+        text-align: center;
+    }
+    
+    .hero-brand-content {
+        text-align: center;
+    }
+    
+    .hero-actions-brand {
+        display: flex;
+        justify-content: center;
+    }
+    
+    .love-grid {
         grid-template-columns: 1fr;
         gap: 30px;
     }
     
-    .benefits-product-card {
-        padding: 24px 20px;
-    }
-    
-    .header-logo-icon {
-        height: 48px !important;
-    }
-    
-    .header-logo-wordmark {
-        height: 49px !important;
+    .love-card {
+        padding: 30px;
     }
 }
 
+@media screen and (max-width: 576px) {
+    .hero-brand-showcase {
+        gap: 15px;
+    }
+    
+    .showcase-card {
+        padding: 15px 10px;
+    }
+    
+    .showcase-title {
+        font-size: 11px;
+    }
+    
+    .showcase-tag {
+        font-size: 8px;
+    }
+}

@@ -361,7 +361,7 @@ body.intro-active {
 }
 
 .header-logo-icon {
-    height: 44px; /* 40-48px tall */
+    height: 65px; /* Enlarge to fill about 90% of left header space vertically */
     width: auto;
     object-fit: contain;
     transition: var(--transition-quick);
@@ -373,7 +373,7 @@ body.intro-active {
 }
 
 .header-logo-wordmark {
-    height: 45px; /* 42-50px tall, clearly readable */
+    height: 66px; /* Enlarge to fill about 90% of left header space vertically */
     width: auto;
     object-fit: contain;
     transition: var(--transition-quick);
@@ -4051,6 +4051,133 @@ textarea.form-input-modern, textarea.form-input {
     
     .p-action-buttons {
         grid-template-columns: 1fr;
+    }
+}
+
+/* --- REDESIGN COMPATIBILITY & RESPONSIVE LAYOUT OVERRIDES --- */
+
+/* Scrolled Header Logo Scaling */
+.main-header.scrolled .header-logo-icon {
+    height: 48px;
+}
+.main-header.scrolled .header-logo-wordmark {
+    height: 49px;
+}
+
+/* Story of Lipley rotating logo animation */
+@keyframes rotateGlowLogo {
+    0% {
+        transform: rotate(0deg);
+        filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.2));
+    }
+    50% {
+        filter: drop-shadow(0 0 30px rgba(212, 175, 55, 0.45));
+    }
+    100% {
+        transform: rotate(360deg);
+        filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.2));
+    }
+}
+.about-logo-rotating {
+    animation: rotateGlowLogo 25s linear infinite;
+    transform-origin: center;
+}
+
+/* Benefits Dual Card Showcase Layout */
+.benefits-brand-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 40px;
+}
+
+.benefits-product-card {
+    background-color: #ffffff;
+    border: 1px solid rgba(212, 175, 55, 0.15);
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: var(--shadow-soft);
+    text-align: left;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.benefits-product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-luxury), 0 10px 20px rgba(212, 175, 55, 0.05);
+}
+
+.benefits-product-title {
+    font-family: var(--font-brand);
+    color: var(--color-primary);
+    font-size: 20px;
+    text-transform: uppercase;
+    margin-bottom: 25px;
+    border-bottom: 1px solid rgba(30, 58, 52, 0.08);
+    padding-bottom: 15px;
+    letter-spacing: 0.05em;
+}
+
+.benefits-list-premium {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 0;
+    margin: 0;
+}
+
+.benefits-list-premium li {
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+}
+
+.benefit-check-icon {
+    color: var(--color-accent);
+    font-weight: 700;
+    font-size: 16px;
+    background: rgba(212, 175, 55, 0.12);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.benefits-list-premium li strong {
+    display: block;
+    font-size: 14.5px;
+    color: var(--color-primary);
+    margin-bottom: 4px;
+}
+
+.benefits-list-premium li p {
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--color-primary);
+    opacity: 0.85;
+    margin: 0;
+}
+
+/* Extra media overrides for redesign layouts */
+@media (max-width: 768px) {
+    .benefits-brand-container {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .benefits-product-card {
+        padding: 24px 20px;
+    }
+    
+    .header-logo-icon {
+        height: 48px !important;
+    }
+    
+    .header-logo-wordmark {
+        height: 49px !important;
     }
 }
 

@@ -170,6 +170,84 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- 3.1 HERO SLIDER CONTROLLER ---
+    const slides = document.querySelectorAll('.hero-slide');
+    const dots = document.querySelectorAll('.hero-dot');
+    const prevBtn = document.getElementById('hero-prev-btn');
+    const nextBtn = document.getElementById('hero-next-btn');
+    let currentSlide = 0;
+    let slideInterval = null;
+
+    function showSlide(index) {
+        if (slides.length === 0) return;
+        
+        if (index >= slides.length) index = 0;
+        if (index < 0) index = slides.length - 1;
+        
+        currentSlide = index;
+        
+        slides.forEach((slide, i) => {
+            if (i === currentSlide) {
+                slide.classList.add('active');
+            } else {
+                slide.classList.remove('active');
+            }
+        });
+        
+        dots.forEach((dot, i) => {
+            if (i === currentSlide) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+    }
+
+    function nextSlide() {
+        showSlide(currentSlide + 1);
+    }
+
+    function prevSlide() {
+        showSlide(currentSlide - 1);
+    }
+
+    function startSlideShow() {
+        stopSlideShow();
+        slideInterval = setInterval(nextSlide, 5500); // Switch every 5.5s
+    }
+
+    function stopSlideShow() {
+        if (slideInterval) {
+            clearInterval(slideInterval);
+        }
+    }
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            prevSlide();
+            startSlideShow();
+        });
+    }
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            nextSlide();
+            startSlideShow();
+        });
+    }
+
+    dots.forEach((dot, i) => {
+        dot.addEventListener('click', () => {
+            showSlide(i);
+            startSlideShow();
+        });
+    });
+
+    if (slides.length > 0) {
+        startSlideShow();
+    }
+
+
     // --- 4. SCROLL REVEAL (FADE / SLIDE ENTRANCE) ---
     const revealElements = document.querySelectorAll('.scroll-reveal');
     

@@ -1146,7 +1146,7 @@
                         
                         <div class="form-group">
                             <label for="order-state" class="form-label">State</label>
-                            <input type="text" id="order-state" class="form-input" placeholder="State" required>
+                            <input type="text" id="order-state" class="form-input" placeholder="State" required readonly style="background-color: #f9f9f9; cursor: not-allowed;">
                         </div>
                     </div>
                     
@@ -1188,6 +1188,14 @@
                     </div>
                     
                     <div class="summary-bill-details">
+                        <div class="bill-row" id="bill-pin-row" style="display: none;">
+                            <span>PIN Code</span>
+                            <span id="bill-pin-value">-</span>
+                        </div>
+                        <div class="bill-row" id="bill-state-row" style="display: none;">
+                            <span>Destination State</span>
+                            <span id="bill-state-value">-</span>
+                        </div>
                         <div class="bill-row">
                             <span>Product Price</span>
                             <span id="bill-product-price">₹149</span>
@@ -1195,6 +1203,10 @@
                         <div class="bill-row">
                             <span>Delivery Charge</span>
                             <span id="bill-delivery-charge">₹30</span>
+                        </div>
+                        <div class="bill-row" id="bill-delivery-status-row" style="display: none;">
+                            <span>Delivery Status</span>
+                            <span id="bill-delivery-status" style="color: #4CAF50; font-weight: 500;">-</span>
                         </div>
                         <div class="bill-row" id="bill-offer-row" style="display: none;">
                             <span>Offer</span>

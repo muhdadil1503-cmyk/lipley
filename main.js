@@ -970,6 +970,35 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.classList.add('intro-active');
             window.pushNavigationState('popup', 'purchase-options-modal');
         }
+        
+        // Reset PIN and State fields
+        const orderPinInput = document.getElementById('order-pin');
+        const orderStateInput = document.getElementById('order-state');
+        const pincodeFeedback = document.getElementById('pincode-feedback');
+        
+        if (orderPinInput) {
+            orderPinInput.value = "";
+        }
+        if (orderStateInput) {
+            orderStateInput.value = "";
+        }
+        if (pincodeFeedback) {
+            pincodeFeedback.style.display = 'none';
+        }
+        
+        activeState = "";
+        isPinValid = false;
+        
+        const billPinRow = document.getElementById('bill-pin-row');
+        const billStateRow = document.getElementById('bill-state-row');
+        const billDeliveryStatusRow = document.getElementById('bill-delivery-status-row');
+        if (billPinRow) billPinRow.style.display = 'none';
+        if (billStateRow) billStateRow.style.display = 'none';
+        if (billDeliveryStatusRow) billDeliveryStatusRow.style.display = 'none';
+        
+        if (typeof calculateOrder === 'function') {
+            calculateOrder();
+        }
     };
 
     window.closePurchaseOptions = function() {
@@ -1623,12 +1652,169 @@ document.addEventListener('DOMContentLoaded', () => {
     const couponFeedback = document.getElementById('coupon-feedback');
     
     const purchaseOrderForm = document.getElementById('purchase-order-form');
+    const orderPinInput = document.getElementById('order-pin');
+    const orderStateInput = document.getElementById('order-state');
+    
+    // Create/get pincode feedback element
+    let pincodeFeedback = document.getElementById('pincode-feedback');
+    if (!pincodeFeedback && orderPinInput) {
+        pincodeFeedback = document.createElement('div');
+        pincodeFeedback.id = 'pincode-feedback';
+        pincodeFeedback.className = 'promo-feedback-msg error';
+        pincodeFeedback.style.cssText = 'display: none; color: #f44336; font-size: 11.5px; font-weight: 500; margin-top: 6px;';
+        orderPinInput.parentNode.appendChild(pincodeFeedback);
+    }
     
     currentQty = 1;
     let couponApplied = false;
     let validCouponCode = 'LIPLEY001';
     let discountPercent = 0.15; // 15% Discount
-    
+    let isPinValid = false;
+    let activeState = "";
+
+    function getStateFromPin(pin) {
+        if (!/^\d{6}$/.test(pin)) {
+            return { valid: false, error: "Please enter a valid 6-digit PIN code." };
+        }
+        
+        const p = parseInt(pin);
+        const p2 = parseInt(pin.substring(0, 2));
+        const p3 = parseInt(pin.substring(0, 3));
+        
+        let state = "";
+        
+        if (p3 === 194) {
+            state = "Ladakh";
+        } else if (p3 === 737) {
+            state = "Sikkim";
+        } else if (p3 === 744) {
+            state = "Andaman & Nicobar Islands";
+        } else if (p3 === 403) {
+            state = "Goa";
+        } else if (p3 >= 682 && p3 <= 682 && p >= 682551 && p <= 682559) {
+            state = "Lakshadweep";
+        } else if (p3 === 605 || p3 === 609) {
+            state = "Puducherry";
+        } else if (p3 === 790 || p3 === 791 || p3 === 792) {
+            state = "Arunachal Pradesh";
+        } else if (p3 === 793 || p3 === 794) {
+            state = "Meghalaya";
+        } else if (p3 === 795) {
+            state = "Manipur";
+        } else if (p3 === 796) {
+            state = "Mizoram";
+        } else if (p3 === 797) {
+            state = "Nagaland";
+        } else if (p3 === 798) {
+            state = "Tripura";
+        } else if (p3 >= 246 && p3 <= 249) {
+            state = "Uttarakhand";
+        } else if (p3 === 263) {
+            state = "Uttarakhand";
+        } else if (p3 >= 814 && p3 <= 816) {
+            state = "Jharkhand";
+        } else if (p3 >= 825 && p3 <= 829) {
+            state = "Jharkhand";
+        } else if (p3 >= 831 && p3 <= 835) {
+            state = "Jharkhand";
+        } else {
+            switch(p2) {
+                case 11: state = "Delhi"; break;
+                case 12: case 13: state = "Haryana"; break;
+                case 14: case 15: case 16: state = (p2 === 16) ? "Chandigarh" : "Punjab"; break;
+                case 17: state = "Himachal Pradesh"; break;
+                case 18: case 19: state = "Jammu & Kashmir"; break;
+                case 20: case 21: case 22: case 23: case 24: case 25: case 26: case 27: case 28: state = "Uttar Pradesh"; break;
+                case 30: case 31: case 32: case 33: case 34: state = "Rajasthan"; break;
+                case 35: case 36: case 37: case 38: case 39: state = "Gujarat"; break;
+                case 40: case 41: case 42: case 43: case 44: state = "Maharashtra"; break;
+                case 45: case 46: case 47: case 48: state = "Madhya Pradesh"; break;
+                case 49: state = "Chhattisgarh"; break;
+                case 50: state = "Telangana"; break;
+                case 51: case 52: case 53: state = "Andhra Pradesh"; break;
+                case 56: case 57: case 58: case 59: state = "Karnataka"; break;
+                case 60: case 61: case 62: case 63: case 64: state = "Tamil Nadu"; break;
+                case 67: case 68: case 69: state = "Kerala"; break;
+                case 70: case 71: case 72: case 73: case 74: state = "West Bengal"; break;
+                case 75: case 76: case 77: state = "Odisha"; break;
+                case 78: state = "Assam"; break;
+                case 80: case 81: case 82: case 83: case 84: case 85: state = "Bihar"; break;
+                default:
+                    return { valid: false, error: "PIN code is not serviceable or invalid." };
+            }
+        }
+        
+        return { valid: true, state: state };
+    }
+
+    function getShippingRate(state, productId, qty) {
+        if (!state) {
+            if (productId === 'hair-oil') {
+                return { charge: 0, text: 'Free Delivery' };
+            } else {
+                return { charge: qty >= 2 ? 0 : 30, text: qty >= 2 ? 'Free Delivery' : '' };
+            }
+        }
+        
+        const isKerala = state.toLowerCase() === 'kerala';
+        let charge = 0;
+        let text = '';
+        
+        if (isKerala) {
+            if (productId === 'hair-oil') {
+                charge = 0;
+                text = 'Free Delivery';
+            } else {
+                if (qty >= 2) {
+                    charge = 0;
+                    text = 'Free Delivery';
+                } else {
+                    charge = 30;
+                    text = '';
+                }
+            }
+        } else {
+            if (qty >= 4) {
+                charge = 0;
+                text = 'Free Delivery';
+            } else {
+                charge = 60;
+                text = '';
+            }
+        }
+        
+        return { charge, text };
+    }
+
+    if (orderPinInput) {
+        orderPinInput.addEventListener('input', () => {
+            const pinVal = orderPinInput.value.trim();
+            if (pincodeFeedback) pincodeFeedback.style.display = 'none';
+            isPinValid = false;
+            activeState = "";
+            if (orderStateInput) orderStateInput.value = "";
+            
+            if (pinVal.length === 6) {
+                const res = getStateFromPin(pinVal);
+                if (res.valid) {
+                    isPinValid = true;
+                    activeState = res.state;
+                    if (orderStateInput) orderStateInput.value = res.state;
+                    if (pincodeFeedback) pincodeFeedback.style.display = 'none';
+                } else {
+                    if (pincodeFeedback) {
+                        pincodeFeedback.style.display = 'block';
+                        pincodeFeedback.textContent = res.error;
+                    }
+                }
+            } else if (pinVal.length > 6) {
+                orderPinInput.value = pinVal.substring(0, 6);
+            }
+            
+            calculateOrder();
+        });
+    }
+
     function calculateOrder() {
         const product = window.products[selectedProductId] || { price: 149 };
         const itemPrice = product.price;
@@ -1637,15 +1823,47 @@ document.addEventListener('DOMContentLoaded', () => {
         let offerText = '';
         let discountAmount = 0;
         
-        // Delivery charges logic
-        if (selectedProductId === 'hair-oil') {
-            deliveryCharge = 0;
-            offerText = `Free Delivery`;
-        } else if (currentQty >= 2) {
-            deliveryCharge = 0; // FREE Delivery for 2+ Lip Balms
-            offerText = `Free Delivery`;
-        }
+        const pinVal = orderPinInput ? orderPinInput.value.trim() : "";
         
+        const billPinRow = document.getElementById('bill-pin-row');
+        const billPinValue = document.getElementById('bill-pin-value');
+        const billStateRow = document.getElementById('bill-state-row');
+        const billStateValue = document.getElementById('bill-state-value');
+        const billDeliveryStatusRow = document.getElementById('bill-delivery-status-row');
+        const billDeliveryStatus = document.getElementById('bill-delivery-status');
+        
+        if (isPinValid && activeState) {
+            const rate = getShippingRate(activeState, selectedProductId, currentQty);
+            deliveryCharge = rate.charge;
+            offerText = rate.text;
+            
+            if (billPinRow && billPinValue) {
+                billPinValue.textContent = pinVal;
+                billPinRow.style.display = 'flex';
+            }
+            if (billStateRow && billStateValue) {
+                billStateValue.textContent = activeState;
+                billStateRow.style.display = 'flex';
+            }
+            if (billDeliveryStatusRow && billDeliveryStatus) {
+                if (deliveryCharge === 0) {
+                    billDeliveryStatus.textContent = "FREE Delivery Active!";
+                    billDeliveryStatus.style.color = '#4CAF50';
+                } else {
+                    const needed = (selectedProductId === 'hair-oil') ? 1 : (activeState.toLowerCase() === 'kerala' ? 2 : 4);
+                    const diff = needed - currentQty;
+                    billDeliveryStatus.textContent = `Add ${diff} more for FREE Delivery`;
+                    billDeliveryStatus.style.color = 'var(--color-accent)';
+                }
+                billDeliveryStatusRow.style.display = 'flex';
+            }
+        } else {
+            if (billPinRow) billPinRow.style.display = 'none';
+            if (billStateRow) billStateRow.style.display = 'none';
+            if (billDeliveryStatusRow) billDeliveryStatusRow.style.display = 'none';
+            deliveryCharge = null;
+        }
+
         // Coupon code requirement validation (qty >= 2 for all products)
         if (currentQty < 2) {
             if (couponApplied) {
@@ -1666,16 +1884,24 @@ document.addEventListener('DOMContentLoaded', () => {
             discountAmount = Math.round(productTotal * discountPercent);
         }
         
-        let grandTotal = productTotal + deliveryCharge - discountAmount;
+        let grandTotal = productTotal + (deliveryCharge || 0) - discountAmount;
         
         // Update display elements
         if (billProductPrice) billProductPrice.textContent = `₹${productTotal}`;
+        
         if (billDeliveryCharge) {
-            billDeliveryCharge.textContent = deliveryCharge === 0 ? 'FREE' : `₹${deliveryCharge}`;
-            if (deliveryCharge === 0) {
-                billDeliveryCharge.classList.add('free-shipping-tag');
-            } else {
+            if (deliveryCharge === null) {
+                billDeliveryCharge.textContent = "Enter PIN Code";
+                billDeliveryCharge.style.color = 'var(--color-accent)';
                 billDeliveryCharge.classList.remove('free-shipping-tag');
+            } else {
+                billDeliveryCharge.textContent = deliveryCharge === 0 ? 'FREE' : `₹${deliveryCharge}`;
+                billDeliveryCharge.style.color = '';
+                if (deliveryCharge === 0) {
+                    billDeliveryCharge.classList.add('free-shipping-tag');
+                } else {
+                    billDeliveryCharge.classList.remove('free-shipping-tag');
+                }
             }
         }
         
@@ -1769,22 +1995,33 @@ document.addEventListener('DOMContentLoaded', () => {
             const house = document.getElementById('order-house').value.trim();
             const address = document.getElementById('order-address').value.trim();
             const district = document.getElementById('order-district').value.trim();
-            const state = document.getElementById('order-state').value.trim();
             const pin = document.getElementById('order-pin').value.trim();
+            
+            // Force PIN Code validation before submit
+            const pinRes = getStateFromPin(pin);
+            if (!pinRes.valid) {
+                alert("Please enter a valid 6-digit Indian PIN code before placing your order.");
+                const pinFeedbackEl = document.getElementById('pincode-feedback');
+                if (pinFeedbackEl) {
+                    pinFeedbackEl.style.display = 'block';
+                    pinFeedbackEl.textContent = pinRes.error;
+                }
+                return;
+            }
+            
+            const state = pinRes.state;
+            const rate = getShippingRate(state, selectedProductId, currentQty);
+            const deliveryCharge = rate.charge;
             
             const product = window.products[selectedProductId] || { name: "LIPLEY Strawberry Beetroot Tinted Lip Balm", price: 149 };
             const productName = product.name;
             const itemPrice = product.price;
             const productTotal = currentQty * itemPrice;
-            const deliveryCharge = (selectedProductId === 'hair-oil' || currentQty >= 2) ? 0 : 30;
             const discountAmount = couponApplied ? Math.round(productTotal * discountPercent) : 0;
             const grandTotal = productTotal + deliveryCharge - discountAmount;
             
             // Offer details
-            let offerString = '';
-            if (selectedProductId === 'hair-oil' || currentQty >= 2) {
-                offerString = `Free Delivery`;
-            }
+            let offerString = rate.text;
             
             // Format WhatsApp Message
             let message = `Hello LIPLEY,\n\n`;

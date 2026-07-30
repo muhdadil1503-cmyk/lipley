@@ -361,7 +361,7 @@ body.intro-active {
 }
 
 .header-logo-icon {
-    height: 44px; /* 40-48px tall */
+    height: 75px; /* 70% larger */
     width: auto;
     object-fit: contain;
     transition: var(--transition-quick);
@@ -373,7 +373,7 @@ body.intro-active {
 }
 
 .header-logo-wordmark {
-    height: 45px; /* 42-50px tall, clearly readable */
+    height: 77px; /* 70% larger */
     width: auto;
     object-fit: contain;
     transition: var(--transition-quick);
@@ -1882,33 +1882,70 @@ textarea.form-input-modern, textarea.form-input {
     
     /* Header & Navigation changes */
     .main-header {
-        height: 70px;
+        height: auto !important;
+        padding: 12px 0;
     }
     
     .main-header.scrolled {
-        height: 65px;
+        height: auto !important;
+        padding: 8px 0;
+    }
+    
+    .header-container {
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 8px;
+    }
+    
+    .logo-link {
+        order: 1;
     }
     
     .header-logo-icon {
-        height: 35px;
+        height: 52px; /* 50% larger on mobile */
     }
     
     .header-logo-wordmark {
-        height: 36px;
+        height: 54px; /* 50% larger on mobile */
     }
     
-    .desktop-nav,
     .header-actions {
-        display: none;
+        display: flex !important;
+        order: 2;
+        gap: 15px;
+    }
+    
+    .desktop-nav {
+        display: flex !important;
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        margin-top: 10px;
+        border-top: 1px solid rgba(30, 58, 52, 0.08);
+        padding-top: 10px;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+    
+    .nav-link {
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        padding: 4px 0;
     }
     
     .menu-toggle {
-        display: flex;
+        display: none !important;
     }
     
     /* Hero Changes */
+    .page-view {
+        padding-top: 110px !important;
+    }
+    #view-home.page-view {
+        padding-top: 0 !important;
+    }
     .hero-section {
-        margin-top: 70px;
+        margin-top: 110px;
         aspect-ratio: auto;
         min-height: 320px;
     }
@@ -2007,6 +2044,12 @@ textarea.form-input-modern, textarea.form-input {
 /* SPA Dynamic View Transitions */
 .page-view {
     display: none;
+    padding-top: 90px; /* Clear fixed header */
+    box-sizing: border-box;
+}
+
+#view-home.page-view {
+    padding-top: 0;
 }
 
 .page-view.active {

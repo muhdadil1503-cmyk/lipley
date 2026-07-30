@@ -557,14 +557,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const viewElements = [viewHome, viewProduct, viewShop];
 
     // --- 6.1 SPA ROUTING HISTORY AND BACK NAVIGATION ---
-    const navigationHistory = [];
+    let isNavigationInProgress = false; // prevents popstate loops
+    let historyEntryCount = 0;
 
     window.pushNavigationState = function(type, id, extra = null) {
-        const current = navigationHistory[navigationHistory.length - 1];
-        if (current && current.type === type && current.id === id && current.extra === extra) {
-            return;
+        if (isNavigationInProgress) return;
+        
+        historyEntryCount++;
+        const stateObj = {
+            type: type,
+            id: id,
+            extra: extra,
+            productId: selectedProductId
+        };
+        
+        let hash = 'home';
+        if (type === 'view') {
+            hash = id.replace('view-', '');
+        } else if (type === 'popup') {
+            hash = id;
+        } else if (type === 'policy') {
+            hash = `policy-${extra.toLowerCase().replace(/\s+/g, '-')}`;
         }
-        navigationHistory.push({ type, id, extra });
+        
+        history.pushState(stateObj, '', '#' + hash);
     };
 
     function showView(viewId, pushState = true, scrollTop = true) {
@@ -584,41 +600,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Initialize state
-    if (viewHome && viewHome.classList.contains('active')) {
-        window.pushNavigationState('view', 'view-home');
-    } else if (viewProduct && viewProduct.classList.contains('active')) {
-        window.pushNavigationState('view', 'view-product');
-    }
-
     window.goBack = function() {
-        if (navigationHistory.length <= 1) {
-            if (viewProduct && viewProduct.classList.contains('active')) {
-                showView('view-home');
-            }
-            return;
-        }
-
-        const currentState = navigationHistory.pop();
-        
-        if (currentState.type === 'popup' || currentState.type === 'policy') {
-            closePopupById(currentState.id);
-        }
-
-        const prevState = navigationHistory[navigationHistory.length - 1];
-        if (prevState) {
-            if (prevState.type === 'view') {
-                showView(prevState.id, false);
-                if (prevState.id === 'view-home') {
-                    updateNavActive('nav-home-link');
-                } else if (prevState.id === 'view-product') {
-                    updateNavActive('nav-shop-link');
-                }
-            } else if (prevState.type === 'popup') {
-                openPopupById(prevState.id, false);
-            } else if (prevState.type === 'policy') {
-                openPolicyById(prevState.id, prevState.extra, false);
-            }
+        if (historyEntryCount <= 0) {
+            // Safe fallback: redirect to Home if no internal app history exists
+            showView('view-home');
+        } else {
+            historyEntryCount--;
+            history.back();
         }
     };
 
@@ -671,6 +659,87 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function closeAllPopups() {
+        const popups = ['purchase-options-modal', 'wishlist-drawer', 'cart-drawer', 'policy-modal'];
+        popups.forEach(id => {
+            closePopupById(id);
+        });
+    }
+
+    // Set up native popstate pop handling
+    window.addEventListener('popstate', (e) => {
+        const state = e.state;
+        
+        // Close all active drawers and overlays first
+        closeAllPopups();
+        
+        if (!state) {
+            // Standard fallback to home
+            isNavigationInProgress = true;
+            showView('view-home', false);
+            updateNavActive('nav-home-link');
+            isNavigationInProgress = false;
+            return;
+        }
+        
+        isNavigationInProgress = true;
+        
+        if (state.type === 'view') {
+            if (state.productId && state.productId !== selectedProductId) {
+                if (typeof window.loadProductDetails === 'function') {
+                    window.loadProductDetails(state.productId);
+                }
+            }
+            showView(state.id, false);
+            if (state.id === 'view-home') {
+                updateNavActive('nav-home-link');
+            } else if (state.id === 'view-shop') {
+                updateNavActive('nav-shop-link');
+            } else if (state.id === 'view-product') {
+                updateNavActive('nav-shop-link');
+            }
+        } else if (state.type === 'popup') {
+            openPopupById(state.id, false);
+        } else if (state.type === 'policy') {
+            openPolicyById(state.id, state.extra, false);
+        }
+        
+        isNavigationInProgress = false;
+    });
+
+    // Handle deep links and initial load routing
+    function initRouter() {
+        const hash = window.location.hash || '#home';
+        
+        // Push initial Home state as base of history stack
+        history.replaceState({ type: 'view', id: 'view-home', productId: selectedProductId }, '', '#home');
+        historyEntryCount = 0;
+        
+        if (hash === '#home' || hash === '#') {
+            showView('view-home', false);
+            updateNavActive('nav-home-link');
+        } else if (hash === '#shop') {
+            showView('view-shop', false);
+            updateNavActive('nav-shop-link');
+            window.pushNavigationState('view', 'view-shop');
+        } else if (hash === '#product') {
+            showView('view-product', false);
+            updateNavActive('nav-shop-link');
+            window.pushNavigationState('view', 'view-product');
+        } else if (hash === '#cart-drawer' || hash === '#cart') {
+            showView('view-home', false);
+            openPopupById('cart-drawer', true);
+        } else if (hash === '#purchase-options-modal' || hash === '#checkout') {
+            showView('view-home', false);
+            openPopupById('purchase-options-modal', true);
+        } else {
+            showView('view-home', false);
+        }
+    }
+    
+    // Run initialization
+    initRouter();
+
     // Connect page routing triggers
     const shopNowTriggers = document.querySelectorAll('.shop-now-trigger');
     shopNowTriggers.forEach(btn => {
@@ -690,19 +759,28 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
             const productId = btn.getAttribute('data-product-id');
-            if (typeof window.loadProductDetails === 'function') {
-                window.loadProductDetails(productId);
+            
+            // Add to cart if not already present
+            const inCart = cart.some(item => item.productId === productId);
+            if (!inCart) {
+                addToCart(productId, 1, false);
             }
-            currentQty = 1;
-            const checkoutQtyDisplay = document.getElementById('checkout-qty-display');
-            if (checkoutQtyDisplay) {
-                checkoutQtyDisplay.textContent = currentQty;
-            }
-            isCartCheckout = false; // Buy Now mode
+            
+            isCartCheckout = true; // Cart checkout mode
             if (typeof calculateOrder === 'function') {
                 calculateOrder();
             }
             window.openPurchaseOptions();
+        });
+    });
+
+    const shopAddTriggers = document.querySelectorAll('.shop-add-trigger');
+    shopAddTriggers.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const productId = btn.getAttribute('data-product-id');
+            addToCart(productId, 1, false); // Add 1 unit, do NOT open drawer
+            showToast("Product added to cart.");
         });
     });
 
@@ -794,7 +872,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function addToCart(productId, quantity = 1) {
+    function addToCart(productId, quantity = 1, openDrawer = true) {
         const existing = cart.find(item => item.productId === productId);
         if (existing) {
             existing.quantity += quantity;
@@ -803,7 +881,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         saveCart();
         renderCart();
-        openCartDrawer();
+        if (openDrawer) {
+            openCartDrawer();
+        }
     }
 
     function removeFromCart(productId) {
@@ -901,8 +981,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function startCartCheckout() {
+        if (!cart || cart.length === 0) {
+            showToast("Your cart is empty.", "error");
+            return;
+        }
         isCartCheckout = true;
-        closeCartDrawer();
+        closePopupById('cart-drawer');
         window.openPurchaseOptions();
     }
 
@@ -921,8 +1005,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     window.closeCartDrawer = function() {
-        const current = navigationHistory[navigationHistory.length - 1];
-        if (current && current.type === 'popup' && current.id === 'cart-drawer') {
+        const state = history.state;
+        if (state && state.type === 'popup' && state.id === 'cart-drawer') {
             window.goBack();
         } else {
             if (cartDrawer) {
@@ -949,7 +1033,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (pAddToCartBtn) {
         pAddToCartBtn.addEventListener('click', () => {
             const productId = pAddToCartBtn.getAttribute('data-product-id') || 'strawberry-beetroot';
-            addToCart(productId, productPageQty);
+            addToCart(productId, 1, false);
+            showToast("Product added to cart.");
         });
     }
 
@@ -975,8 +1060,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.closeWishlist = function() {
-        const current = navigationHistory[navigationHistory.length - 1];
-        if (current && current.type === 'popup' && current.id === 'wishlist-drawer') {
+        const state = history.state;
+        if (state && state.type === 'popup' && state.id === 'wishlist-drawer') {
             window.goBack();
         } else {
             if (wishlistDrawer) {
@@ -1214,8 +1299,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.closePurchaseOptions = function() {
-        const current = navigationHistory[navigationHistory.length - 1];
-        if (current && current.type === 'popup' && current.id === 'purchase-options-modal') {
+        const state = history.state;
+        if (state && state.type === 'popup' && state.id === 'purchase-options-modal') {
             window.goBack();
         } else {
             if (purchaseModal) {
@@ -1284,17 +1369,14 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 const productId = btn.getAttribute('data-product-id') || 'strawberry-beetroot';
-                if (typeof window.loadProductDetails === 'function') {
-                    window.loadProductDetails(productId);
+                
+                // Add to cart if not already present
+                const inCart = cart.some(item => item.productId === productId);
+                if (!inCart) {
+                    addToCart(productId, 1, false);
                 }
                 
-                // Sync quantity from product page to checkout modal
-                currentQty = productPageQty;
-                const checkoutQtyDisplay = document.getElementById('checkout-qty-display');
-                if (checkoutQtyDisplay) {
-                    checkoutQtyDisplay.textContent = currentQty;
-                }
-                isCartCheckout = false; // Buy Now mode
+                isCartCheckout = true; // Cart checkout mode
                 if (typeof calculateOrder === 'function') {
                     calculateOrder();
                 }
@@ -1878,13 +1960,69 @@ document.addEventListener('DOMContentLoaded', () => {
         orderPinInput.parentNode.appendChild(pincodeFeedback);
     }
     
-    currentQty = 1;
+    // Configurable Coupon Codes database
+    const couponDatabase = {
+        'LIPLEY001': { code: 'LIPLEY001', discountPercent: 0.15, status: 'active', minQty: 2 },
+        'EXPIRED15': { code: 'EXPIRED15', discountPercent: 0.15, status: 'expired', minQty: 2 },
+        'USED15': { code: 'USED15', discountPercent: 0.15, status: 'used', minQty: 2 }
+    };
+    
+    let appliedCoupon = null; // Stores the currently applied coupon object, or null
     let couponApplied = false;
     let validCouponCode = 'LIPLEY001';
     let discountPercent = 0.15; // 15% Discount
     let isPinValid = false;
     let activeState = "";
     let isCartCheckout = false;
+    currentQty = 1;
+
+    function validateCouponState(couponCode) {
+        const code = couponCode.trim().toUpperCase();
+        if (!code) {
+            return { valid: false, reason: 'Please enter a coupon code.', status: 'invalid' };
+        }
+        
+        // Calculate current total items quantity in cart/checkout
+        const totalItemsQty = isCartCheckout ? cart.reduce((sum, item) => sum + item.quantity, 0) : currentQty;
+        
+        const coupon = couponDatabase[code];
+        if (!coupon) {
+            return { valid: false, reason: 'Invalid coupon code. (Discount not applied)', status: 'invalid' };
+        }
+        
+        if (coupon.status === 'expired') {
+            return { valid: false, reason: 'This coupon code has expired.', status: 'expired' };
+        }
+        
+        if (coupon.status === 'used') {
+            return { valid: false, reason: 'This coupon code has already been used.', status: 'used' };
+        }
+        
+        if (totalItemsQty < coupon.minQty) {
+            return { valid: false, reason: 'Coupon is available only for orders of 2 or more products.', status: 'min_qty' };
+        }
+        
+        return { valid: true, coupon: coupon };
+    }
+
+    function autoRevalidateAppliedCoupon() {
+        if (!appliedCoupon) return;
+        
+        const res = validateCouponState(appliedCoupon.code);
+        if (!res.valid) {
+            // Remove the coupon discount since conditions are no longer met
+            appliedCoupon = null;
+            couponApplied = false;
+            if (couponFeedback) {
+                couponFeedback.style.display = 'block';
+                couponFeedback.textContent = res.reason;
+                couponFeedback.className = 'promo-feedback-msg error';
+            }
+            if (couponCodeInput) {
+                couponCodeInput.value = '';
+            }
+        }
+    }
 
     function getStateFromPin(pin) {
         if (!/^\d{6}$/.test(pin)) {
@@ -1961,80 +2099,83 @@ document.addEventListener('DOMContentLoaded', () => {
         return { valid: true, state: state };
     }
 
-    function getShippingRate(state, productId, qty) {
-        const product = window.products[productId] || { price: 149 };
-        const subtotal = product.price * qty;
+    // Centralized Configurable Delivery Rules
+    window.shippingConfig = {
+        freeDeliveryMinAmountKerala: 700, // Configurable Free Delivery Minimum Amount for Kerala
+        freeDeliveryMinAmountRestOfIndia: 700, // Configurable Free Delivery Minimum Amount for Rest of India
         
+        rules: {
+            kerala: {
+                standardCharge: 30,
+                // Rules for FREE delivery (satisfied if ANY condition is met)
+                freeConditions: [
+                    // Rule 1: Lip Balm quantity >= 2
+                    { type: 'productQty', productId: 'strawberry-beetroot', minQty: 2 },
+                    // Rule 2: At least 1 Lip Balm AND 1 Hair Oil
+                    { type: 'productCombination', requirements: [ { productId: 'strawberry-beetroot', minQty: 1 }, { productId: 'hair-oil', minQty: 1 } ] },
+                    // Rule 3: Subtotal >= freeDeliveryMinAmountKerala
+                    { type: 'minSubtotal', thresholdKey: 'freeDeliveryMinAmountKerala' }
+                ]
+            },
+            default: {
+                standardCharge: 60,
+                freeConditions: [
+                    // Subtotal >= freeDeliveryMinAmountRestOfIndia
+                    { type: 'minSubtotal', thresholdKey: 'freeDeliveryMinAmountRestOfIndia' }
+                ]
+            }
+        }
+    };
+
+    function evaluateShippingCondition(condition, items, subtotal) {
+        if (condition.type === 'productQty') {
+            const item = items.find(i => i.productId === condition.productId);
+            return item && item.quantity >= condition.minQty;
+        }
+        if (condition.type === 'productCombination') {
+            return condition.requirements.every(req => {
+                const item = items.find(i => i.productId === req.productId);
+                return item && item.quantity >= req.minQty;
+            });
+        }
+        if (condition.type === 'minSubtotal') {
+            const minAmount = window.shippingConfig[condition.thresholdKey];
+            return subtotal >= minAmount;
+        }
+        return false;
+    }
+
+    function getUnifiedShippingRate(state, items) {
         if (!state) {
             return { charge: null, text: '' };
         }
         
-        const isKerala = state.toLowerCase() === 'kerala';
-        let charge = 0;
-        let text = '';
+        // Calculate subtotal
+        const subtotal = items.reduce((sum, item) => {
+            const product = window.products[item.productId] || { price: 149 };
+            return sum + (product.price * item.quantity);
+        }, 0);
         
-        if (isKerala) {
-            if (productId === 'strawberry-beetroot') {
-                if (qty >= 2) {
-                    charge = 0;
-                    text = 'Free Delivery';
-                } else {
-                    charge = 30;
-                    text = '';
-                }
-            } else {
-                charge = 0;
-                text = 'Free Delivery';
-            }
+        const stateKey = state.toLowerCase();
+        const config = window.shippingConfig.rules[stateKey] || window.shippingConfig.rules['default'];
+        
+        // Evaluate if any free condition is met
+        const isFree = config.freeConditions.some(cond => evaluateShippingCondition(cond, items, subtotal));
+        
+        if (isFree) {
+            return { charge: 0, text: 'Free Delivery' };
         } else {
-            if (subtotal >= 700) {
-                charge = 0;
-                text = 'Free Delivery';
-            } else {
-                charge = 60;
-                text = '';
-            }
+            return { charge: config.standardCharge, text: '' };
         }
-        
-        return { charge, text };
+    }
+
+    function getShippingRate(state, productId, qty) {
+        const items = [{ productId, quantity: qty }];
+        return getUnifiedShippingRate(state, items);
     }
 
     function getCartShippingRate(state, subtotal, cartItems) {
-        if (!state) {
-            return { charge: null, text: '' };
-        }
-        
-        const isKerala = state.toLowerCase() === 'kerala';
-        let charge = 0;
-        let text = '';
-        
-        if (isKerala) {
-            let lipBalmQty = 0;
-            
-            cartItems.forEach(item => {
-                if (item.productId === 'strawberry-beetroot') {
-                    lipBalmQty += item.quantity;
-                }
-            });
-            
-            if (lipBalmQty >= 2) {
-                charge = 0;
-            } else {
-                charge = 30;
-            }
-            
-            text = charge === 0 ? 'Free Delivery' : '';
-        } else {
-            if (subtotal >= 700) {
-                charge = 0;
-                text = 'Free Delivery';
-            } else {
-                charge = 60;
-                text = '';
-            }
-        }
-        
-        return { charge, text };
+        return getUnifiedShippingRate(state, cartItems);
     }
 
     if (orderPinInput) {
@@ -2181,6 +2322,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function calculateOrder() {
+        autoRevalidateAppliedCoupon();
         let productTotal = 0;
         let deliveryCharge = 30;
         let offerText = '';
@@ -2259,34 +2401,30 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isEligible) {
                 deliveryMsg = "🎉 Congratulations! Your order qualifies for FREE Delivery.";
             } else {
-                if (hoQty > 0 && lbQty === 0) {
-                    deliveryMsg = "Add 1 Lip Balm to get FREE Delivery.";
-                } else if (lbQty > 0 && hoQty === 0) {
-                    deliveryMsg = "Add 1 Hair Oil to get FREE Delivery.";
+                const stateKey = (activeState || "").toLowerCase();
+                if (stateKey === 'kerala') {
+                    if (hoQty > 0 && lbQty === 0) {
+                        deliveryMsg = "Add 1 Lip Balm to get FREE Delivery.";
+                    } else if (lbQty > 0 && hoQty === 0) {
+                        deliveryMsg = "Add 1 Lip Balm or 1 Hair Oil to get FREE Delivery.";
+                    } else {
+                        const threshold = window.shippingConfig.freeDeliveryMinAmountKerala;
+                        const diff = threshold - productTotal;
+                        deliveryMsg = `Add ₹${diff} more to get FREE Delivery.`;
+                    }
                 } else {
-                    const diff = 700 - productTotal;
+                    const threshold = window.shippingConfig.freeDeliveryMinAmountRestOfIndia;
+                    const diff = threshold - productTotal;
                     deliveryMsg = `Add ₹${diff} more to get FREE Delivery.`;
                 }
             }
         }
 
-        const totalItemsQty = isCartCheckout ? cart.reduce((sum, item) => sum + item.quantity, 0) : currentQty;
-        if (totalItemsQty < 2) {
-            if (couponApplied) {
-                couponApplied = false;
-                if (couponFeedback) {
-                    couponFeedback.style.display = 'block';
-                    couponFeedback.textContent = 'Coupon is available only for orders of 2 or more products.';
-                    couponFeedback.className = 'promo-feedback-msg error';
-                }
-                if (couponCodeInput) {
-                    couponCodeInput.value = '';
-                }
-            }
-        }
-        
-        if (couponApplied) {
-            discountAmount = Math.round(productTotal * discountPercent);
+        if (couponApplied && appliedCoupon) {
+            discountAmount = Math.round(productTotal * appliedCoupon.discountPercent);
+        } else {
+            discountAmount = 0;
+            couponApplied = false;
         }
         
         let grandTotal = productTotal + (deliveryCharge || 0) - discountAmount;
@@ -2343,38 +2481,68 @@ document.addEventListener('DOMContentLoaded', () => {
     // Coupon Apply Event
     if (applyCouponBtn && couponCodeInput) {
         applyCouponBtn.addEventListener('click', () => {
-            if (currentQty < 2) {
-                couponFeedback.style.display = 'block';
-                couponFeedback.textContent = 'Coupon is available only for orders of 2 or more products.';
-                couponFeedback.className = 'promo-feedback-msg error';
-                couponApplied = false;
-                calculateOrder();
-                return;
-            }
-            
             const enteredCode = couponCodeInput.value.trim().toUpperCase();
             
             if (enteredCode === '') {
                 couponFeedback.style.display = 'block';
                 couponFeedback.textContent = 'Please enter a coupon code.';
                 couponFeedback.className = 'promo-feedback-msg error';
+                appliedCoupon = null;
                 couponApplied = false;
                 calculateOrder();
                 return;
             }
             
-            if (enteredCode === validCouponCode) {
+            // Prevent applying the same coupon twice
+            if (appliedCoupon && appliedCoupon.code === enteredCode) {
                 couponFeedback.style.display = 'block';
-                couponFeedback.textContent = 'Coupon applied successfully! Saved 15% on your items.';
+                couponFeedback.textContent = 'This coupon is already applied to your order.';
                 couponFeedback.className = 'promo-feedback-msg success';
-                couponApplied = true;
-            } else {
-                couponFeedback.style.display = 'block';
-                couponFeedback.textContent = 'Invalid coupon code. (Discount not applied)';
-                couponFeedback.className = 'promo-feedback-msg error';
-                couponApplied = false;
+                return;
             }
-            calculateOrder();
+            
+            // Check eligibility (total items quantity >= 2) before validating other rules
+            const totalItemsQty = isCartCheckout ? cart.reduce((sum, item) => sum + item.quantity, 0) : currentQty;
+            if (totalItemsQty < 2) {
+                couponFeedback.style.display = 'block';
+                couponFeedback.textContent = 'Coupon is available only for orders of 2 or more products.';
+                couponFeedback.className = 'promo-feedback-msg error';
+                appliedCoupon = null;
+                couponApplied = false;
+                calculateOrder();
+                return;
+            }
+            
+            // Disable button and show "Validating..."
+            applyCouponBtn.disabled = true;
+            const originalBtnText = applyCouponBtn.textContent || 'Apply';
+            applyCouponBtn.textContent = 'Validating...';
+            
+            // Simulate processing delay for a premium feel
+            setTimeout(() => {
+                const res = validateCouponState(enteredCode);
+                
+                applyCouponBtn.disabled = false;
+                applyCouponBtn.textContent = originalBtnText;
+                
+                if (res.valid) {
+                    appliedCoupon = res.coupon;
+                    couponApplied = true;
+                    discountPercent = res.coupon.discountPercent;
+                    
+                    couponFeedback.style.display = 'block';
+                    couponFeedback.textContent = `Coupon applied successfully! Saved ${res.coupon.discountPercent * 100}% on your items.`;
+                    couponFeedback.className = 'promo-feedback-msg success';
+                } else {
+                    appliedCoupon = null;
+                    couponApplied = false;
+                    
+                    couponFeedback.style.display = 'block';
+                    couponFeedback.textContent = res.reason;
+                    couponFeedback.className = 'promo-feedback-msg error';
+                }
+                calculateOrder();
+            }, 600);
         });
     }
     
@@ -2462,7 +2630,8 @@ document.addEventListener('DOMContentLoaded', () => {
             
             message += `*Delivery Charge:* ${deliveryCharge === 0 ? 'FREE' : '₹' + deliveryCharge}\n`;
             if (couponApplied) {
-                message += `*Coupon Discount:* -₹${discountAmount} (${validCouponCode})\n`;
+                const couponCode = appliedCoupon ? appliedCoupon.code : 'LIPLEY001';
+                message += `*Coupon Discount:* -₹${discountAmount} (${couponCode})\n`;
             }
             message += `*Grand Total:* ₹${grandTotal}\n\n`;
             
@@ -2634,8 +2803,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     window.closePolicyModal = function() {
-        const current = navigationHistory[navigationHistory.length - 1];
-        if (current && current.type === 'policy' && current.id === 'policy-modal') {
+        const state = history.state;
+        if (state && state.type === 'policy' && state.id === 'policy-modal') {
             window.goBack();
         } else {
             if (policyModal) {

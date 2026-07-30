@@ -1213,39 +1213,34 @@
                         <div id="coupon-feedback" class="promo-feedback-msg" style="display: none;"></div>
                     </div>
                     
-                    <div class="summary-bill-details">
+                    <div class="summary-bill-details" style="margin-top: 20px;">
                         <div class="bill-row" id="bill-pin-row" style="display: none;">
                             <span>PIN Code</span>
                             <span id="bill-pin-value">-</span>
                         </div>
                         <div class="bill-row" id="bill-state-row" style="display: none;">
-                            <span>Destination State</span>
+                            <span>State / UT</span>
                             <span id="bill-state-value">-</span>
                         </div>
                         <div class="bill-row">
-                            <span>Product Price</span>
-                            <span id="bill-product-price">₹149</span>
+                            <span>Subtotal</span>
+                            <span id="bill-product-price">₹0</span>
+                        </div>
+                        <div class="bill-row" id="bill-discount-row" style="display: none; color: #4CAF50; font-weight: 500;">
+                            <span>Discount</span>
+                            <span id="bill-discount-value">-₹0</span>
                         </div>
                         <div class="bill-row">
                             <span>Delivery Charge</span>
-                            <span id="bill-delivery-charge">₹30</span>
+                            <span id="bill-delivery-charge">₹0</span>
                         </div>
-                        <div class="bill-row" id="bill-delivery-status-row" style="display: none;">
-                            <span>Delivery Status</span>
-                            <span id="bill-delivery-status" style="color: #4CAF50; font-weight: 500;">-</span>
-                        </div>
-                        <div class="bill-row" id="bill-offer-row" style="display: none;">
-                            <span>Offer</span>
-                            <span class="free-shipping-tag" id="bill-offer-applied">Buy 2 Get 1 FREE</span>
-                        </div>
-                        <div class="bill-row" id="bill-discount-row" style="display: none; color: #4CAF50; font-weight: 500;">
-                            <span>Coupon Discount</span>
-                            <span id="bill-discount-value">-₹0</span>
-                        </div>
-                        <div class="bill-divider"></div>
-                        <div class="bill-row bill-total-row">
+                        <div class="bill-divider" style="margin: 12px 0; border-top: 1px solid rgba(30, 58, 52, 0.1);"></div>
+                        <div class="bill-row bill-total-row" style="font-size: 16px; font-weight: 600; color: var(--color-primary);">
                             <span>Grand Total</span>
-                            <span id="bill-grand-total">₹179</span>
+                            <span id="bill-grand-total" style="font-size: 20px; font-weight: 700; color: var(--color-primary);">₹0</span>
+                        </div>
+                        <div id="bill-delivery-status-box" style="margin-top: 15px; padding: 10px 12px; border-radius: 4px; background-color: rgba(30, 58, 52, 0.03); border-left: 3px solid var(--color-accent); font-size: 12px; line-height: 1.4; color: var(--color-primary); display: none;">
+                            <span id="bill-delivery-status" style="font-weight: 500;">-</span>
                         </div>
                     </div>
                     

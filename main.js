@@ -2066,66 +2066,117 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    window.changeCheckoutQty = function(productId, newQty) {
+        newQty = parseInt(newQty);
+        if (isNaN(newQty) || newQty < 1) return;
+        
+        if (isCartCheckout) {
+            const item = cart.find(i => i.productId === productId);
+            if (item) {
+                item.quantity = newQty;
+                saveCart();
+                renderCheckoutSummary();
+                calculateOrder();
+            }
+        } else {
+            if (productId === selectedProductId) {
+                currentQty = newQty;
+                renderCheckoutSummary();
+                calculateOrder();
+            }
+        }
+    };
+    
+    window.removeCheckoutItem = function(productId) {
+        if (isCartCheckout) {
+            cart = cart.filter(i => i.productId !== productId);
+            saveCart();
+            renderCheckoutSummary();
+            calculateOrder();
+        } else {
+            if (productId === selectedProductId) {
+                currentQty = 0;
+                renderCheckoutSummary();
+                calculateOrder();
+            }
+        }
+    };
+
     function renderCheckoutSummary() {
         const summaryList = document.querySelector('.summary-items-list');
         if (!summaryList) return;
         
         if (isCartCheckout) {
-            let html = '';
+            if (cart.length === 0) {
+                summaryList.innerHTML = `
+                    <div style="text-align: center; padding: 30px 10px; color: var(--color-primary); opacity: 0.7;">
+                        <p style="font-size: 13.5px; margin: 0 0 15px 0;">Your checkout cart is empty.</p>
+                        <button type="button" class="btn btn-secondary btn-small" onclick="window.closePurchaseOptions()" style="width: auto; padding: 8px 20px; font-size: 11px;">Continue Shopping</button>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '<div style="display: flex; flex-direction: column; gap: 20px;">';
             cart.forEach(item => {
                 const product = window.products[item.productId] || { name: item.productId, price: 149, image: 'assets/images/lipley-gallery-closed.jpg' };
+                const itemTotal = product.price * item.quantity;
                 html += `
-                    <div class="summary-item" style="border-bottom: 1px solid rgba(30, 58, 52, 0.08); padding-bottom: 15px; margin-bottom: 15px; display: flex; gap: 15px;">
-                        <img src="${product.image}" alt="${product.name}" class="summary-item-img" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
-                        <div class="summary-item-details" style="flex: 1;">
-                            <span class="summary-item-name" style="font-size: 13px; font-weight: 600; color: var(--color-primary); display: block; text-transform: uppercase;">${product.name}</span>
-                            <span style="font-size: 12px; color: var(--color-accent); font-weight: 500; display: block; margin-top: 2px;">₹${product.price} each</span>
-                            <div style="font-size: 12px; opacity: 0.85; margin-top: 4px;">Quantity: <strong>${item.quantity}</strong></div>
+                    <div class="checkout-item-row" style="border-bottom: 1px solid rgba(30, 58, 52, 0.06); padding-bottom: 15px; display: flex; gap: 12px; align-items: flex-start;">
+                        <img src="${product.image}" alt="${product.name}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid rgba(30,58,52,0.08);">
+                        <div style="flex: 1; min-width: 0;">
+                            <h4 style="font-size: 12px; font-weight: 700; color: var(--color-primary); margin: 0 0 6px 0; text-transform: uppercase; letter-spacing: 0.02em; line-height: 1.3;">${product.name}</h4>
+                            <div style="display: flex; align-items: center; justify-content: space-between; font-size: 11.5px; color: var(--color-primary); opacity: 0.8;">
+                                <span>₹${product.price} × ${item.quantity}</span>
+                                <span style="font-weight: 600; color: var(--color-primary);">₹${itemTotal}</span>
+                            </div>
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;">
+                                <div class="qty-selector-small" style="display: inline-flex; align-items: center; border: 1px solid rgba(30, 58, 52, 0.12); border-radius: 3px; background: #fff;">
+                                    <button type="button" class="qty-btn-s" onclick="window.changeCheckoutQty('${item.productId}', ${item.quantity - 1})" style="border: none; background: none; width: 22px; height: 22px; font-size: 12px; cursor: pointer; color: var(--color-primary); display: flex; align-items: center; justify-content: center;">−</button>
+                                    <span style="font-size: 11px; font-weight: 700; width: 22px; text-align: center; color: var(--color-primary); display: inline-block;">${item.quantity}</span>
+                                    <button type="button" class="qty-btn-s" onclick="window.changeCheckoutQty('${item.productId}', ${item.quantity + 1})" style="border: none; background: none; width: 22px; height: 22px; font-size: 12px; cursor: pointer; color: var(--color-primary); display: flex; align-items: center; justify-content: center;">+</button>
+                                </div>
+                                <button type="button" onclick="window.removeCheckoutItem('${item.productId}')" style="background: none; border: none; font-size: 10px; font-weight: 600; text-transform: uppercase; color: #f44336; cursor: pointer; letter-spacing: 0.03em; padding: 4px;">Remove</button>
+                            </div>
                         </div>
                     </div>
                 `;
             });
+            html += '</div>';
             summaryList.innerHTML = html;
         } else {
+            if (currentQty <= 0) {
+                summaryList.innerHTML = `
+                    <div style="text-align: center; padding: 30px 10px; color: var(--color-primary); opacity: 0.7;">
+                        <p style="font-size: 13.5px; margin: 0 0 15px 0;">Your checkout is empty.</p>
+                        <button type="button" class="btn btn-secondary btn-small" onclick="window.closePurchaseOptions()" style="width: auto; padding: 8px 20px; font-size: 11px;">Continue Shopping</button>
+                    </div>
+                `;
+                return;
+            }
+            
             const product = window.products[selectedProductId] || { name: "LIPLEY Strawberry Beetroot Tinted Lip Balm", price: 149, image: 'assets/images/lipley-gallery-closed.jpg' };
+            const itemTotal = product.price * currentQty;
             summaryList.innerHTML = `
-                <div class="summary-item" style="border-bottom: 1px solid rgba(30, 58, 52, 0.08); padding-bottom: 15px; margin-bottom: 15px; display: flex; gap: 15px;">
-                    <img src="${product.image}" alt="${product.name}" class="summary-item-img" style="width: 55px; height: 55px; object-fit: cover; border-radius: 4px;">
-                    <div class="summary-item-details" style="flex: 1;">
-                        <span class="summary-item-name" style="font-size: 13px; font-weight: 600; color: var(--color-primary); display: block; text-transform: uppercase;">${product.name}</span>
-                        <span style="font-size: 12px; color: var(--color-accent); font-weight: 500; display: block; margin-top: 2px;">₹${product.price} each</span>
-                        <div class="qty-control-row" style="margin-top: 8px; display: flex; align-items: center; gap: 10px;">
-                            <span class="qty-label" style="font-size: 12px; opacity: 0.85;">Quantity:</span>
-                            <div class="qty-selector-small" style="display: inline-flex; align-items: center; border: 1px solid rgba(30, 58, 52, 0.15); border-radius: 3px; background: #fff;">
-                                <button type="button" class="qty-btn-s" id="checkout-qty-minus" aria-label="Decrease quantity" style="border: none; background: none; width: 26px; height: 26px; font-size: 14px; cursor: pointer; color: var(--color-primary); display: flex; align-items: center; justify-content: center;">−</button>
-                                <span class="qty-val-s" id="checkout-qty-display" style="font-size: 12.5px; font-weight: 600; width: 26px; text-align: center; color: var(--color-primary); display: inline-block;">${currentQty}</span>
-                                <button type="button" class="qty-btn-s" id="checkout-qty-plus" aria-label="Increase quantity" style="border: none; background: none; width: 26px; height: 26px; font-size: 14px; cursor: pointer; color: var(--color-primary); display: flex; align-items: center; justify-content: center;">+</button>
+                <div class="checkout-item-row" style="border-bottom: 1px solid rgba(30, 58, 52, 0.06); padding-bottom: 15px; display: flex; gap: 12px; align-items: flex-start;">
+                    <img src="${product.image}" alt="${product.name}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid rgba(30,58,52,0.08);">
+                    <div style="flex: 1; min-width: 0;">
+                        <h4 style="font-size: 12px; font-weight: 700; color: var(--color-primary); margin: 0 0 6px 0; text-transform: uppercase; letter-spacing: 0.02em; line-height: 1.3;">${product.name}</h4>
+                        <div style="display: flex; align-items: center; justify-content: space-between; font-size: 11.5px; color: var(--color-primary); opacity: 0.8;">
+                            <span>₹${product.price} × ${currentQty}</span>
+                            <span style="font-weight: 600; color: var(--color-primary);">₹${itemTotal}</span>
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;">
+                            <div class="qty-selector-small" style="display: inline-flex; align-items: center; border: 1px solid rgba(30, 58, 52, 0.12); border-radius: 3px; background: #fff;">
+                                <button type="button" class="qty-btn-s" onclick="window.changeCheckoutQty('${selectedProductId}', ${currentQty - 1})" style="border: none; background: none; width: 22px; height: 22px; font-size: 12px; cursor: pointer; color: var(--color-primary); display: flex; align-items: center; justify-content: center;">−</button>
+                                <span style="font-size: 11px; font-weight: 700; width: 22px; text-align: center; color: var(--color-primary); display: inline-block;">${currentQty}</span>
+                                <button type="button" class="qty-btn-s" onclick="window.changeCheckoutQty('${selectedProductId}', ${currentQty + 1})" style="border: none; background: none; width: 22px; height: 22px; font-size: 12px; cursor: pointer; color: var(--color-primary); display: flex; align-items: center; justify-content: center;">+</button>
                             </div>
+                            <button type="button" onclick="window.removeCheckoutItem('${selectedProductId}')" style="background: none; border: none; font-size: 10px; font-weight: 600; text-transform: uppercase; color: #f44336; cursor: pointer; letter-spacing: 0.03em; padding: 4px;">Remove</button>
                         </div>
                     </div>
                 </div>
             `;
-            
-            const minusBtn = document.getElementById('checkout-qty-minus');
-            const plusBtn = document.getElementById('checkout-qty-plus');
-            const displayVal = document.getElementById('checkout-qty-display');
-            
-            if (minusBtn) {
-                minusBtn.addEventListener('click', () => {
-                    if (currentQty > 1) {
-                        currentQty--;
-                        if (displayVal) displayVal.textContent = currentQty;
-                        calculateOrder();
-                    }
-                });
-            }
-            if (plusBtn) {
-                plusBtn.addEventListener('click', () => {
-                    currentQty++;
-                    if (displayVal) displayVal.textContent = currentQty;
-                    calculateOrder();
-                });
-            }
         }
     }
 
@@ -2141,13 +2192,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const billPinValue = document.getElementById('bill-pin-value');
         const billStateRow = document.getElementById('bill-state-row');
         const billStateValue = document.getElementById('bill-state-value');
-        const billDeliveryStatusRow = document.getElementById('bill-delivery-status-row');
-        const billDeliveryStatus = document.getElementById('bill-delivery-status');
+        const billDeliveryStatusBox = document.getElementById('bill-delivery-status-box');
+        const billDeliveryStatusText = document.getElementById('bill-delivery-status');
+        
+        let lbQty = 0;
+        let hoQty = 0;
         
         if (isCartCheckout) {
             cart.forEach(item => {
                 const product = window.products[item.productId] || { price: 149 };
                 productTotal += product.price * item.quantity;
+                if (item.productId === 'strawberry-beetroot') lbQty += item.quantity;
+                else if (item.productId === 'hair-oil') hoQty += item.quantity;
             });
             
             if (isPinValid && activeState) {
@@ -2163,35 +2219,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     billStateValue.textContent = activeState;
                     billStateRow.style.display = 'flex';
                 }
-                if (billDeliveryStatusRow && billDeliveryStatus) {
-                    if (deliveryCharge === 0) {
-                        billDeliveryStatus.textContent = "FREE Delivery Active!";
-                        billDeliveryStatus.style.color = '#4CAF50';
-                    } else {
-                        if (activeState.toLowerCase() === 'kerala') {
-                            let lipBalmQty = 0;
-                            cart.forEach(item => {
-                                if (item.productId === 'strawberry-beetroot') lipBalmQty += item.quantity;
-                            });
-                            const needed = 2 - lipBalmQty;
-                            billDeliveryStatus.textContent = `Add ${needed} more Lip Balm for FREE Delivery`;
-                        } else {
-                            const diff = 700 - productTotal;
-                            billDeliveryStatus.textContent = `Add ₹${diff} more for FREE Delivery`;
-                        }
-                        billDeliveryStatus.style.color = 'var(--color-accent)';
-                    }
-                    billDeliveryStatusRow.style.display = 'flex';
-                }
             } else {
                 if (billPinRow) billPinRow.style.display = 'none';
                 if (billStateRow) billStateRow.style.display = 'none';
-                if (billDeliveryStatusRow) billDeliveryStatusRow.style.display = 'none';
                 deliveryCharge = null;
             }
         } else {
-            const product = window.products[selectedProductId] || { price: 149 };
-            productTotal = currentQty * product.price;
+            if (currentQty > 0) {
+                const product = window.products[selectedProductId] || { price: 149 };
+                productTotal = currentQty * product.price;
+                if (selectedProductId === 'strawberry-beetroot') lbQty = currentQty;
+                else if (selectedProductId === 'hair-oil') hoQty = currentQty;
+            }
             
             if (isPinValid && activeState) {
                 const rate = getShippingRate(activeState, selectedProductId, currentQty);
@@ -2206,27 +2245,28 @@ document.addEventListener('DOMContentLoaded', () => {
                     billStateValue.textContent = activeState;
                     billStateRow.style.display = 'flex';
                 }
-                if (billDeliveryStatusRow && billDeliveryStatus) {
-                    if (deliveryCharge === 0) {
-                        billDeliveryStatus.textContent = "FREE Delivery Active!";
-                        billDeliveryStatus.style.color = '#4CAF50';
-                    } else {
-                        if (activeState.toLowerCase() === 'kerala') {
-                            const needed = 2 - currentQty;
-                            billDeliveryStatus.textContent = `Add ${needed} more for FREE Delivery`;
-                        } else {
-                            const diff = 700 - productTotal;
-                            billDeliveryStatus.textContent = `Add ₹${diff} more for FREE Delivery`;
-                        }
-                        billDeliveryStatus.style.color = 'var(--color-accent)';
-                    }
-                    billDeliveryStatusRow.style.display = 'flex';
-                }
             } else {
                 if (billPinRow) billPinRow.style.display = 'none';
                 if (billStateRow) billStateRow.style.display = 'none';
-                if (billDeliveryStatusRow) billDeliveryStatusRow.style.display = 'none';
                 deliveryCharge = null;
+            }
+        }
+
+        let deliveryMsg = "";
+        let isEligible = (deliveryCharge === 0);
+        
+        if (deliveryCharge !== null) {
+            if (isEligible) {
+                deliveryMsg = "🎉 Congratulations! Your order qualifies for FREE Delivery.";
+            } else {
+                if (hoQty > 0 && lbQty === 0) {
+                    deliveryMsg = "Add 1 Lip Balm to get FREE Delivery.";
+                } else if (lbQty > 0 && hoQty === 0) {
+                    deliveryMsg = "Add 1 Hair Oil to get FREE Delivery.";
+                } else {
+                    const diff = 700 - productTotal;
+                    deliveryMsg = `Add ₹${diff} more to get FREE Delivery.`;
+                }
             }
         }
 
@@ -2257,24 +2297,15 @@ document.addEventListener('DOMContentLoaded', () => {
             if (deliveryCharge === null) {
                 billDeliveryCharge.textContent = "Enter PIN Code";
                 billDeliveryCharge.style.color = 'var(--color-accent)';
-                billDeliveryCharge.classList.remove('free-shipping-tag');
+                billDeliveryCharge.style.fontWeight = "";
+            } else if (deliveryCharge === 0) {
+                billDeliveryCharge.textContent = "FREE";
+                billDeliveryCharge.style.color = "#4CAF50";
+                billDeliveryCharge.style.fontWeight = "600";
             } else {
-                billDeliveryCharge.textContent = deliveryCharge === 0 ? 'FREE' : `₹${deliveryCharge}`;
-                billDeliveryCharge.style.color = '';
-                if (deliveryCharge === 0) {
-                    billDeliveryCharge.classList.add('free-shipping-tag');
-                } else {
-                    billDeliveryCharge.classList.remove('free-shipping-tag');
-                }
-            }
-        }
-        
-        if (billOfferRow && billOfferApplied) {
-            if (offerText) {
-                billOfferApplied.textContent = offerText;
-                billOfferRow.style.display = 'flex';
-            } else {
-                billOfferRow.style.display = 'none';
+                billDeliveryCharge.textContent = `₹${deliveryCharge}`;
+                billDeliveryCharge.style.color = "";
+                billDeliveryCharge.style.fontWeight = "";
             }
         }
         
@@ -2288,6 +2319,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         if (billGrandTotal) billGrandTotal.textContent = `₹${grandTotal}`;
+        
+        if (billDeliveryStatusBox && billDeliveryStatusText) {
+            if (deliveryCharge === null) {
+                billDeliveryStatusBox.style.display = 'none';
+            } else {
+                billDeliveryStatusText.textContent = deliveryMsg;
+                if (isEligible) {
+                    billDeliveryStatusText.style.color = "#4CAF50";
+                    billDeliveryStatusBox.style.borderLeftColor = "#4CAF50";
+                    billDeliveryStatusBox.style.backgroundColor = "rgba(76, 175, 80, 0.05)";
+                } else {
+                    billDeliveryStatusText.style.color = "";
+                    billDeliveryStatusBox.style.borderLeftColor = "var(--color-accent)";
+                    billDeliveryStatusBox.style.backgroundColor = "rgba(30, 58, 52, 0.03)";
+                }
+                billDeliveryStatusBox.style.display = 'block';
+            }
+        }
     }
 
     
@@ -2333,6 +2382,17 @@ document.addEventListener('DOMContentLoaded', () => {
     if (purchaseOrderForm) {
         purchaseOrderForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            if (isCartCheckout) {
+                if (cart.length === 0) {
+                    alert("Your checkout cart is empty. Please add items to your cart before ordering.");
+                    return;
+                }
+            } else {
+                if (currentQty <= 0) {
+                    alert("Your checkout summary is empty. Please select a product before ordering.");
+                    return;
+                }
+            }
             
             // Gather delivery fields
             const fullName = document.getElementById('order-full-name').value.trim();

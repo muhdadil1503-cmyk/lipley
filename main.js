@@ -383,6 +383,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (buyNowBtn) {
             buyNowBtn.setAttribute('data-product-id', productId);
         }
+        const addToCartBtn = document.getElementById('btn-add-to-cart');
+        if (addToCartBtn) {
+            addToCartBtn.setAttribute('data-product-id', productId);
+        }
         
         // Update breadcrumb
         const breadcrumbActive = document.querySelector('.breadcrumb-active');
@@ -625,6 +629,11 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (id === 'wishlist-drawer') {
             if (wishlistDrawer) wishlistDrawer.classList.add('open');
             document.body.classList.add('intro-active');
+        } else if (id === 'cart-drawer') {
+            const cartDrawer = document.getElementById('cart-drawer');
+            if (cartDrawer) cartDrawer.classList.add('open');
+            document.body.classList.add('intro-active');
+            if (typeof renderCart === 'function') renderCart();
         }
         if (pushState) {
             window.pushNavigationState('popup', id);
@@ -654,6 +663,10 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.style.overflow = '';
         } else if (id === 'wishlist-drawer') {
             if (wishlistDrawer) wishlistDrawer.classList.remove('open');
+            document.body.classList.remove('intro-active');
+        } else if (id === 'cart-drawer') {
+            const cartDrawer = document.getElementById('cart-drawer');
+            if (cartDrawer) cartDrawer.classList.remove('open');
             document.body.classList.remove('intro-active');
         }
     }
@@ -685,6 +698,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (checkoutQtyDisplay) {
                 checkoutQtyDisplay.textContent = currentQty;
             }
+            isCartCheckout = false; // Buy Now mode
             if (typeof calculateOrder === 'function') {
                 calculateOrder();
             }
@@ -746,7 +760,201 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --- 7. CART ENGINE SCRUBBED ---
+    // --- 7. CART ENGINE ---
+    let cart = [];
+
+    function loadCart() {
+        try {
+            const saved = localStorage.getItem('lipley_cart');
+            if (saved) {
+                cart = JSON.parse(saved);
+            }
+        } catch(e) {
+            console.error(e);
+            cart = [];
+        }
+        updateCartBadge();
+    }
+
+    function saveCart() {
+        try {
+            localStorage.setItem('lipley_cart', JSON.stringify(cart));
+        } catch(e) {
+            console.error(e);
+        }
+        updateCartBadge();
+    }
+
+    function updateCartBadge() {
+        const badge = document.getElementById('cart-badge');
+        if (badge) {
+            const totalQty = cart.reduce((sum, item) => sum + item.quantity, 0);
+            badge.textContent = totalQty;
+            badge.style.display = totalQty > 0 ? 'flex' : 'none';
+        }
+    }
+
+    function addToCart(productId, quantity = 1) {
+        const existing = cart.find(item => item.productId === productId);
+        if (existing) {
+            existing.quantity += quantity;
+        } else {
+            cart.push({ productId, quantity });
+        }
+        saveCart();
+        renderCart();
+        openCartDrawer();
+    }
+
+    function removeFromCart(productId) {
+        cart = cart.filter(item => item.productId !== productId);
+        saveCart();
+        renderCart();
+    }
+
+    function updateCartItemQty(productId, newQty) {
+        const item = cart.find(item => item.productId === productId);
+        if (item) {
+            item.quantity = Math.max(1, newQty);
+            saveCart();
+            renderCart();
+        }
+    }
+
+    window.changeCartQty = function(productId, newQty) {
+        updateCartItemQty(productId, newQty);
+    };
+    
+    window.removeCartItem = function(productId) {
+        removeFromCart(productId);
+    };
+
+    function renderCart() {
+        const container = document.getElementById('cart-body-content');
+        if (!container) return;
+        
+        if (cart.length === 0) {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 40px 20px; color: var(--color-primary); opacity: 0.7;">
+                    <p style="font-size: 14px; margin-bottom: 20px;">Your shopping cart is empty.</p>
+                    <button class="btn btn-primary btn-small" id="cart-continue-shopping" style="width: auto; padding: 10px 24px;">Continue Shopping</button>
+                </div>
+            `;
+            const contBtn = document.getElementById('cart-continue-shopping');
+            if (contBtn) {
+                contBtn.addEventListener('click', closeCartDrawer);
+            }
+            return;
+        }
+        
+        let html = '<div class="cart-items-wrapper" style="display: flex; flex-direction: column; gap: 20px; max-height: calc(100vh - 280px); overflow-y: auto; padding-right: 5px;">';
+        let subtotal = 0;
+        
+        cart.forEach(item => {
+            const product = window.products[item.productId] || { name: item.productId, price: 149, image: 'assets/images/lipley-gallery-closed.jpg' };
+            const itemTotal = product.price * item.quantity;
+            subtotal += itemTotal;
+            
+            html += `
+                <div class="cart-item-row" style="display: flex; gap: 15px; border-bottom: 1px solid rgba(30, 58, 52, 0.08); padding-bottom: 15px;">
+                    <img src="${product.image}?v=2" alt="${product.name}" style="width: 70px; height: 70px; object-fit: cover; border-radius: 4px; border: 1px solid rgba(30,58,52,0.1);">
+                    <div style="flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <h4 style="font-size: 13px; font-weight: 600; color: var(--color-primary); margin: 0 0 4px 0; text-transform: uppercase;">${product.name}</h4>
+                            <span style="font-size: 11.5px; color: var(--color-accent); font-weight: 500;">₹${product.price} each</span>
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 8px;">
+                            <div class="qty-selector-small" style="display: inline-flex; align-items: center; border: 1px solid rgba(30, 58, 52, 0.15); border-radius: 3px; background: #fff;">
+                                <button type="button" class="qty-btn-s" onclick="window.changeCartQty('${item.productId}', ${item.quantity - 1})" style="border: none; background: none; width: 24px; height: 24px; font-size: 12px; cursor: pointer; color: var(--color-primary); display: flex; align-items: center; justify-content: center;">−</button>
+                                <span class="qty-val-s" style="font-size: 11.5px; font-weight: 600; width: 24px; text-align: center; color: var(--color-primary); display: inline-block;">${item.quantity}</span>
+                                <button type="button" class="qty-btn-s" onclick="window.changeCartQty('${item.productId}', ${item.quantity + 1})" style="border: none; background: none; width: 24px; height: 24px; font-size: 12px; cursor: pointer; color: var(--color-primary); display: flex; align-items: center; justify-content: center;">+</button>
+                            </div>
+                            <button type="button" onclick="window.removeCartItem('${item.productId}')" style="background: none; border: none; font-size: 10px; font-weight: 600; text-transform: uppercase; color: #f44336; cursor: pointer; letter-spacing: 0.05em; padding: 5px;">Remove</button>
+                        </div>
+                    </div>
+                    <div style="text-align: right; min-width: 60px;">
+                        <span style="font-size: 13.5px; font-weight: 600; color: var(--color-primary);">₹${itemTotal}</span>
+                    </div>
+                </div>
+            `;
+        });
+        
+        html += '</div>';
+        
+        html += `
+            <div style="margin-top: 20px; border-top: 1px solid rgba(30, 58, 52, 0.12); padding-top: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <span style="font-size: 13px; font-weight: 600; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.02em;">Subtotal</span>
+                    <span style="font-size: 16px; font-weight: 700; color: var(--color-primary);">₹${subtotal}</span>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <button class="btn btn-primary btn-full" id="cart-checkout-btn" style="height: 44px; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 4px; box-shadow: var(--shadow-luxury);">Checkout Cart</button>
+                    <button class="btn btn-secondary btn-full" id="cart-continue-shopping-btn" style="height: 40px; font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; border-radius: 4px; border: 1px solid rgba(30,58,52,0.15); background: transparent; color: var(--color-primary);">Continue Shopping</button>
+                </div>
+            </div>
+        `;
+        
+        container.innerHTML = html;
+        
+        document.getElementById('cart-checkout-btn').addEventListener('click', startCartCheckout);
+        document.getElementById('cart-continue-shopping-btn').addEventListener('click', closeCartDrawer);
+    }
+
+    function startCartCheckout() {
+        isCartCheckout = true;
+        closeCartDrawer();
+        window.openPurchaseOptions();
+    }
+
+    const cartDrawer = document.getElementById('cart-drawer');
+    const cartOverlay = document.getElementById('cart-overlay');
+    const cartClose = document.getElementById('cart-close');
+    const cartToggleBtn = document.getElementById('cart-toggle-btn');
+    
+    window.openCartDrawer = function() {
+        if (cartDrawer) {
+            cartDrawer.classList.add('open');
+            document.body.classList.add('intro-active');
+            window.pushNavigationState('popup', 'cart-drawer');
+            renderCart();
+        }
+    };
+    
+    window.closeCartDrawer = function() {
+        const current = navigationHistory[navigationHistory.length - 1];
+        if (current && current.type === 'popup' && current.id === 'cart-drawer') {
+            window.goBack();
+        } else {
+            if (cartDrawer) {
+                cartDrawer.classList.remove('open');
+                document.body.classList.remove('intro-active');
+            }
+        }
+    };
+    
+    if (cartToggleBtn) {
+        cartToggleBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (cartDrawer && cartDrawer.classList.contains('open')) {
+                window.closeCartDrawer();
+            } else {
+                window.openCartDrawer();
+            }
+        });
+    }
+    if (cartClose) cartClose.addEventListener('click', window.closeCartDrawer);
+    if (cartOverlay) cartOverlay.addEventListener('click', window.closeCartDrawer);
+    
+    const pAddToCartBtn = document.getElementById('btn-add-to-cart');
+    if (pAddToCartBtn) {
+        pAddToCartBtn.addEventListener('click', () => {
+            const productId = pAddToCartBtn.getAttribute('data-product-id') || 'strawberry-beetroot';
+            addToCart(productId, productPageQty);
+        });
+    }
+
+    // Call loadCart on init
+    loadCart();
 
 
     // --- 8. WISHLIST ENGINE ---
@@ -996,6 +1204,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (billStateRow) billStateRow.style.display = 'none';
         if (billDeliveryStatusRow) billDeliveryStatusRow.style.display = 'none';
         
+        if (typeof renderCheckoutSummary === 'function') {
+            renderCheckoutSummary();
+        }
+
         if (typeof calculateOrder === 'function') {
             calculateOrder();
         }
@@ -1082,6 +1294,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (checkoutQtyDisplay) {
                     checkoutQtyDisplay.textContent = currentQty;
                 }
+                isCartCheckout = false; // Buy Now mode
                 if (typeof calculateOrder === 'function') {
                     calculateOrder();
                 }
@@ -1671,6 +1884,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let discountPercent = 0.15; // 15% Discount
     let isPinValid = false;
     let activeState = "";
+    let isCartCheckout = false;
 
     function getStateFromPin(pin) {
         if (!/^\d{6}$/.test(pin)) {
@@ -1748,12 +1962,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function getShippingRate(state, productId, qty) {
+        const product = window.products[productId] || { price: 149 };
+        const subtotal = product.price * qty;
+        
         if (!state) {
-            if (productId === 'hair-oil') {
-                return { charge: 0, text: 'Free Delivery' };
-            } else {
-                return { charge: qty >= 2 ? 0 : 30, text: qty >= 2 ? 'Free Delivery' : '' };
-            }
+            return { charge: null, text: '' };
         }
         
         const isKerala = state.toLowerCase() === 'kerala';
@@ -1761,10 +1974,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let text = '';
         
         if (isKerala) {
-            if (productId === 'hair-oil') {
-                charge = 0;
-                text = 'Free Delivery';
-            } else {
+            if (productId === 'strawberry-beetroot') {
                 if (qty >= 2) {
                     charge = 0;
                     text = 'Free Delivery';
@@ -1772,9 +1982,50 @@ document.addEventListener('DOMContentLoaded', () => {
                     charge = 30;
                     text = '';
                 }
+            } else {
+                charge = 0;
+                text = 'Free Delivery';
             }
         } else {
-            if (qty >= 4) {
+            if (subtotal >= 700) {
+                charge = 0;
+                text = 'Free Delivery';
+            } else {
+                charge = 60;
+                text = '';
+            }
+        }
+        
+        return { charge, text };
+    }
+
+    function getCartShippingRate(state, subtotal, cartItems) {
+        if (!state) {
+            return { charge: null, text: '' };
+        }
+        
+        const isKerala = state.toLowerCase() === 'kerala';
+        let charge = 0;
+        let text = '';
+        
+        if (isKerala) {
+            let lipBalmQty = 0;
+            
+            cartItems.forEach(item => {
+                if (item.productId === 'strawberry-beetroot') {
+                    lipBalmQty += item.quantity;
+                }
+            });
+            
+            if (lipBalmQty >= 2) {
+                charge = 0;
+            } else {
+                charge = 30;
+            }
+            
+            text = charge === 0 ? 'Free Delivery' : '';
+        } else {
+            if (subtotal >= 700) {
                 charge = 0;
                 text = 'Free Delivery';
             } else {
@@ -1815,10 +2066,71 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function renderCheckoutSummary() {
+        const summaryList = document.querySelector('.summary-items-list');
+        if (!summaryList) return;
+        
+        if (isCartCheckout) {
+            let html = '';
+            cart.forEach(item => {
+                const product = window.products[item.productId] || { name: item.productId, price: 149, image: 'assets/images/lipley-gallery-closed.jpg' };
+                html += `
+                    <div class="summary-item" style="border-bottom: 1px solid rgba(30, 58, 52, 0.08); padding-bottom: 15px; margin-bottom: 15px; display: flex; gap: 15px;">
+                        <img src="${product.image}" alt="${product.name}" class="summary-item-img" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+                        <div class="summary-item-details" style="flex: 1;">
+                            <span class="summary-item-name" style="font-size: 13px; font-weight: 600; color: var(--color-primary); display: block; text-transform: uppercase;">${product.name}</span>
+                            <span style="font-size: 12px; color: var(--color-accent); font-weight: 500; display: block; margin-top: 2px;">₹${product.price} each</span>
+                            <div style="font-size: 12px; opacity: 0.85; margin-top: 4px;">Quantity: <strong>${item.quantity}</strong></div>
+                        </div>
+                    </div>
+                `;
+            });
+            summaryList.innerHTML = html;
+        } else {
+            const product = window.products[selectedProductId] || { name: "LIPLEY Strawberry Beetroot Tinted Lip Balm", price: 149, image: 'assets/images/lipley-gallery-closed.jpg' };
+            summaryList.innerHTML = `
+                <div class="summary-item" style="border-bottom: 1px solid rgba(30, 58, 52, 0.08); padding-bottom: 15px; margin-bottom: 15px; display: flex; gap: 15px;">
+                    <img src="${product.image}" alt="${product.name}" class="summary-item-img" style="width: 55px; height: 55px; object-fit: cover; border-radius: 4px;">
+                    <div class="summary-item-details" style="flex: 1;">
+                        <span class="summary-item-name" style="font-size: 13px; font-weight: 600; color: var(--color-primary); display: block; text-transform: uppercase;">${product.name}</span>
+                        <span style="font-size: 12px; color: var(--color-accent); font-weight: 500; display: block; margin-top: 2px;">₹${product.price} each</span>
+                        <div class="qty-control-row" style="margin-top: 8px; display: flex; align-items: center; gap: 10px;">
+                            <span class="qty-label" style="font-size: 12px; opacity: 0.85;">Quantity:</span>
+                            <div class="qty-selector-small" style="display: inline-flex; align-items: center; border: 1px solid rgba(30, 58, 52, 0.15); border-radius: 3px; background: #fff;">
+                                <button type="button" class="qty-btn-s" id="checkout-qty-minus" aria-label="Decrease quantity" style="border: none; background: none; width: 26px; height: 26px; font-size: 14px; cursor: pointer; color: var(--color-primary); display: flex; align-items: center; justify-content: center;">−</button>
+                                <span class="qty-val-s" id="checkout-qty-display" style="font-size: 12.5px; font-weight: 600; width: 26px; text-align: center; color: var(--color-primary); display: inline-block;">${currentQty}</span>
+                                <button type="button" class="qty-btn-s" id="checkout-qty-plus" aria-label="Increase quantity" style="border: none; background: none; width: 26px; height: 26px; font-size: 14px; cursor: pointer; color: var(--color-primary); display: flex; align-items: center; justify-content: center;">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            const minusBtn = document.getElementById('checkout-qty-minus');
+            const plusBtn = document.getElementById('checkout-qty-plus');
+            const displayVal = document.getElementById('checkout-qty-display');
+            
+            if (minusBtn) {
+                minusBtn.addEventListener('click', () => {
+                    if (currentQty > 1) {
+                        currentQty--;
+                        if (displayVal) displayVal.textContent = currentQty;
+                        calculateOrder();
+                    }
+                });
+            }
+            if (plusBtn) {
+                plusBtn.addEventListener('click', () => {
+                    currentQty++;
+                    if (displayVal) displayVal.textContent = currentQty;
+                    calculateOrder();
+                });
+            }
+        }
+    }
+
     function calculateOrder() {
-        const product = window.products[selectedProductId] || { price: 149 };
-        const itemPrice = product.price;
-        let productTotal = currentQty * itemPrice;
+        let productTotal = 0;
         let deliveryCharge = 30;
         let offerText = '';
         let discountAmount = 0;
@@ -1832,40 +2144,94 @@ document.addEventListener('DOMContentLoaded', () => {
         const billDeliveryStatusRow = document.getElementById('bill-delivery-status-row');
         const billDeliveryStatus = document.getElementById('bill-delivery-status');
         
-        if (isPinValid && activeState) {
-            const rate = getShippingRate(activeState, selectedProductId, currentQty);
-            deliveryCharge = rate.charge;
-            offerText = rate.text;
+        if (isCartCheckout) {
+            cart.forEach(item => {
+                const product = window.products[item.productId] || { price: 149 };
+                productTotal += product.price * item.quantity;
+            });
             
-            if (billPinRow && billPinValue) {
-                billPinValue.textContent = pinVal;
-                billPinRow.style.display = 'flex';
-            }
-            if (billStateRow && billStateValue) {
-                billStateValue.textContent = activeState;
-                billStateRow.style.display = 'flex';
-            }
-            if (billDeliveryStatusRow && billDeliveryStatus) {
-                if (deliveryCharge === 0) {
-                    billDeliveryStatus.textContent = "FREE Delivery Active!";
-                    billDeliveryStatus.style.color = '#4CAF50';
-                } else {
-                    const needed = (selectedProductId === 'hair-oil') ? 1 : (activeState.toLowerCase() === 'kerala' ? 2 : 4);
-                    const diff = needed - currentQty;
-                    billDeliveryStatus.textContent = `Add ${diff} more for FREE Delivery`;
-                    billDeliveryStatus.style.color = 'var(--color-accent)';
+            if (isPinValid && activeState) {
+                const rate = getCartShippingRate(activeState, productTotal, cart);
+                deliveryCharge = rate.charge;
+                offerText = rate.text;
+                
+                if (billPinRow && billPinValue) {
+                    billPinValue.textContent = pinVal;
+                    billPinRow.style.display = 'flex';
                 }
-                billDeliveryStatusRow.style.display = 'flex';
+                if (billStateRow && billStateValue) {
+                    billStateValue.textContent = activeState;
+                    billStateRow.style.display = 'flex';
+                }
+                if (billDeliveryStatusRow && billDeliveryStatus) {
+                    if (deliveryCharge === 0) {
+                        billDeliveryStatus.textContent = "FREE Delivery Active!";
+                        billDeliveryStatus.style.color = '#4CAF50';
+                    } else {
+                        if (activeState.toLowerCase() === 'kerala') {
+                            let lipBalmQty = 0;
+                            cart.forEach(item => {
+                                if (item.productId === 'strawberry-beetroot') lipBalmQty += item.quantity;
+                            });
+                            const needed = 2 - lipBalmQty;
+                            billDeliveryStatus.textContent = `Add ${needed} more Lip Balm for FREE Delivery`;
+                        } else {
+                            const diff = 700 - productTotal;
+                            billDeliveryStatus.textContent = `Add ₹${diff} more for FREE Delivery`;
+                        }
+                        billDeliveryStatus.style.color = 'var(--color-accent)';
+                    }
+                    billDeliveryStatusRow.style.display = 'flex';
+                }
+            } else {
+                if (billPinRow) billPinRow.style.display = 'none';
+                if (billStateRow) billStateRow.style.display = 'none';
+                if (billDeliveryStatusRow) billDeliveryStatusRow.style.display = 'none';
+                deliveryCharge = null;
             }
         } else {
-            if (billPinRow) billPinRow.style.display = 'none';
-            if (billStateRow) billStateRow.style.display = 'none';
-            if (billDeliveryStatusRow) billDeliveryStatusRow.style.display = 'none';
-            deliveryCharge = null;
+            const product = window.products[selectedProductId] || { price: 149 };
+            productTotal = currentQty * product.price;
+            
+            if (isPinValid && activeState) {
+                const rate = getShippingRate(activeState, selectedProductId, currentQty);
+                deliveryCharge = rate.charge;
+                offerText = rate.text;
+                
+                if (billPinRow && billPinValue) {
+                    billPinValue.textContent = pinVal;
+                    billPinRow.style.display = 'flex';
+                }
+                if (billStateRow && billStateValue) {
+                    billStateValue.textContent = activeState;
+                    billStateRow.style.display = 'flex';
+                }
+                if (billDeliveryStatusRow && billDeliveryStatus) {
+                    if (deliveryCharge === 0) {
+                        billDeliveryStatus.textContent = "FREE Delivery Active!";
+                        billDeliveryStatus.style.color = '#4CAF50';
+                    } else {
+                        if (activeState.toLowerCase() === 'kerala') {
+                            const needed = 2 - currentQty;
+                            billDeliveryStatus.textContent = `Add ${needed} more for FREE Delivery`;
+                        } else {
+                            const diff = 700 - productTotal;
+                            billDeliveryStatus.textContent = `Add ₹${diff} more for FREE Delivery`;
+                        }
+                        billDeliveryStatus.style.color = 'var(--color-accent)';
+                    }
+                    billDeliveryStatusRow.style.display = 'flex';
+                }
+            } else {
+                if (billPinRow) billPinRow.style.display = 'none';
+                if (billStateRow) billStateRow.style.display = 'none';
+                if (billDeliveryStatusRow) billDeliveryStatusRow.style.display = 'none';
+                deliveryCharge = null;
+            }
         }
 
-        // Coupon code requirement validation (qty >= 2 for all products)
-        if (currentQty < 2) {
+        const totalItemsQty = isCartCheckout ? cart.reduce((sum, item) => sum + item.quantity, 0) : currentQty;
+        if (totalItemsQty < 2) {
             if (couponApplied) {
                 couponApplied = false;
                 if (couponFeedback) {
@@ -1879,14 +2245,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         
-        // Coupon discount logic
         if (couponApplied) {
             discountAmount = Math.round(productTotal * discountPercent);
         }
         
         let grandTotal = productTotal + (deliveryCharge || 0) - discountAmount;
         
-        // Update display elements
         if (billProductPrice) billProductPrice.textContent = `₹${productTotal}`;
         
         if (billDeliveryCharge) {
@@ -1925,26 +2289,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (billGrandTotal) billGrandTotal.textContent = `₹${grandTotal}`;
     }
-    
-    // Qty minus event
-    if (checkoutQtyMinus) {
-        checkoutQtyMinus.addEventListener('click', () => {
-            if (currentQty > 1) {
-                currentQty--;
-                if (checkoutQtyDisplay) checkoutQtyDisplay.textContent = currentQty;
-                calculateOrder();
-            }
-        });
-    }
-    
-    // Qty plus event
-    if (checkoutQtyPlus) {
-        checkoutQtyPlus.addEventListener('click', () => {
-            currentQty++;
-            if (checkoutQtyDisplay) checkoutQtyDisplay.textContent = currentQty;
-            calculateOrder();
-        });
-    }
+
     
     // Coupon Apply Event
     if (applyCouponBtn && couponCodeInput) {
@@ -2010,29 +2355,51 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             const state = pinRes.state;
-            const rate = getShippingRate(state, selectedProductId, currentQty);
-            const deliveryCharge = rate.charge;
-            
-            const product = window.products[selectedProductId] || { name: "LIPLEY Strawberry Beetroot Tinted Lip Balm", price: 149 };
-            const productName = product.name;
-            const itemPrice = product.price;
-            const productTotal = currentQty * itemPrice;
-            const discountAmount = couponApplied ? Math.round(productTotal * discountPercent) : 0;
-            const grandTotal = productTotal + deliveryCharge - discountAmount;
-            
-            // Offer details
-            let offerString = rate.text;
+            let productTotal = 0;
+            let deliveryCharge = 0;
+            let offerString = '';
             
             // Format WhatsApp Message
             let message = `Hello LIPLEY,\n\n`;
             message += `I would like to place an order for:\n`;
-            message += `*Product:* ${productName}\n`;
-            message += `*Price:* ₹${itemPrice}\n`;
-            message += `*Quantity:* ${currentQty}\n`;
-            if (offerString) {
-                message += `*Offer:* ${offerString}\n`;
+            
+            if (isCartCheckout) {
+                cart.forEach((item, index) => {
+                    const product = window.products[item.productId] || { name: item.productId, price: 149 };
+                    productTotal += product.price * item.quantity;
+                    message += `${index + 1}. *Product:* ${product.name}\n`;
+                    message += `   *Price:* ₹${product.price}\n`;
+                    message += `   *Quantity:* ${item.quantity}\n`;
+                    message += `   *Subtotal:* ₹${product.price * item.quantity}\n\n`;
+                });
+                
+                const rate = getCartShippingRate(state, productTotal, cart);
+                deliveryCharge = rate.charge;
+                offerString = rate.text;
+                
+                message += `*Order Subtotal:* ₹${productTotal}\n`;
+            } else {
+                const product = window.products[selectedProductId] || { name: "LIPLEY Strawberry Beetroot Tinted Lip Balm", price: 149 };
+                const productName = product.name;
+                const itemPrice = product.price;
+                productTotal = currentQty * itemPrice;
+                
+                const rate = getShippingRate(state, selectedProductId, currentQty);
+                deliveryCharge = rate.charge;
+                offerString = rate.text;
+                
+                message += `*Product:* ${productName}\n`;
+                message += `*Price:* ₹${itemPrice}\n`;
+                message += `*Quantity:* ${currentQty}\n`;
+                if (offerString) {
+                    message += `*Offer:* ${offerString}\n`;
+                }
+                message += `*Product Total:* ₹${productTotal}\n`;
             }
-            message += `*Product Total:* ₹${productTotal}\n`;
+            
+            const discountAmount = couponApplied ? Math.round(productTotal * discountPercent) : 0;
+            const grandTotal = productTotal + deliveryCharge - discountAmount;
+            
             message += `*Delivery Charge:* ${deliveryCharge === 0 ? 'FREE' : '₹' + deliveryCharge}\n`;
             if (couponApplied) {
                 message += `*Coupon Discount:* -₹${discountAmount} (${validCouponCode})\n`;
@@ -2047,6 +2414,12 @@ document.addEventListener('DOMContentLoaded', () => {
             // URL encode message and open WhatsApp
             const encodedMessage = encodeURIComponent(message);
             const whatsappUrl = `https://wa.me/917591900437?text=${encodedMessage}`;
+            
+            // Clear cart if this was a cart checkout
+            if (isCartCheckout) {
+                cart = [];
+                saveCart();
+            }
             
             window.open(whatsappUrl, '_blank');
         });

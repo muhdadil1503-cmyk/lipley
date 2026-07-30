@@ -549,7 +549,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 6. E-COMMERCE SPA ROUTER ---
     const viewHome = document.getElementById('view-home');
     const viewProduct = document.getElementById('view-product');
-    const viewElements = [viewHome, viewProduct];
+    const viewShop = document.getElementById('view-shop');
+    const viewElements = [viewHome, viewProduct, viewShop];
 
     // --- 6.1 SPA ROUTING HISTORY AND BACK NAVIGATION ---
     const navigationHistory = [];
@@ -671,6 +672,26 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    const shopBuyTriggers = document.querySelectorAll('.shop-buy-trigger');
+    shopBuyTriggers.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const productId = btn.getAttribute('data-product-id');
+            if (typeof window.loadProductDetails === 'function') {
+                window.loadProductDetails(productId);
+            }
+            currentQty = 1;
+            const checkoutQtyDisplay = document.getElementById('checkout-qty-display');
+            if (checkoutQtyDisplay) {
+                checkoutQtyDisplay.textContent = currentQty;
+            }
+            if (typeof calculateOrder === 'function') {
+                calculateOrder();
+            }
+            window.openPurchaseOptions();
+        });
+    });
+
     document.addEventListener('click', (e) => {
         const link = e.target.closest('a');
         if (!link) return;
@@ -685,7 +706,7 @@ document.addEventListener('DOMContentLoaded', () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         } else if (href === '#featured-product-section' || href === '#products') {
             e.preventDefault();
-            showView('view-product');
+            showView('view-shop');
             updateNavActive('nav-shop-link');
         } else if (href === '#checkout') {
             e.preventDefault();

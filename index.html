@@ -128,12 +128,6 @@
                         <span class="hero-brand">LIPLEY</span>
                         <h1 class="hero-title-premium">Premium Organic Lip Care</h1>
                         <p class="hero-subtitle-premium">Naturally Soft. Beautifully Tinted.</p>
-                        <div class="hero-actions-premium">
-                            <button class="btn btn-primary shop-now-trigger" id="hero-view-product" data-product-id="strawberry-beetroot">
-                                <span>View Product</span>
-                                <svg viewBox="0 0 24 24" class="btn-icon"><path fill="currentColor" d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
-                            </button>
-                        </div>
                     </div>
                 </div>
 
@@ -259,7 +253,7 @@
 
                     <div class="products-grid">
                         <!-- Featured Product Card: Lip Balm -->
-                        <div class="product-card featured-product scroll-reveal reveal-blur" id="product-strawberry-beetroot-card">
+                        <div class="product-card featured-product scroll-reveal reveal-blur shop-now-trigger" id="product-strawberry-beetroot-card" data-product-id="strawberry-beetroot">
                             <div class="product-visual">
                                 <img src="assets/images/lipley-gallery-closed.jpg" alt="LIPLEY Strawberry Beetroot Tinted Lip Balm" class="product-main-img" loading="lazy">
                                 <span class="product-badge">Best Seller</span>
@@ -274,15 +268,11 @@
                                     <span class="variant-value">Strawberry + Beetroot Tinted</span>
                                 </div>
                                 <p class="product-desc">Premium organic lip balm enriched with Strawberry Extract and Beetroot Oil to help moisturize lips while providing a beautiful natural tinted finish.</p>
-                                
-                                <div class="product-links" style="width: 100%;">
-                                    <button class="btn btn-primary btn-small btn-full shop-now-trigger" data-product-id="strawberry-beetroot">View Product</button>
-                                </div>
                             </div>
                         </div>
 
                         <!-- Featured Product Card: Hair Oil -->
-                        <div class="product-card featured-product scroll-reveal reveal-blur" id="product-hair-oil-card" style="transition-delay: 0.15s;">
+                        <div class="product-card featured-product scroll-reveal reveal-blur shop-now-trigger" id="product-hair-oil-card" data-product-id="hair-oil" style="transition-delay: 0.15s;">
                             <div class="product-visual">
                                 <img src="assets/images/lipley-hair-oil.jpg" alt="Lipley Hair Oil" class="product-main-img" loading="lazy">
                                 <span class="product-badge">New Launch</span>
@@ -297,10 +287,6 @@
                                     <span class="variant-value">100% Ayurvedic Herbal Oil</span>
                                 </div>
                                 <p class="product-desc">Formulated with a rich blend of traditional herbs like Amla, Bhringraj, Hibiscus, Rosemary, Brahmi, Neem, Fenugreek, Aloe Vera, and pure Virgin Coconut Oil to help deeply nourish the scalp, strengthen roots, and support healthy hair growth.</p>
-                                
-                                <div class="product-links" style="width: 100%;">
-                                    <button class="btn btn-primary btn-small btn-full shop-now-trigger" data-product-id="hair-oil">View Product</button>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -702,6 +688,127 @@
                             </form>
                         </div>
                         
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- VIEW 3: DEDICATED SHOP PAGE -->
+        <div id="view-shop" class="page-view">
+            <!-- SHOP HEADER -->
+            <section class="shop-header-section" style="padding: 60px 0 40px 0; background-color: var(--color-primary); color: #ffffff; text-align: center; position: relative;">
+                <div class="container">
+                    <span style="font-size: 11px; letter-spacing: 0.15em; font-weight: 700; color: var(--color-accent); text-transform: uppercase;">Our Boutique</span>
+                    <h1 style="font-family: var(--font-serif); font-size: clamp(32px, 5vw, 48px); font-weight: 500; margin: 10px 0 15px 0; text-transform: uppercase; letter-spacing: 0.02em;">The Lipley Collection</h1>
+                    <p style="font-size: 15px; opacity: 0.85; max-width: 600px; margin: 0 auto; line-height: 1.6;">Premium organic formulations designed for luxury care and natural beauty.</p>
+                </div>
+            </section>
+
+            <!-- SHOP PRODUCT GRID -->
+            <section class="shop-grid-section" style="padding: 60px 0; background-color: var(--bg-light);">
+                <div class="container">
+                    <div class="shop-products-container" style="display: grid; grid-template-columns: 1fr; gap: 60px; max-width: 1000px; margin: 0 auto;">
+                        
+                        <!-- Product 1: Lip Balm -->
+                        <div class="shop-product-row" style="display: flex; flex-direction: column; background: #ffffff; border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 8px; overflow: hidden; box-shadow: var(--shadow-soft);">
+                            <div style="display: grid; grid-template-columns: 1fr; gap: 0;" class="shop-product-grid-layout">
+                                <!-- Image column -->
+                                <div style="aspect-ratio: 1/1; background: radial-gradient(circle at center, #ffffff 0%, var(--color-secondary) 100%); display: flex; align-items: center; justify-content: center; padding: 30px; position: relative; border-bottom: 1px solid rgba(30, 58, 52, 0.08);" class="shop-product-img-col">
+                                    <img src="assets/images/lipley-gallery-closed.jpg?v=2" alt="LIPLEY Strawberry Beetroot Tinted Lip Balm" style="max-width: 95%; max-height: 95%; object-fit: contain;" class="shop-product-item-img">
+                                    <span style="position: absolute; top: 20px; left: 20px; background-color: var(--color-primary); border: 1px solid var(--color-accent); color: var(--color-secondary); font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; padding: 4px 10px; border-radius: 2px; z-index: 10;">Best Seller</span>
+                                </div>
+                                <!-- Content column -->
+                                <div style="padding: 45px 40px; text-align: left; display: flex; flex-direction: column; justify-content: space-between;" class="shop-product-desc-col">
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                            <span style="font-size: 11px; letter-spacing: 0.15em; font-weight: 700; color: var(--color-accent); text-transform: uppercase;">Organic Lip Balm</span>
+                                            <span style="font-size: 11px; font-weight: 600; color: #4CAF50; background: rgba(76, 175, 80, 0.08); padding: 4px 10px; border-radius: 20px; letter-spacing: 0.05em; text-transform: uppercase;">Free Delivery</span>
+                                        </div>
+                                        <h2 style="font-family: var(--font-sans); font-size: clamp(20px, 2.5vw, 24px); font-weight: 600; color: var(--color-primary); margin-bottom: 15px; text-transform: uppercase;">Lipley Beetroot Lip Balm</h2>
+                                        <p style="font-size: 14px; line-height: 1.6; color: var(--color-primary); opacity: 0.85; margin-bottom: 25px;">Premium organic lip balm enriched with Strawberry Extract and Beetroot Oil to help moisturize lips while providing a beautiful natural tinted finish.</p>
+                                        
+                                        <!-- Key Benefits -->
+                                        <div style="margin-bottom: 25px;">
+                                            <h4 style="font-size: 12px; letter-spacing: 0.08em; font-weight: 700; color: var(--color-accent); text-transform: uppercase; margin-bottom: 12px;">Key Benefits</h4>
+                                            <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; font-size: 13.5px; color: var(--color-primary);">
+                                                <li style="display: flex; align-items: flex-start; gap: 8px;"><span style="color: var(--color-accent); font-weight: 700;">✓</span> <span>Helps deeply moisturize dry lips</span></li>
+                                                <li style="display: flex; align-items: flex-start; gap: 8px;"><span style="color: var(--color-accent); font-weight: 700;">✓</span> <span>Reduces the appearance of lip dryness and flakiness</span></li>
+                                                <li style="display: flex; align-items: flex-start; gap: 8px;"><span style="color: var(--color-accent); font-weight: 700;">✓</span> <span>Provides a beautiful natural beetroot tinted finish</span></li>
+                                            </ul>
+                                        </div>
+
+                                        <!-- Main Ingredients -->
+                                        <div style="margin-bottom: 30px;">
+                                            <h4 style="font-size: 12px; letter-spacing: 0.08em; font-weight: 700; color: var(--color-accent); text-transform: uppercase; margin-bottom: 12px;">Main Ingredients</h4>
+                                            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                                                <span style="font-size: 11px; padding: 5px 12px; background: rgba(30, 58, 52, 0.05); border: 1px solid rgba(30, 58, 52, 0.1); border-radius: 20px; color: var(--color-primary); font-weight: 500;">Beeswax</span>
+                                                <span style="font-size: 11px; padding: 5px 12px; background: rgba(30, 58, 52, 0.05); border: 1px solid rgba(30, 58, 52, 0.1); border-radius: 20px; color: var(--color-primary); font-weight: 500;">Shea Butter</span>
+                                                <span style="font-size: 11px; padding: 5px 12px; background: rgba(30, 58, 52, 0.05); border: 1px solid rgba(30, 58, 52, 0.1); border-radius: 20px; color: var(--color-primary); font-weight: 500;">Beetroot Oil</span>
+                                                <span style="font-size: 11px; padding: 5px 12px; background: rgba(30, 58, 52, 0.05); border: 1px solid rgba(30, 58, 52, 0.1); border-radius: 20px; color: var(--color-primary); font-weight: 500;">Strawberry Oil</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="border-top: 1px solid rgba(30, 58, 52, 0.08); padding-top: 20px; display: flex; align-items: center; justify-content: space-between; gap: 20px;">
+                                        <div>
+                                            <span style="font-size: 11px; opacity: 0.6; text-transform: uppercase; display: block; margin-bottom: 2px; letter-spacing: 0.05em; font-weight: 600;">Price</span>
+                                            <span style="font-size: 24px; font-weight: 600; color: var(--color-primary);">₹149</span>
+                                        </div>
+                                        <button class="btn btn-primary shop-buy-trigger" data-product-id="strawberry-beetroot" style="padding: 12px 30px; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; border-radius: 4px; box-shadow: var(--shadow-luxury); height: auto; width: auto;">Buy Now</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Product 2: Hair Oil -->
+                        <div class="shop-product-row" style="display: flex; flex-direction: column; background: #ffffff; border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 8px; overflow: hidden; box-shadow: var(--shadow-soft);">
+                            <div style="display: grid; grid-template-columns: 1fr; gap: 0;" class="shop-product-grid-layout">
+                                <!-- Image column -->
+                                <div style="aspect-ratio: 1/1; background: radial-gradient(circle at center, #ffffff 0%, var(--color-secondary) 100%); display: flex; align-items: center; justify-content: center; padding: 30px; position: relative; border-bottom: 1px solid rgba(30, 58, 52, 0.08);" class="shop-product-img-col">
+                                    <img src="assets/images/lipley-hair-oil.jpg?v=2" alt="Lipley Hair Oil" style="max-width: 95%; max-height: 95%; object-fit: contain;" class="shop-product-item-img">
+                                    <span style="position: absolute; top: 20px; left: 20px; background-color: var(--color-primary); border: 1px solid var(--color-accent); color: var(--color-secondary); font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; padding: 4px 10px; border-radius: 2px; z-index: 10;">New Launch</span>
+                                </div>
+                                <!-- Content column -->
+                                <div style="padding: 45px 40px; text-align: left; display: flex; flex-direction: column; justify-content: space-between;" class="shop-product-desc-col">
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                            <span style="font-size: 11px; letter-spacing: 0.15em; font-weight: 700; color: var(--color-accent); text-transform: uppercase;">Hair Care</span>
+                                            <span style="font-size: 11px; font-weight: 600; color: #4CAF50; background: rgba(76, 175, 80, 0.08); padding: 4px 10px; border-radius: 20px; letter-spacing: 0.05em; text-transform: uppercase;">Free Delivery</span>
+                                        </div>
+                                        <h2 style="font-family: var(--font-sans); font-size: clamp(20px, 2.5vw, 24px); font-weight: 600; color: var(--color-primary); margin-bottom: 15px; text-transform: uppercase;">Lipley Hair Oil</h2>
+                                        <p style="font-size: 14px; line-height: 1.6; color: var(--color-primary); opacity: 0.85; margin-bottom: 25px;">Experience the power of Ayurveda with Lipley Hair Oil. Formulated with a rich blend of traditional herbs like Amla, Bhringraj, Hibiscus, Rosemary, Brahmi, Neem, Fenugreek, Aloe Vera, and pure Virgin Coconut Oil.</p>
+                                        
+                                        <!-- Key Benefits -->
+                                        <div style="margin-bottom: 25px;">
+                                            <h4 style="font-size: 12px; letter-spacing: 0.08em; font-weight: 700; color: var(--color-accent); text-transform: uppercase; margin-bottom: 12px;">Key Benefits</h4>
+                                            <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; font-size: 13.5px; color: var(--color-primary);">
+                                                <li style="display: flex; align-items: flex-start; gap: 8px;"><span style="color: var(--color-accent); font-weight: 700;">✓</span> <span>Nourishes the scalp and strengthens hair roots</span></li>
+                                                <li style="display: flex; align-items: flex-start; gap: 8px;"><span style="color: var(--color-accent); font-weight: 700;">✓</span> <span>Helps reduce hair fall and split ends</span></li>
+                                                <li style="display: flex; align-items: flex-start; gap: 8px;"><span style="color: var(--color-accent); font-weight: 700;">✓</span> <span>Supports healthy, active, and voluminous hair growth</span></li>
+                                            </ul>
+                                        </div>
+
+                                        <!-- Main Ingredients -->
+                                        <div style="margin-bottom: 30px;">
+                                            <h4 style="font-size: 12px; letter-spacing: 0.08em; font-weight: 700; color: var(--color-accent); text-transform: uppercase; margin-bottom: 12px;">Main Ingredients</h4>
+                                            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                                                <span style="font-size: 11px; padding: 5px 12px; background: rgba(30, 58, 52, 0.05); border: 1px solid rgba(30, 58, 52, 0.1); border-radius: 20px; color: var(--color-primary); font-weight: 500;">Amla & Bhringraj</span>
+                                                <span style="font-size: 11px; padding: 5px 12px; background: rgba(30, 58, 52, 0.05); border: 1px solid rgba(30, 58, 52, 0.1); border-radius: 20px; color: var(--color-primary); font-weight: 500;">Rosemary & Hibiscus</span>
+                                                <span style="font-size: 11px; padding: 5px 12px; background: rgba(30, 58, 52, 0.05); border: 1px solid rgba(30, 58, 52, 0.1); border-radius: 20px; color: var(--color-primary); font-weight: 500;">Brahmi & Neem</span>
+                                                <span style="font-size: 11px; padding: 5px 12px; background: rgba(30, 58, 52, 0.05); border: 1px solid rgba(30, 58, 52, 0.1); border-radius: 20px; color: var(--color-primary); font-weight: 500;">Virgin Coconut Oil</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="border-top: 1px solid rgba(30, 58, 52, 0.08); padding-top: 20px; display: flex; align-items: center; justify-content: space-between; gap: 20px;">
+                                        <div>
+                                            <span style="font-size: 11px; opacity: 0.6; text-transform: uppercase; display: block; margin-bottom: 2px; letter-spacing: 0.05em; font-weight: 600;">Price</span>
+                                            <span style="font-size: 24px; font-weight: 600; color: var(--color-primary);">₹249</span>
+                                        </div>
+                                        <button class="btn btn-primary shop-buy-trigger" data-product-id="hair-oil" style="padding: 12px 30px; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; border-radius: 4px; box-shadow: var(--shadow-luxury); height: auto; width: auto;">Buy Now</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </section>

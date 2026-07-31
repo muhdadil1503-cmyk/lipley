@@ -54,10 +54,8 @@
             <nav class="desktop-nav">
                 <a href="#home" class="nav-link active" id="nav-home-link">Home</a>
                 <a href="#shop" class="nav-link" id="nav-shop-link">Shop</a>
-                <a href="#benefits" class="nav-link">Benefits</a>
-                <a href="#reviews" class="nav-link">Reviews</a>
-                <a href="#faq" class="nav-link">FAQ</a>
-                <a href="#contact" class="nav-link">Contact</a>
+                <a href="#about" class="nav-link" id="nav-about-link">Our Story</a>
+                <a href="#contact" class="nav-link" id="nav-contact-link">Contact</a>
             </nav>
 
             <!-- E-Commerce and Social Actions -->
@@ -97,10 +95,8 @@
     <div id="mobile-drawer" class="mobile-drawer">
         <nav class="mobile-nav">
             <a href="#home" class="mobile-nav-link">Home</a>
-            <a href="#featured-product-section" class="mobile-nav-link">Shop</a>
-            <a href="#benefits" class="mobile-nav-link">Benefits</a>
-            <a href="#reviews" class="mobile-nav-link">Reviews</a>
-            <a href="#faq" class="mobile-nav-link">FAQ</a>
+            <a href="#shop" class="mobile-nav-link">Shop</a>
+            <a href="#about" class="mobile-nav-link">Our Story</a>
             <a href="#contact" class="mobile-nav-link">Contact</a>
         </nav>
         <div class="mobile-drawer-socials">
@@ -137,6 +133,9 @@
                         <span class="hero-brand">LIPLEY</span>
                         <h1 class="hero-title-premium">Premium Organic Lip Care</h1>
                         <p class="hero-subtitle-premium">Naturally Soft. Beautifully Tinted.</p>
+                        <div class="hero-actions-premium" style="margin-top: clamp(10px, 2vw, 25px);">
+                            <a href="#featured-product-section" class="btn btn-primary" id="hero-shop-now-btn" style="box-shadow: var(--shadow-luxury); border: 1px solid var(--color-accent);">Shop Now</a>
+                        </div>
                     </div>
                 </div>
 
@@ -152,6 +151,53 @@
                 <div class="hero-dots">
                     <span class="hero-dot active" data-slide="0"></span>
                     <span class="hero-dot" data-slide="1"></span>
+                </div>
+            </section>
+
+            <!-- FEATURED FLAGSHIP PRODUCT SECTION -->
+            <section id="featured-product-section" class="products-section bg-light">
+                <div class="container">
+                    <div class="section-header scroll-reveal reveal-fade-up">
+                        <span class="section-tagline">OUR SIGNATURE FORMULAS</span>
+                        <h2 class="section-title">Featured Products</h2>
+                        <p class="section-subtitle">Experience our organic, premium solutions for luxury beauty and self-care.</p>
+                    </div>
+
+                    <div class="products-grid">
+                        <!-- Featured Product Card: Lip Balm -->
+                        <div class="product-card featured-product scroll-reveal reveal-blur shop-now-trigger" id="product-strawberry-beetroot-card" data-product-id="strawberry-beetroot">
+                            <div class="product-visual">
+                                <img src="assets/images/lipley-gallery-closed.jpg" alt="LIPLEY Strawberry Beetroot Tinted Lip Balm" class="product-main-img" loading="lazy">
+                                <span class="product-badge">Best Seller</span>
+                            </div>
+                            <div class="product-content" style="text-align: center; padding: 25px 20px;">
+                                <h3 class="product-name" style="font-size: 17px; margin: 0 0 8px 0; font-weight: 600; color: var(--color-primary); line-height: 1.3;">LIPLEY Strawberry Beetroot Tinted Lip Balm</h3>
+                                <p class="product-short-tagline" style="font-size: 13px; font-style: italic; opacity: 0.85; margin-bottom: 8px;">Naturally Soft. Beautifully Tinted.</p>
+                                <div style="font-size: 12px; margin-bottom: 12px; font-weight: 600; opacity: 0.7;">Net Quantity: 8g</div>
+                                <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px;">
+                                    <span class="product-price" style="font-size: 18px; font-weight: 700; color: var(--color-primary);">₹149</span>
+                                </div>
+                                <button class="btn btn-primary shop-now-trigger" data-product-id="strawberry-beetroot" style="width: 100%; padding: 12px; font-size: 12px; letter-spacing: 0.05em; border-radius: 4px; box-shadow: var(--shadow-luxury);">View Details</button>
+                            </div>
+                        </div>
+
+                        <!-- Featured Product Card: Hair Oil -->
+                        <div class="product-card featured-product scroll-reveal reveal-blur shop-now-trigger" id="product-hair-oil-card" data-product-id="hair-oil" style="transition-delay: 0.15s;">
+                            <div class="product-visual">
+                                <img src="assets/images/lipley-hair-oil.jpg" alt="Lipley Hair Oil" class="product-main-img" loading="lazy">
+                                <span class="product-badge">New Launch</span>
+                            </div>
+                            <div class="product-content" style="text-align: center; padding: 25px 20px;">
+                                <h3 class="product-name" style="font-size: 17px; margin: 0 0 8px 0; font-weight: 600; color: var(--color-primary); line-height: 1.3;">Lipley Hair Oil</h3>
+                                <p class="product-short-tagline" style="font-size: 13px; font-style: italic; opacity: 0.85; margin-bottom: 8px;">Root Strength. Healthy Growth.</p>
+                                <div style="font-size: 12px; margin-bottom: 12px; font-weight: 600; opacity: 0.7;">Net Quantity: 100ml</div>
+                                <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px;">
+                                    <span class="product-price" style="font-size: 18px; font-weight: 700; color: var(--color-primary);">₹249</span>
+                                </div>
+                                <button class="btn btn-primary shop-now-trigger" data-product-id="hair-oil" style="width: 100%; padding: 12px; font-size: 12px; letter-spacing: 0.05em; border-radius: 4px; box-shadow: var(--shadow-luxury);">View Details</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -251,57 +297,6 @@
                 </div>
             </section>
 
-            <!-- FEATURED FLAGSHIP PRODUCT SECTION -->
-            <section id="featured-product-section" class="products-section bg-light">
-                <div class="container">
-                    <div class="section-header scroll-reveal reveal-fade-up">
-                        <span class="section-tagline">OUR SIGNATURE FORMULAS</span>
-                        <h2 class="section-title">Featured Products</h2>
-                        <p class="section-subtitle">Experience our organic, premium solutions for luxury beauty and self-care.</p>
-                    </div>
-
-                    <div class="products-grid">
-                        <!-- Featured Product Card: Lip Balm -->
-                        <div class="product-card featured-product scroll-reveal reveal-blur shop-now-trigger" id="product-strawberry-beetroot-card" data-product-id="strawberry-beetroot">
-                            <div class="product-visual">
-                                <img src="assets/images/lipley-gallery-closed.jpg" alt="LIPLEY Strawberry Beetroot Tinted Lip Balm" class="product-main-img" loading="lazy">
-                                <span class="product-badge">Best Seller</span>
-                            </div>
-                            <div class="product-content">
-                                <div class="product-meta">
-                                    <span class="product-type">Organic Lip Balm</span>
-                                </div>
-                                <h3 class="product-name">LIPLEY Strawberry Beetroot Tinted Lip Balm</h3>
-                                <div class="product-variant-details">
-                                    <span class="variant-label">Variant:</span>
-                                    <span class="variant-value">Strawberry + Beetroot Tinted</span>
-                                </div>
-                                <p class="product-desc">Premium organic lip balm enriched with Strawberry Extract and Beetroot Oil to help moisturize lips while providing a beautiful natural tinted finish.</p>
-                            </div>
-                        </div>
-
-                        <!-- Featured Product Card: Hair Oil -->
-                        <div class="product-card featured-product scroll-reveal reveal-blur shop-now-trigger" id="product-hair-oil-card" data-product-id="hair-oil" style="transition-delay: 0.15s;">
-                            <div class="product-visual">
-                                <img src="assets/images/lipley-hair-oil.jpg" alt="Lipley Hair Oil" class="product-main-img" loading="lazy">
-                                <span class="product-badge">New Launch</span>
-                            </div>
-                            <div class="product-content">
-                                <div class="product-meta">
-                                    <span class="product-type">Hair Care</span>
-                                </div>
-                                <h3 class="product-name">Lipley Hair Oil</h3>
-                                <div class="product-variant-details">
-                                    <span class="variant-label">Type:</span>
-                                    <span class="variant-value">100% Ayurvedic Herbal Oil</span>
-                                </div>
-                                <p class="product-desc">Formulated with a rich blend of traditional herbs like Amla, Bhringraj, Hibiscus, Rosemary, Brahmi, Neem, Fenugreek, Aloe Vera, and pure Virgin Coconut Oil to help deeply nourish the scalp, strengthen roots, and support healthy hair growth.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
             <!-- WHY CHOOSE LIPLEY (FEATURES) -->
             <section id="features" class="features-section">
                 <div class="container">
@@ -357,284 +352,7 @@
                 </div>
             </section>
 
-            <!-- BENEFITS SECTION -->
-            <section id="benefits" class="benefits-section">
-                <div class="container">
-                    <div class="section-header scroll-reveal reveal-fade-up">
-                        <span class="section-tagline">THE LIPLEY PROMISE</span>
-                        <h2 class="section-title">Key Nourishing Benefits</h2>
-                        <p class="section-subtitle">Real skincare results driven by carefully blended premium ingredients.</p>
-                    </div>
-
-                    <div class="benefits-grid">
-                        <div class="benefit-item scroll-reveal reveal-fade-up">
-                            <span class="benefit-num">01</span>
-                            <h4 class="benefit-title">Moisturize dry lips</h4>
-                            <p class="benefit-text">Penetrates deeply to quench dry lips, locking in moisture immediately.</p>
-                        </div>
-                        <div class="benefit-item scroll-reveal reveal-fade-up delay-1">
-                            <span class="benefit-num">02</span>
-                            <h4 class="benefit-title">Reduce lip dryness appearance</h4>
-                            <p class="benefit-text">Smooths scaling and roughness, restoring a visibly soft lip contour.</p>
-                        </div>
-                        <div class="benefit-item scroll-reveal reveal-fade-up delay-2">
-                            <span class="benefit-num">03</span>
-                            <h4 class="benefit-title">Softer & smoother lips</h4>
-                            <p class="benefit-text">Enhances lip elasticity, creating a velvety feel with every application.</p>
-                        </div>
-                        <div class="benefit-item scroll-reveal reveal-fade-up">
-                            <span class="benefit-num">04</span>
-                            <h4 class="benefit-title">Improve uneven tone</h4>
-                            <p class="benefit-text">Gently promotes even coloring, brightening naturally pale or shaded areas.</p>
-                        </div>
-                        <div class="benefit-item scroll-reveal reveal-fade-up delay-1">
-                            <span class="benefit-num">05</span>
-                            <h4 class="benefit-title">Reduce dull-looking appearance</h4>
-                            <p class="benefit-text">Revitalizes lifeless lip skin with nourishing micronutrients and a natural gloss.</p>
-                        </div>
-                        <div class="benefit-item scroll-reveal reveal-fade-up delay-2">
-                            <span class="benefit-num">06</span>
-                            <h4 class="benefit-title">Vibrant & healthy lips</h4>
-                            <p class="benefit-text">Provides a boost of health-centric barrier shield for fresh, lively lips.</p>
-                        </div>
-                        <div class="benefit-item scroll-reveal reveal-fade-up">
-                            <span class="benefit-num">07</span>
-                            <h4 class="benefit-title">Long-lasting hydration</h4>
-                            <p class="benefit-text">Maintains a moisture lock all day, minimizing the need for constant reapplication.</p>
-                        </div>
-                        <div class="benefit-item scroll-reveal reveal-fade-up delay-1">
-                            <span class="benefit-num">08</span>
-                            <h4 class="benefit-title">Supports natural lip barrier</h4>
-                            <p class="benefit-text">Strengthens the vulnerable outer dermal layers from external environmental stress.</p>
-                        </div>
-                        <div class="benefit-item scroll-reveal reveal-fade-up delay-2">
-                            <span class="benefit-num">09</span>
-                            <h4 class="benefit-title">Suitable for daily use</h4>
-                            <p class="benefit-text">Gentle, clean organic formula that is completely safe to apply multiple times a day.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- INGREDIENTS SECTION -->
-            <section id="ingredients" class="ingredients-section bg-light">
-                <div class="container">
-                    <div class="section-header scroll-reveal reveal-fade-up">
-                        <span class="section-tagline">100% BOTANICALS</span>
-                        <h2 class="section-title">Pure Organic Ingredients</h2>
-                        <p class="section-subtitle">We select only the finest cold-pressed oils, organic waxes, and natural pigments.</p>
-                    </div>
-                    <div class="homepage-ingredients-grid">
-                        <div class="ingredient-card" style="background: #ffffff; border: 1px solid rgba(212, 175, 55, 0.15); border-radius: 8px; padding: 24px; text-align: center; box-shadow: var(--shadow-soft);">
-                            <h4 style="font-family: var(--font-sans); color: var(--color-primary); font-weight: 600; margin-bottom: 8px; text-transform: uppercase; font-size: 14px; letter-spacing: 0.05em;">Beetroot Oil</h4>
-                            <p style="font-size: 13.5px; line-height: 1.5; opacity: 0.85; margin: 0;">Rich in antioxidants, it provides our signature healthy, natural-looking pink flush.</p>
-                        </div>
-                        <div class="ingredient-card" style="background: #ffffff; border: 1px solid rgba(212, 175, 55, 0.15); border-radius: 8px; padding: 24px; text-align: center; box-shadow: var(--shadow-soft);">
-                            <h4 style="font-family: var(--font-sans); color: var(--color-primary); font-weight: 600; margin-bottom: 8px; text-transform: uppercase; font-size: 14px; letter-spacing: 0.05em;">Shea & Cocoa Butter</h4>
-                            <p style="font-size: 13.5px; line-height: 1.5; opacity: 0.85; margin: 0;">Deep-conditioning agents that form a silky protective moisture barrier over lips.</p>
-                        </div>
-                        <div class="ingredient-card" style="background: #ffffff; border: 1px solid rgba(212, 175, 55, 0.15); border-radius: 8px; padding: 24px; text-align: center; box-shadow: var(--shadow-soft);">
-                            <h4 style="font-family: var(--font-sans); color: var(--color-primary); font-weight: 600; margin-bottom: 8px; text-transform: uppercase; font-size: 14px; letter-spacing: 0.05em;">Sweet Almond & Jojoba</h4>
-                            <p style="font-size: 13.5px; line-height: 1.5; opacity: 0.85; margin: 0;">Cold-pressed botanical oils rich in vitamins that restore lip suppleness and elasticity.</p>
-                        </div>
-                        <div class="ingredient-card" style="background: #ffffff; border: 1px solid rgba(212, 175, 55, 0.15); border-radius: 8px; padding: 24px; text-align: center; box-shadow: var(--shadow-soft);">
-                            <h4 style="font-family: var(--font-sans); color: var(--color-primary); font-weight: 600; margin-bottom: 8px; text-transform: uppercase; font-size: 14px; letter-spacing: 0.05em;">Strawberry Extract</h4>
-                            <p style="font-size: 13.5px; line-height: 1.5; opacity: 0.85; margin: 0;">Infuses lips with natural fruit acids, leaving a fresh, subtle berry fragrance.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- HOW TO USE SECTION -->
-            <section id="how-to-use" class="how-to-use-section">
-                <div class="container">
-                    <div class="section-header scroll-reveal reveal-fade-up">
-                        <span class="section-tagline">DIRECTIONS FOR USE</span>
-                        <h2 class="section-title">How To Use</h2>
-                        <p class="section-subtitle">Follow these simple steps to lock in daily moisture and natural color.</p>
-                    </div>
-                    <div class="homepage-use-steps">
-                        <div class="step-card" style="padding: 20px;">
-                            <div class="step-num-icon" style="width: 50px; height: 50px; border-radius: 50%; background: var(--color-primary); color: var(--color-secondary); display: inline-flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; margin-bottom: 15px; border: 1px solid var(--color-accent);">01</div>
-                            <h4 style="font-family: var(--font-sans); font-size: 15px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-primary); margin-bottom: 8px;">Apply</h4>
-                            <p style="font-size: 13.5px; line-height: 1.5; opacity: 0.85; margin: 0;">Glide the balm evenly over clean, dry lips whenever needed.</p>
-                        </div>
-                        <div class="step-card" style="padding: 20px;">
-                            <div class="step-num-icon" style="width: 50px; height: 50px; border-radius: 50%; background: var(--color-primary); color: var(--color-secondary); display: inline-flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; margin-bottom: 15px; border: 1px solid var(--color-accent);">02</div>
-                            <h4 style="font-family: var(--font-sans); font-size: 15px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-primary); margin-bottom: 8px;">Layer</h4>
-                            <p style="font-size: 13.5px; line-height: 1.5; opacity: 0.85; margin: 0;">Build layers throughout the day to intensify the beetroot tint.</p>
-                        </div>
-                        <div class="step-card" style="padding: 20px;">
-                            <div class="step-num-icon" style="width: 50px; height: 50px; border-radius: 50%; background: var(--color-primary); color: var(--color-secondary); display: inline-flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; margin-bottom: 15px; border: 1px solid var(--color-accent);">03</div>
-                            <h4 style="font-family: var(--font-sans); font-size: 15px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-primary); margin-bottom: 8px;">Overnight</h4>
-                            <p style="font-size: 13.5px; line-height: 1.5; opacity: 0.85; margin: 0;">Apply a thick layer before bed as a hydrating overnight treatment.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- CUSTOMER REVIEWS -->
-            <section id="reviews" class="reviews-section bg-light">
-                <div class="container">
-                    <div class="section-header scroll-reveal reveal-fade-up">
-                        <span class="section-tagline">FEEDBACK</span>
-                        <h2 class="section-title">Customer Reviews</h2>
-                        <p class="section-subtitle">Real feedback from our LIPLEY community.</p>
-                    </div>
-
-                    <!-- Reviews Summary Metric stats & write action toggle -->
-                    <div class="reviews-summary-bar scroll-reveal reveal-fade-up">
-                        <div class="summary-stats">
-                            <div class="average-rating-box">
-                                <span class="avg-stars" id="avg-stars-display">★★★★★</span>
-                                <span class="avg-number" id="avg-num-display">4.9</span>
-                            </div>
-                            <p class="total-reviews-text" id="total-reviews-count">Based on 0 reviews</p>
-                        </div>
-                        <button class="btn btn-secondary btn-small" id="toggle-review-form-btn">Write a Review</button>
-                    </div>
-
-                    <!-- Review Form Box container -->
-                    <div class="review-form-wrapper" id="review-form-container" style="display: none;">
-                        <form id="customer-review-form" class="review-form">
-                            <h3 class="form-title">Share Your Experience</h3>
-                            
-                            <div class="form-group">
-                                <label class="form-label">Your Star Rating</label>
-                                <div class="star-rating-selector" id="star-selector">
-                                    <span class="rating-star-btn" data-value="5">★</span>
-                                    <span class="rating-star-btn" data-value="4">★</span>
-                                    <span class="rating-star-btn" data-value="3">★</span>
-                                    <span class="rating-star-btn" data-value="2">★</span>
-                                    <span class="rating-star-btn" data-value="1">★</span>
-                                </div>
-                                <input type="hidden" id="review-rating-value" value="5" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="review-name" class="form-label">Full Name</label>
-                                <input type="text" id="review-name" class="form-input" placeholder="Your Name" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="review-comment" class="form-label">Your Message</label>
-                                <textarea id="review-comment" class="form-input" rows="4" placeholder="How was your experience?" required></textarea>
-                            </div>
-
-                            <!-- Product Selector -->
-                            <div class="form-group" style="margin-bottom: 20px;">
-                                <label for="review-product" class="form-label">Select Product</label>
-                                <select id="review-product" class="form-input" style="padding: 12px 16px; height: auto; box-sizing: border-box; background: #fff; width: 100%; border: 1px solid rgba(30, 58, 52, 0.15); border-radius: 4px; display: block; margin-top: 4px;">
-                                    <option value="Lip Balm">LIPLEY Strawberry Beetroot Tinted Lip Balm</option>
-                                    <option value="Hair Oil">Lipley Hair Oil</option>
-                                </select>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary btn-submit">
-                                <span>Submit Review</span>
-                            </button>
-                        </form>
-                    </div>
-
-                    <!-- Moderator Pending Queue Panel (Only shows if url query ?admin=true is present) -->
-                    <div class="moderator-queue-box" id="moderator-admin-queue" style="display: none; margin-bottom: 40px; padding: 25px; border: 1px dashed var(--color-accent); border-radius: 8px; background-color: rgba(212,175,87,0.05);">
-                        <h3 class="moderator-queue-title" style="font-family: var(--font-brand); color: var(--color-primary); font-size: 18px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 15px;">🔒 Moderator Approval Queue</h3>
-                        <div id="moderator-pending-list" class="moderator-pending-grid">
-                            <!-- Pending moderation reviews will render here -->
-                        </div>
-                    </div>
-
-                    <!-- Reviews List Dynamic Grid -->
-                    <div class="reviews-grid" id="reviews-list-grid">
-                        <!-- Loaded dynamically via LocalDB or Firebase -->
-                    </div>
-
-                    <!-- See More Reviews Button -->
-                    <div class="see-more-reviews-container" id="see-more-reviews-container" style="text-align: center; margin-top: 30px; display: none;">
-                        <button class="btn btn-secondary btn-small" id="see-more-reviews-btn" style="padding: 10px 24px; font-size: 12px; font-weight: 600; text-transform: uppercase; border: 1px solid rgba(212, 175, 55, 0.25);">See More Reviews</button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- INSTAGRAM GALLERY SECTION (RECREATED) -->
-            <section class="instagram-feed-section bg-light" style="border-top: 1px solid rgba(212, 175, 55, 0.08); padding: 80px 0;">
-                <div class="container">
-                    <div class="section-header scroll-reveal reveal-fade-up">
-                        <span class="section-tagline">INSTAGRAM</span>
-                        <h2 class="section-title">Follow @lipleycare</h2>
-                        <p class="section-subtitle">Join our visual journey and share your moments with us.</p>
-                    </div>
-                    <div class="instagram-grid">
-                        <a href="https://www.instagram.com/lipleycare" target="_blank" rel="noopener" class="instagram-item scroll-reveal reveal-scale">
-                            <img src="assets/images/instagram-featured.jpg?v=2" alt="LIPLEY Featured Banner Poster" class="instagram-img" loading="lazy">
-                            <div class="instagram-overlay"><span class="instagram-icon">View Post</span></div>
-                        </a>
-                        <a href="https://www.instagram.com/lipleycare" target="_blank" rel="noopener" class="instagram-item scroll-reveal reveal-scale delay-1">
-                            <img src="assets/images/instagram-model.jpg?v=2" alt="LIPLEY Tinted Lip Balm Model Showcase" class="instagram-img" loading="lazy">
-                            <div class="instagram-overlay"><span class="instagram-icon">View Post</span></div>
-                        </a>
-                        <a href="https://www.instagram.com/lipleycare" target="_blank" rel="noopener" class="instagram-item scroll-reveal reveal-scale delay-2">
-                            <img src="assets/images/instagram-essential.jpg?v=2" alt="LIPLEY Lip Balm Product Showcase" class="instagram-img" loading="lazy">
-                            <div class="instagram-overlay"><span class="instagram-icon">View Post</span></div>
-                        </a>
-                        <a href="https://www.instagram.com/lipleycare" target="_blank" rel="noopener" class="instagram-item scroll-reveal reveal-scale delay-3">
-                            <img src="assets/images/instagram-pyramid.jpg?v=2" alt="LIPLEY Lip Balm Stack Showcase" class="instagram-img" loading="lazy">
-                            <div class="instagram-overlay"><span class="instagram-icon">View Post</span></div>
-                        </a>
-                    </div>
-                </div>
-            </section>
-
-            <!-- FAQ SECTION -->
-            <section id="faq" class="faq-section bg-light">
-                <div class="container">
-                    <div class="section-header scroll-reveal reveal-fade-up">
-                        <span class="section-tagline">QUESTIONS & ANSWERS</span>
-                        <h2 class="section-title">Frequently Asked Questions</h2>
-                    </div>
-                    <div class="faq-accordion scroll-reveal reveal-scale">
-                        <div class="faq-item">
-                            <button class="faq-question">
-                                <span>Is it suitable for daily use?</span>
-                                <span class="faq-icon">+</span>
-                            </button>
-                            <div class="faq-answer">
-                                <p>Yes, LIPLEY balm is formulated with 100% clean, organic botanicals and is safe to reapply as often as needed throughout the day.</p>
-                            </div>
-                        </div>
-                        <div class="faq-item">
-                            <button class="faq-question">
-                                <span>Is it suitable for men and women?</span>
-                                <span class="faq-icon">+</span>
-                            </button>
-                            <div class="faq-answer">
-                                <p>Absolutely. The natural tint provides a subtle, healthy flush of color that is suitable for both men and women seeking clean hydration.</p>
-                            </div>
-                        </div>
-                        <div class="faq-item">
-                            <button class="faq-question">
-                                <span>Is it organic?</span>
-                                <span class="faq-icon">+</span>
-                            </button>
-                            <div class="faq-answer">
-                                <p>Yes, LIPLEY lip balm is made with premium cold-pressed organic botanical oils, butters, and organic plant waxes.</p>
-                            </div>
-                        </div>
-                        <div class="faq-item">
-                            <button class="faq-question">
-                                <span>How long does one lip balm last?</span>
-                                <span class="faq-icon">+</span>
-                            </button>
-                            <div class="faq-answer">
-                                <p>With daily use, one 10g lip balm jar typically lasts between 2 to 3 months.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
             <!-- CONTACT SECTION -->
-            <section id="contact" class="contact-section">
                 <div class="container">
                     <div class="contact-modern-grid">
                         
@@ -856,7 +574,7 @@
                     </button>
                     <div class="breadcrumbs" style="margin-bottom: 0; font-size: 13px; opacity: 0.8;">
                         <a href="#home" class="breadcrumb-link home-crumb" style="text-decoration: none; color: var(--color-primary);">Home</a> / 
-                        <a href="#featured-product-section" class="breadcrumb-link shop-crumb" style="text-decoration: none; color: var(--color-primary);">Shop</a> / 
+                        <a href="#shop" class="breadcrumb-link shop-crumb" style="text-decoration: none; color: var(--color-primary);">Shop</a> / 
                         <span class="breadcrumb-active" style="font-weight: 600; color: var(--color-primary);">LIPLEY Strawberry Beetroot Tinted Lip Balm</span>
                     </div>
                 </div>
@@ -896,10 +614,16 @@
                         </p>
                         
                         <!-- Price -->
-                        <div class="p-price-row" style="margin-bottom: 25px; border-bottom: 1px solid rgba(30, 58, 52, 0.08); padding-bottom: 15px;">
+                        <div class="p-price-row" style="margin-bottom: 15px;">
                             <span class="price-label" style="font-size: 13px; font-weight: 600; text-transform: uppercase; color: var(--color-primary); opacity: 0.8; letter-spacing: 0.05em; margin-right: 10px;">Price:</span>
                             <span class="price-value" style="font-size: 26px; font-weight: 600; color: var(--color-primary);">₹149</span>
                             <span class="price-taxes" style="font-size: 12px; opacity: 0.7; margin-left: 10px;">(Inclusive of all taxes)</span>
+                        </div>
+                        
+                        <!-- Net Qty and Storage Info Block -->
+                        <div class="p-specs-row" style="display: flex; gap: 24px; font-size: 13px; margin-bottom: 25px; border-bottom: 1px solid rgba(30, 58, 52, 0.08); padding-bottom: 15px;">
+                            <div><strong style="color: var(--color-primary);">Net Qty:</strong> <span class="p-net-qty" style="opacity: 0.85;">8g</span></div>
+                            <div><strong style="color: var(--color-primary);">Storage:</strong> <span class="p-storage" style="opacity: 0.85;">Store in a cool, dry place.</span></div>
                         </div>
                         
 
@@ -1023,6 +747,89 @@
                 </div>
 
             </div>
+
+            <!-- CUSTOMER REVIEWS -->
+            <section id="reviews" class="reviews-section bg-light" style="border-top: 1px solid rgba(212, 175, 55, 0.15); margin-top: 60px; padding: 60px 0;">
+                <div class="container">
+                    <div class="section-header scroll-reveal reveal-fade-up">
+                        <span class="section-tagline">FEEDBACK</span>
+                        <h2 class="section-title">Customer Reviews</h2>
+                        <p class="section-subtitle">Real feedback from our LIPLEY community.</p>
+                    </div>
+
+                    <!-- Reviews Summary Metric stats & write action toggle -->
+                    <div class="reviews-summary-bar scroll-reveal reveal-fade-up">
+                        <div class="summary-stats">
+                            <div class="average-rating-box">
+                                <span class="avg-stars" id="avg-stars-display">★★★★★</span>
+                                <span class="avg-number" id="avg-num-display">4.9</span>
+                            </div>
+                            <p class="total-reviews-text" id="total-reviews-count">Based on 0 reviews</p>
+                        </div>
+                        <button class="btn btn-secondary btn-small" id="toggle-review-form-btn">Write a Review</button>
+                    </div>
+
+                    <!-- Review Form Box container -->
+                    <div class="review-form-wrapper" id="review-form-container" style="display: none;">
+                        <form id="customer-review-form" class="review-form">
+                            <h3 class="form-title">Share Your Experience</h3>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Your Star Rating</label>
+                                <div class="star-rating-selector" id="star-selector">
+                                    <span class="rating-star-btn" data-value="5">★</span>
+                                    <span class="rating-star-btn" data-value="4">★</span>
+                                    <span class="rating-star-btn" data-value="3">★</span>
+                                    <span class="rating-star-btn" data-value="2">★</span>
+                                    <span class="rating-star-btn" data-value="1">★</span>
+                                </div>
+                                <input type="hidden" id="review-rating-value" value="5" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="review-name" class="form-label">Full Name</label>
+                                <input type="text" id="review-name" class="form-input" placeholder="Your Name" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="review-comment" class="form-label">Your Message</label>
+                                <textarea id="review-comment" class="form-input" rows="4" placeholder="How was your experience?" required></textarea>
+                            </div>
+
+                            <!-- Product Selector (hidden for automated binding) -->
+                            <div class="form-group" style="margin-bottom: 20px; display: none;">
+                                <label for="review-product" class="form-label">Select Product</label>
+                                <select id="review-product" class="form-input">
+                                    <option value="Lip Balm">LIPLEY Strawberry Beetroot Tinted Lip Balm</option>
+                                    <option value="Hair Oil">Lipley Hair Oil</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-submit">
+                                <span>Submit Review</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Moderator Pending Queue Panel (Only shows if url query ?admin=true is present) -->
+                    <div class="moderator-queue-box" id="moderator-admin-queue" style="display: none; margin-bottom: 40px; padding: 25px; border: 1px dashed var(--color-accent); border-radius: 8px; background-color: rgba(212,175,87,0.05);">
+                        <h3 class="moderator-queue-title" style="font-family: var(--font-brand); color: var(--color-primary); font-size: 18px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 15px;">🔒 Moderator Approval Queue</h3>
+                        <div id="moderator-pending-list" class="moderator-pending-grid">
+                            <!-- Pending moderation reviews will render here -->
+                        </div>
+                    </div>
+
+                    <!-- Reviews List Dynamic Grid -->
+                    <div class="reviews-grid" id="reviews-list-grid">
+                        <!-- Loaded dynamically via LocalDB or Firebase -->
+                    </div>
+
+                    <!-- See More Reviews Button -->
+                    <div class="see-more-reviews-container" id="see-more-reviews-container" style="text-align: center; margin-top: 30px; display: none;">
+                        <button class="btn btn-secondary btn-small" id="see-more-reviews-btn" style="padding: 10px 24px; font-size: 12px; font-weight: 600; text-transform: uppercase; border: 1px solid rgba(212, 175, 55, 0.25);">See More Reviews</button>
+                    </div>
+                </div>
+            </section>
         </div>
 
 
@@ -1044,10 +851,8 @@
                     <h5 class="footer-section-title">Quick Links</h5>
                     <ul class="footer-links">
                         <li><a href="#home" class="footer-link">Home</a></li>
-                        <li><a href="#featured-product-section" class="footer-link">Shop</a></li>
-                        <li><a href="#benefits" class="footer-link">Benefits</a></li>
-                        <li><a href="#reviews" class="footer-link">Reviews</a></li>
-                        <li><a href="#faq" class="footer-link">FAQ</a></li>
+                        <li><a href="#shop" class="footer-link">Shop</a></li>
+                        <li><a href="#about" class="footer-link">Our Story</a></li>
                         <li><a href="#contact" class="footer-link">Contact</a></li>
                     </ul>
                 </div>
@@ -1196,9 +1001,10 @@
                             <input type="text" id="order-district" class="form-input" placeholder="District" required>
                         </div>
                         
-                        <div class="form-group">
-                            <label for="order-state" class="form-label">State</label>
-                            <input type="text" id="order-state" class="form-input" placeholder="State" required readonly style="background-color: #f9f9f9; cursor: not-allowed;">
+                        <div class="form-group" style="position: relative;">
+                            <label for="order-state" class="form-label">State / Union Territory</label>
+                            <input type="text" id="order-state" class="form-input" placeholder="Search or select State..." required autocomplete="off">
+                            <div id="state-dropdown-list" class="state-dropdown-list" style="display: none;"></div>
                         </div>
                     </div>
                     

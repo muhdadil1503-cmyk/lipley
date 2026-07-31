@@ -4,6 +4,46 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
+    // Indian States and Union Territories
+    const indianStates = [
+        "Andaman and Nicobar Islands",
+        "Andhra Pradesh",
+        "Arunachal Pradesh",
+        "Assam",
+        "Bihar",
+        "Chandigarh",
+        "Chhattisgarh",
+        "Dadra and Nagar Haveli and Daman and Diu",
+        "Delhi",
+        "Goa",
+        "Gujarat",
+        "Haryana",
+        "Himachal Pradesh",
+        "Jammu and Kashmir",
+        "Jharkhand",
+        "Karnataka",
+        "Kerala",
+        "Ladakh",
+        "Lakshadweep",
+        "Madhya Pradesh",
+        "Maharashtra",
+        "Manipur",
+        "Meghalaya",
+        "Mizoram",
+        "Nagaland",
+        "Odisha",
+        "Puducherry",
+        "Punjab",
+        "Rajasthan",
+        "Sikkim",
+        "Tamil Nadu",
+        "Telangana",
+        "Tripura",
+        "Uttar Pradesh",
+        "Uttarakhand",
+        "West Bengal"
+    ];
+
     // Global quantity state variables
     let currentQty = 1;
     let productPageQty = 1;
@@ -116,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }, 1000);
     }
-    setTimeout(finishIntro, 3500); // 3.5 seconds duration as requested (3-4s range)
+    setTimeout(finishIntro, 1200); // 1.2 seconds duration for faster load
 
 
     // --- 2. MOBILE NAVIGATION DRAWER ---
@@ -335,6 +375,14 @@ document.addEventListener('DOMContentLoaded', () => {
             reviews: [
                 { text: "My lips have never felt softer! The beetroot tint is so natural and pretty.", author: "Anjali R." },
                 { text: "Truly organic. It stays hydrated for hours without feeling sticky.", author: "Siddharth M." }
+            ],
+            netQty: "8g",
+            storage: "Store in a cool, dry place. Keep away from direct sunlight.",
+            faqs: [
+                { q: "Is it suitable for daily use?", a: "Yes, LIPLEY balm is formulated with 100% clean, organic botanicals and is safe to reapply as often as needed throughout the day." },
+                { q: "Is it suitable for men and women?", a: "Absolutely. The natural tint provides a subtle, healthy flush of color that is suitable for both men and women seeking clean hydration." },
+                { q: "Is it organic?", a: "Yes, LIPLEY lip balm is made with premium cold-pressed organic botanical oils, butters, and organic plant waxes." },
+                { q: "How long does one lip balm last?", a: "With daily use, one 8g lip balm jar typically lasts between 2 to 3 months." }
             ]
         },
         "hair-oil": {
@@ -367,6 +415,13 @@ document.addEventListener('DOMContentLoaded', () => {
             reviews: [
                 { text: "My hair fall has reduced significantly. Highly recommend this natural hair oil!", author: "Rohan S." },
                 { text: "Smells wonderful and leaves my hair feeling super soft and shiny.", author: "Meera K." }
+            ],
+            netQty: "100ml",
+            storage: "Store in a cool, dry place. For external use only.",
+            faqs: [
+                { q: "How often should I use the hair oil?", a: "For best results, use 2–3 times a week. Apply evenly, massage the scalp, and leave it on for 30–45 minutes or overnight before washing off." },
+                { q: "Can children use this hair oil?", a: "Yes, it is formulated with 100% safe, traditional Ayurvedic ingredients and is suitable for men, women, and children." },
+                { q: "Is it suitable for all hair types?", a: "Yes, our rich formulation works effectively for dry, oily, damaged, or color-treated hair." }
             ]
         }
     };
@@ -466,6 +521,24 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const variantValue = document.querySelector('.p-variant-value');
         if (variantValue) variantValue.textContent = product.variant;
+
+        // Update Net Qty and Storage
+        const netQtyEl = document.querySelector('.p-net-qty');
+        if (netQtyEl) netQtyEl.textContent = product.netQty;
+        
+        const storageEl = document.querySelector('.p-storage');
+        if (storageEl) storageEl.textContent = product.storage;
+
+        // Update Dynamic FAQs
+        const faqsContainer = document.querySelector('.p-faqs');
+        if (faqsContainer && product.faqs) {
+            faqsContainer.innerHTML = product.faqs.map(faq => `
+                <div class="faq-item-small" style="margin-bottom: 15px; border-bottom: 1px solid rgba(30, 58, 52, 0.04); padding-bottom: 10px;">
+                    <h4 style="font-size: 13.5px; font-weight: 600; color: var(--color-primary); margin: 0 0 5px 0;">Q: ${faq.q}</h4>
+                    <p style="font-size: 13px; line-height: 1.45; margin: 0; opacity: 0.85;">A: ${faq.a}</p>
+                </div>
+            `).join('');
+        }
         
         // Update ingredients
         const ingredientsGrid = document.querySelector('.drawer-ingredients-grid');
@@ -796,10 +869,23 @@ document.addEventListener('DOMContentLoaded', () => {
             showView('view-home');
             updateNavActive('nav-home-link');
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else if (href === '#featured-product-section' || href === '#products') {
+        } else if (href === '#shop') {
             e.preventDefault();
             showView('view-shop');
             updateNavActive('nav-shop-link');
+        } else if (href === '#featured-product-section' || href === '#products') {
+            e.preventDefault();
+            const wasHomeActive = viewHome.classList.contains('active');
+            if (!wasHomeActive) {
+                showView('view-home', true, false);
+            }
+            updateNavActive('nav-home-link');
+            const targetEl = document.getElementById('featured-product-section');
+            if (targetEl) {
+                setTimeout(() => {
+                    targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, wasHomeActive ? 0 : 50);
+            }
         } else if (href === '#checkout') {
             e.preventDefault();
             openPurchaseOptions();
@@ -2024,148 +2110,39 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function getStateFromPin(pin) {
-        if (!/^\d{6}$/.test(pin)) {
-            return { valid: false, error: "Please enter a valid 6-digit PIN code." };
-        }
-        
-        const p = parseInt(pin);
-        const p2 = parseInt(pin.substring(0, 2));
-        const p3 = parseInt(pin.substring(0, 3));
-        
-        let state = "";
-        
-        if (p3 === 194) {
-            state = "Ladakh";
-        } else if (p3 === 737) {
-            state = "Sikkim";
-        } else if (p3 === 744) {
-            state = "Andaman & Nicobar Islands";
-        } else if (p3 === 403) {
-            state = "Goa";
-        } else if (p3 >= 682 && p3 <= 682 && p >= 682551 && p <= 682559) {
-            state = "Lakshadweep";
-        } else if (p3 === 605 || p3 === 609) {
-            state = "Puducherry";
-        } else if (p3 === 790 || p3 === 791 || p3 === 792) {
-            state = "Arunachal Pradesh";
-        } else if (p3 === 793 || p3 === 794) {
-            state = "Meghalaya";
-        } else if (p3 === 795) {
-            state = "Manipur";
-        } else if (p3 === 796) {
-            state = "Mizoram";
-        } else if (p3 === 797) {
-            state = "Nagaland";
-        } else if (p3 === 798) {
-            state = "Tripura";
-        } else if (p3 >= 246 && p3 <= 249) {
-            state = "Uttarakhand";
-        } else if (p3 === 263) {
-            state = "Uttarakhand";
-        } else if (p3 >= 814 && p3 <= 816) {
-            state = "Jharkhand";
-        } else if (p3 >= 825 && p3 <= 829) {
-            state = "Jharkhand";
-        } else if (p3 >= 831 && p3 <= 835) {
-            state = "Jharkhand";
-        } else {
-            switch(p2) {
-                case 11: state = "Delhi"; break;
-                case 12: case 13: state = "Haryana"; break;
-                case 14: case 15: case 16: state = (p2 === 16) ? "Chandigarh" : "Punjab"; break;
-                case 17: state = "Himachal Pradesh"; break;
-                case 18: case 19: state = "Jammu & Kashmir"; break;
-                case 20: case 21: case 22: case 23: case 24: case 25: case 26: case 27: case 28: state = "Uttar Pradesh"; break;
-                case 30: case 31: case 32: case 33: case 34: state = "Rajasthan"; break;
-                case 35: case 36: case 37: case 38: case 39: state = "Gujarat"; break;
-                case 40: case 41: case 42: case 43: case 44: state = "Maharashtra"; break;
-                case 45: case 46: case 47: case 48: state = "Madhya Pradesh"; break;
-                case 49: state = "Chhattisgarh"; break;
-                case 50: state = "Telangana"; break;
-                case 51: case 52: case 53: state = "Andhra Pradesh"; break;
-                case 56: case 57: case 58: case 59: state = "Karnataka"; break;
-                case 60: case 61: case 62: case 63: case 64: state = "Tamil Nadu"; break;
-                case 67: case 68: case 69: state = "Kerala"; break;
-                case 70: case 71: case 72: case 73: case 74: state = "West Bengal"; break;
-                case 75: case 76: case 77: state = "Odisha"; break;
-                case 78: state = "Assam"; break;
-                case 80: case 81: case 82: case 83: case 84: case 85: state = "Bihar"; break;
-                default:
-                    return { valid: false, error: "PIN code is not serviceable or invalid." };
-            }
-        }
-        
-        return { valid: true, state: state };
-    }
-
-    // Centralized Configurable Delivery Rules
+    // Keep window.shippingConfig for backwards compatibility but shipping charge calculation uses new engine
     window.shippingConfig = {
-        freeDeliveryMinAmountKerala: 700, // Configurable Free Delivery Minimum Amount for Kerala
-        freeDeliveryMinAmountRestOfIndia: 700, // Configurable Free Delivery Minimum Amount for Rest of India
-        
-        rules: {
-            kerala: {
-                standardCharge: 30,
-                // Rules for FREE delivery (satisfied if ANY condition is met)
-                freeConditions: [
-                    // Rule 1: Lip Balm quantity >= 2
-                    { type: 'productQty', productId: 'strawberry-beetroot', minQty: 2 },
-                    // Rule 2: At least 1 Lip Balm AND 1 Hair Oil
-                    { type: 'productCombination', requirements: [ { productId: 'strawberry-beetroot', minQty: 1 }, { productId: 'hair-oil', minQty: 1 } ] },
-                    // Rule 3: Subtotal >= freeDeliveryMinAmountKerala
-                    { type: 'minSubtotal', thresholdKey: 'freeDeliveryMinAmountKerala' }
-                ]
-            },
-            default: {
-                standardCharge: 60,
-                freeConditions: [
-                    // Subtotal >= freeDeliveryMinAmountRestOfIndia
-                    { type: 'minSubtotal', thresholdKey: 'freeDeliveryMinAmountRestOfIndia' }
-                ]
-            }
-        }
+        freeDeliveryMinAmountKerala: 700,
+        freeDeliveryMinAmountRestOfIndia: 700
     };
-
-    function evaluateShippingCondition(condition, items, subtotal) {
-        if (condition.type === 'productQty') {
-            const item = items.find(i => i.productId === condition.productId);
-            return item && item.quantity >= condition.minQty;
-        }
-        if (condition.type === 'productCombination') {
-            return condition.requirements.every(req => {
-                const item = items.find(i => i.productId === req.productId);
-                return item && item.quantity >= req.minQty;
-            });
-        }
-        if (condition.type === 'minSubtotal') {
-            const minAmount = window.shippingConfig[condition.thresholdKey];
-            return subtotal >= minAmount;
-        }
-        return false;
-    }
 
     function getUnifiedShippingRate(state, items) {
         if (!state) {
             return { charge: null, text: '' };
         }
-        
-        // Calculate subtotal
-        const subtotal = items.reduce((sum, item) => {
-            const product = window.products[item.productId] || { price: 149 };
-            return sum + (product.price * item.quantity);
-        }, 0);
-        
-        const stateKey = state.toLowerCase();
-        const config = window.shippingConfig.rules[stateKey] || window.shippingConfig.rules['default'];
-        
-        // Evaluate if any free condition is met
-        const isFree = config.freeConditions.some(cond => evaluateShippingCondition(cond, items, subtotal));
-        
-        if (isFree) {
-            return { charge: 0, text: 'Free Delivery' };
+        const stateKey = state.toLowerCase().trim();
+        if (stateKey === 'kerala') {
+            let lbQty = 0;
+            let hoQty = 0;
+            if (Array.isArray(items)) {
+                items.forEach(item => {
+                    if (item.productId === 'strawberry-beetroot') {
+                        lbQty += item.quantity || 0;
+                    } else if (item.productId === 'hair-oil') {
+                        hoQty += item.quantity || 0;
+                    }
+                });
+            }
+            
+            if (hoQty > 0 || lbQty >= 2) {
+                return { charge: 0, text: 'Kerala Delivery (FREE)' };
+            } else if (lbQty === 1) {
+                return { charge: 30, text: 'Kerala Delivery (₹30)' };
+            } else {
+                return { charge: 0, text: 'Kerala Delivery (FREE)' };
+            }
         } else {
-            return { charge: config.standardCharge, text: '' };
+            return { charge: 60, text: 'Standard Delivery (₹60)' };
         }
     }
 
@@ -2178,31 +2155,94 @@ document.addEventListener('DOMContentLoaded', () => {
         return getUnifiedShippingRate(state, cartItems);
     }
 
+    // Setup state searchable dropdown
+    if (orderStateInput) {
+        const stateDropdown = document.getElementById('state-dropdown-list');
+        
+        function populateDropdown(filterText = "") {
+            if (!stateDropdown) return;
+            stateDropdown.innerHTML = "";
+            
+            const filtered = indianStates.filter(state => 
+                state.toLowerCase().includes(filterText.toLowerCase())
+            );
+            
+            if (filtered.length === 0) {
+                const noResults = document.createElement('div');
+                noResults.className = 'state-dropdown-no-results';
+                noResults.textContent = 'No results found';
+                stateDropdown.appendChild(noResults);
+            } else {
+                filtered.forEach(state => {
+                    const item = document.createElement('div');
+                    item.className = 'state-dropdown-item';
+                    item.textContent = state;
+                    if ((orderStateInput.value || "").trim().toLowerCase() === state.toLowerCase()) {
+                        item.classList.add('selected');
+                    }
+                    
+                    item.addEventListener('click', () => {
+                        orderStateInput.value = state;
+                        activeState = state;
+                        isPinValid = true; // to satisfy order verification logic
+                        stateDropdown.style.display = 'none';
+                        calculateOrder();
+                    });
+                    
+                    stateDropdown.appendChild(item);
+                });
+            }
+        }
+        
+        orderStateInput.addEventListener('focus', () => {
+            populateDropdown(orderStateInput.value);
+            stateDropdown.style.display = 'block';
+        });
+        
+        orderStateInput.addEventListener('input', () => {
+            populateDropdown(orderStateInput.value);
+            stateDropdown.style.display = 'block';
+            
+            // Recalculate shipping if state name matches exactly
+            const val = orderStateInput.value.trim();
+            const matched = indianStates.find(s => s.toLowerCase() === val.toLowerCase());
+            if (matched) {
+                activeState = matched;
+                isPinValid = true;
+            } else {
+                activeState = "";
+                isPinValid = false;
+            }
+            calculateOrder();
+        });
+        
+        // Hide dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (stateDropdown && !orderStateInput.contains(e.target) && !stateDropdown.contains(e.target)) {
+                stateDropdown.style.display = 'none';
+                
+                // Validate value on blur
+                const val = orderStateInput.value.trim();
+                const matched = indianStates.find(s => s.toLowerCase() === val.toLowerCase());
+                if (matched) {
+                    orderStateInput.value = matched;
+                    activeState = matched;
+                    isPinValid = true;
+                } else {
+                    orderStateInput.value = "";
+                    activeState = "";
+                    isPinValid = false;
+                }
+                calculateOrder();
+            }
+        });
+    }
+
+    // Set up standard 6-digit PIN input limit (without validation)
     if (orderPinInput) {
         orderPinInput.addEventListener('input', () => {
-            const pinVal = orderPinInput.value.trim();
-            if (pincodeFeedback) pincodeFeedback.style.display = 'none';
-            isPinValid = false;
-            activeState = "";
-            if (orderStateInput) orderStateInput.value = "";
-            
-            if (pinVal.length === 6) {
-                const res = getStateFromPin(pinVal);
-                if (res.valid) {
-                    isPinValid = true;
-                    activeState = res.state;
-                    if (orderStateInput) orderStateInput.value = res.state;
-                    if (pincodeFeedback) pincodeFeedback.style.display = 'none';
-                } else {
-                    if (pincodeFeedback) {
-                        pincodeFeedback.style.display = 'block';
-                        pincodeFeedback.textContent = res.error;
-                    }
-                }
-            } else if (pinVal.length > 6) {
-                orderPinInput.value = pinVal.substring(0, 6);
-            }
-            
+            const val = orderPinInput.value.replace(/\D/g, '');
+            orderPinInput.value = val.substring(0, 6);
             calculateOrder();
         });
     }
@@ -2324,7 +2364,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function calculateOrder() {
         autoRevalidateAppliedCoupon();
         let productTotal = 0;
-        let deliveryCharge = 30;
+        let deliveryCharge = null;
         let offerText = '';
         let discountAmount = 0;
         
@@ -2348,13 +2388,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 else if (item.productId === 'hair-oil') hoQty += item.quantity;
             });
             
-            if (isPinValid && activeState) {
+            if (activeState) {
                 const rate = getCartShippingRate(activeState, productTotal, cart);
                 deliveryCharge = rate.charge;
                 offerText = rate.text;
                 
                 if (billPinRow && billPinValue) {
-                    billPinValue.textContent = pinVal;
+                    billPinValue.textContent = pinVal || "-";
                     billPinRow.style.display = 'flex';
                 }
                 if (billStateRow && billStateValue) {
@@ -2374,13 +2414,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 else if (selectedProductId === 'hair-oil') hoQty = currentQty;
             }
             
-            if (isPinValid && activeState) {
+            if (activeState) {
                 const rate = getShippingRate(activeState, selectedProductId, currentQty);
                 deliveryCharge = rate.charge;
                 offerText = rate.text;
                 
                 if (billPinRow && billPinValue) {
-                    billPinValue.textContent = pinVal;
+                    billPinValue.textContent = pinVal || "-";
                     billPinRow.style.display = 'flex';
                 }
                 if (billStateRow && billStateValue) {
@@ -2395,31 +2435,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         let deliveryMsg = "";
-        let isEligible = (deliveryCharge === 0);
-        
         if (deliveryCharge !== null) {
-            if (isEligible) {
-                deliveryMsg = "🎉 Congratulations! Your order qualifies for FREE Delivery.";
-            } else {
-                const stateKey = (activeState || "").toLowerCase();
-                if (stateKey === 'kerala') {
-                    if (hoQty > 0 && lbQty === 0) {
-                        deliveryMsg = "Add 1 Lip Balm to get FREE Delivery.";
-                    } else if (lbQty > 0 && hoQty === 0) {
-                        deliveryMsg = "Add 1 Lip Balm or 1 Hair Oil to get FREE Delivery.";
-                    } else {
-                        const threshold = window.shippingConfig.freeDeliveryMinAmountKerala;
-                        const diff = threshold - productTotal;
-                        deliveryMsg = `Add ₹${diff} more to get FREE Delivery.`;
-                    }
-                } else {
-                    const threshold = window.shippingConfig.freeDeliveryMinAmountRestOfIndia;
-                    const diff = threshold - productTotal;
-                    deliveryMsg = `Add ₹${diff} more to get FREE Delivery.`;
-                }
-            }
+            deliveryMsg = `Delivery to ${activeState}: ₹${deliveryCharge}`;
         }
-
+        
         if (couponApplied && appliedCoupon) {
             discountAmount = Math.round(productTotal * appliedCoupon.discountPercent);
         } else {
@@ -2433,13 +2452,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (billDeliveryCharge) {
             if (deliveryCharge === null) {
-                billDeliveryCharge.textContent = "Enter PIN Code";
+                billDeliveryCharge.textContent = "Select State";
                 billDeliveryCharge.style.color = 'var(--color-accent)';
                 billDeliveryCharge.style.fontWeight = "";
-            } else if (deliveryCharge === 0) {
-                billDeliveryCharge.textContent = "FREE";
-                billDeliveryCharge.style.color = "#4CAF50";
-                billDeliveryCharge.style.fontWeight = "600";
             } else {
                 billDeliveryCharge.textContent = `₹${deliveryCharge}`;
                 billDeliveryCharge.style.color = "";
@@ -2463,15 +2478,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 billDeliveryStatusBox.style.display = 'none';
             } else {
                 billDeliveryStatusText.textContent = deliveryMsg;
-                if (isEligible) {
-                    billDeliveryStatusText.style.color = "#4CAF50";
-                    billDeliveryStatusBox.style.borderLeftColor = "#4CAF50";
-                    billDeliveryStatusBox.style.backgroundColor = "rgba(76, 175, 80, 0.05)";
-                } else {
-                    billDeliveryStatusText.style.color = "";
-                    billDeliveryStatusBox.style.borderLeftColor = "var(--color-accent)";
-                    billDeliveryStatusBox.style.backgroundColor = "rgba(30, 58, 52, 0.03)";
-                }
+                billDeliveryStatusText.style.color = "";
+                billDeliveryStatusBox.style.borderLeftColor = "var(--color-accent)";
+                billDeliveryStatusBox.style.backgroundColor = "rgba(30, 58, 52, 0.03)";
                 billDeliveryStatusBox.style.display = 'block';
             }
         }
@@ -2570,19 +2579,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const district = document.getElementById('order-district').value.trim();
             const pin = document.getElementById('order-pin').value.trim();
             
-            // Force PIN Code validation before submit
-            const pinRes = getStateFromPin(pin);
-            if (!pinRes.valid) {
-                alert("Please enter a valid 6-digit Indian PIN code before placing your order.");
-                const pinFeedbackEl = document.getElementById('pincode-feedback');
-                if (pinFeedbackEl) {
-                    pinFeedbackEl.style.display = 'block';
-                    pinFeedbackEl.textContent = pinRes.error;
-                }
+            // Validate state selection before submit
+            const state = orderStateInput ? orderStateInput.value.trim() : "";
+            if (!state || !indianStates.includes(state)) {
+                alert("Please select a valid Indian State / Union Territory from the list before placing your order.");
+                if (orderStateInput) orderStateInput.focus();
                 return;
             }
             
-            const state = pinRes.state;
             let productTotal = 0;
             let deliveryCharge = 0;
             let offerString = '';
@@ -2628,7 +2632,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const discountAmount = couponApplied ? Math.round(productTotal * discountPercent) : 0;
             const grandTotal = productTotal + deliveryCharge - discountAmount;
             
-            message += `*Delivery Charge:* ${deliveryCharge === 0 ? 'FREE' : '₹' + deliveryCharge}\n`;
+            message += `*Delivery Charge:* ₹${deliveryCharge}\n`;
             if (couponApplied) {
                 const couponCode = appliedCoupon ? appliedCoupon.code : 'LIPLEY001';
                 message += `*Coupon Discount:* -₹${discountAmount} (${couponCode})\n`;
@@ -2638,6 +2642,7 @@ document.addEventListener('DOMContentLoaded', () => {
             message += `*Customer Details:*\n`;
             message += `*Name:* ${fullName}\n`;
             message += `*Phone:* ${phone}\n`;
+            message += `*State / UT:* ${state}\n`;
             message += `*Address:* ${house}, ${address}, ${district}, ${state} - PIN: ${pin}\n`;
             
             // URL encode message and open WhatsApp

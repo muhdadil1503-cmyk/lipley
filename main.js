@@ -612,6 +612,16 @@ document.addEventListener('DOMContentLoaded', () => {
             reviewProductSelect.value = productId === 'hair-oil' ? 'Hair Oil' : 'Lip Balm';
         }
         
+        // Update sticky bar details
+        const stickyImg = document.querySelector('.sticky-bar-thumb');
+        if (stickyImg) stickyImg.src = product.image + '?v=2';
+        
+        const stickyTitle = document.querySelector('.sticky-bar-title');
+        if (stickyTitle) stickyTitle.textContent = product.name;
+        
+        const stickyPrice = document.querySelector('.sticky-bar-price');
+        if (stickyPrice) stickyPrice.textContent = `₹${product.price}`;
+        
         // Trigger reviews refetch to filter by active product dynamically
         if (typeof fetchReviews === 'function') {
             fetchReviews();
@@ -2877,6 +2887,61 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (policyCloseBtn) policyCloseBtn.addEventListener('click', window.closePolicyModal);
     if (policyOverlay) policyOverlay.addEventListener('click', window.closePolicyModal);
+
+    // Fade out hero scroll indicator on scroll
+    const scrollIndicator = document.getElementById('hero-scroll-indicator');
+    if (scrollIndicator) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                scrollIndicator.style.opacity = '0';
+                scrollIndicator.style.pointerEvents = 'none';
+            } else {
+                scrollIndicator.style.opacity = '0.85';
+                scrollIndicator.style.pointerEvents = 'auto';
+            }
+        });
+    }
+
+    // Handle sticky purchase bar visibility and checkout triggers
+    const stickyBar = document.getElementById('sticky-purchase-bar');
+    const mainActionButtons = document.querySelector('.p-action-buttons');
+    const stickyBuyBtn = document.getElementById('sticky-bar-buy-btn');
+    
+    if (stickyBar && mainActionButtons) {
+        window.addEventListener('scroll', () => {
+            const isProductViewActive = viewProduct.classList.contains('active');
+            if (!isProductViewActive) {
+                stickyBar.classList.remove('show');
+                return;
+            }
+            
+            const buttonRect = mainActionButtons.getBoundingClientRect();
+            if (buttonRect.bottom < 0) {
+                stickyBar.classList.add('show');
+            } else {
+                stickyBar.classList.remove('show');
+            }
+        });
+    }
+
+    if (stickyBuyBtn) {
+        stickyBuyBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const productId = selectedProductId;
+            
+            const inCart = cart.some(item => item.productId === productId);
+            if (!inCart) {
+                addToCart(productId, 1, false);
+            }
+            
+            isCartCheckout = true;
+            if (typeof calculateOrder === 'function') {
+                calculateOrder();
+            }
+            
+            window.openPurchaseOptions();
+        });
+    }
 
 });
 

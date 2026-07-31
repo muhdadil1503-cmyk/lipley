@@ -133,9 +133,6 @@
                         <span class="hero-brand">LIPLEY</span>
                         <h1 class="hero-title-premium">Premium Organic Lip Care</h1>
                         <p class="hero-subtitle-premium">Naturally Soft. Beautifully Tinted.</p>
-                        <div class="hero-actions-premium" style="margin-top: clamp(10px, 2vw, 25px);">
-                            <a href="#featured-product-section" class="btn btn-primary" id="hero-shop-now-btn" style="box-shadow: var(--shadow-luxury); border: 1px solid var(--color-accent);">Shop Now</a>
-                        </div>
                     </div>
                 </div>
 
@@ -152,6 +149,12 @@
                     <span class="hero-dot active" data-slide="0"></span>
                     <span class="hero-dot" data-slide="1"></span>
                 </div>
+
+                <!-- Premium Scroll Indicator -->
+                <a href="#featured-product-section" class="hero-scroll-indicator" id="hero-scroll-indicator" aria-label="Scroll down to featured products">
+                    <span class="chevron"></span>
+                    <span class="chevron"></span>
+                </a>
             </section>
 
             <!-- FEATURED FLAGSHIP PRODUCT SECTION -->
@@ -830,6 +833,22 @@
                     </div>
                 </div>
             </section>
+
+            <!-- Sticky Purchase Bar (Floating Footer CTA for Mobile/Desktop) -->
+            <div id="sticky-purchase-bar" class="sticky-purchase-bar">
+                <div class="container sticky-bar-container">
+                    <div class="sticky-bar-product-info">
+                        <img src="assets/images/lipley-gallery-closed.jpg" alt="Product Thumbnail" class="sticky-bar-thumb">
+                        <div class="sticky-bar-text">
+                            <h4 class="sticky-bar-title">LIPLEY Strawberry Beetroot Tinted Lip Balm</h4>
+                            <span class="sticky-bar-price">₹149</span>
+                        </div>
+                    </div>
+                    <div class="sticky-bar-actions">
+                        <button class="btn btn-primary btn-small sticky-buy-btn" id="sticky-bar-buy-btn">⚡ BUY NOW</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
 

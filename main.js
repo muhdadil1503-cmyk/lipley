@@ -346,11 +346,11 @@ document.addEventListener('DOMContentLoaded', () => {
             price: 149,
             description: "Premium organic lip balm enriched with Strawberry Extract and Beetroot Oil to help moisturize lips while providing a beautiful natural tinted finish.",
             variant: "Strawberry + Beetroot Tinted",
-            image: "assets/images/lipley-gallery-closed.jpg",
+            image: "assets/images/lipley-beetroot-lip-balm-8g.webp",
             gallery: [
-                "assets/images/lipley-gallery-closed.jpg",
-                "assets/images/lipley-gallery-open.jpg",
-                "assets/images/lipley-gallery-hand.jpg"
+                "assets/images/lipley-beetroot-lip-balm-8g.webp",
+                "assets/images/lipley-beetroot-lip-balm-open.webp",
+                "assets/images/lipley-beetroot-lip-balm-hand.webp"
             ],
             ingredients: ["Beeswax", "Shea Butter", "Cocoa Butter", "Almond Oil", "Jojoba Oil", "Castor Oil", "Beetroot Oil", "Coconut Oil", "Alkanet Root", "Manjistha", "Vitamin E", "Strawberry Oil"],
             benefits: [
@@ -393,9 +393,9 @@ document.addEventListener('DOMContentLoaded', () => {
             price: 249,
             description: "Experience the power of Ayurveda with Lipley Hair Oil. Formulated with a rich blend of traditional herbs like Amla, Bhringraj, Hibiscus, Rosemary, Brahmi, Neem, Fenugreek, Aloe Vera, and pure Virgin Coconut Oil. This 100% Ayurvedic herbal oil deeply nourishes the scalp, strengthens roots to reduce hair fall, repairs damage, and supports healthy, voluminous hair growth for men, women, and children.",
             variant: "100% Ayurvedic Herbal Oil",
-            image: "assets/images/lipley-hair-oil.jpg",
+            image: "assets/images/lipley-ayurvedic-hair-oil-100ml.webp",
             gallery: [
-                "assets/images/lipley-hair-oil.jpg"
+                "assets/images/lipley-ayurvedic-hair-oil-100ml.webp"
             ],
             ingredients: [
                 "Virgin Coconut Oil", "Amla", "Hibiscus", "Bhringraj", "Brahmi", "Neem Leaves", "Curry Leaves", "Rosemary Leaf", "Fenugreek", "Aloe Vera", "Manjistha", "Alkanet Root", "Vetiver", "Tulsi", "Betel Leaves", "Henna", "Black Pepper", "Black Cumins", "Karpooram", "Vitamin E"
@@ -631,6 +631,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (typeof calculateOrder === 'function') {
             calculateOrder();
         }
+
+        // Trigger SEO Metadata update for the loaded product
+        if (typeof updateSEOMetadata === 'function') {
+            updateSEOMetadata('view-product', productId);
+        }
     };
 
     // --- 6. E-COMMERCE SPA ROUTER ---
@@ -666,6 +671,63 @@ document.addEventListener('DOMContentLoaded', () => {
         history.pushState(stateObj, '', '#' + hash);
     };
 
+    function updateSEOMetadata(viewId, productId = null) {
+        let title = "Lipley | Premium Organic Lip Care";
+        let desc = "Premium Organic Beetroot Tinted Lip Balm & Ayurvedic Hair Oil made with natural ingredients.";
+        let img = window.location.origin + "/assets/images/social-preview.png";
+        let url = window.location.origin + "/";
+        
+        if (viewId === 'view-product') {
+            const pId = productId || selectedProductId;
+            url = window.location.origin + "/#product";
+            if (pId === 'strawberry-beetroot') {
+                title = "Lipley Strawberry Beetroot Tinted Lip Balm 8g";
+                desc = "Naturally soft and beautifully tinted. Formulated with 100% natural organic beetroot extract and strawberry oils.";
+                img = window.location.origin + "/assets/images/lipley-gallery-closed.jpg";
+            } else if (pId === 'hair-oil') {
+                title = "Lipley Ayurvedic Hair Oil 100ml";
+                desc = "Root strength and healthy hair growth. Handcrafted with traditional herbs, virgin coconut oil, amla, bhringraj, and brahmi.";
+                img = window.location.origin + "/assets/images/lipley-hair-oil.jpg";
+            }
+        } else if (viewId === 'view-shop') {
+            title = "The Lipley Collection | Organic Boutique";
+            desc = "Explore our boutique collection of premium organic lip balms and ayurvedic hair oils.";
+            img = window.location.origin + "/assets/images/lipley-gallery-closed.jpg";
+            url = window.location.origin + "/#shop";
+        }
+        
+        // Update Title
+        document.title = title;
+        
+        // Update Meta Description
+        const metaDesc = document.querySelector('meta[name="description"]');
+        if (metaDesc) metaDesc.setAttribute('content', desc);
+        
+        // Update Canonical Link
+        const canonical = document.querySelector('link[rel="canonical"]');
+        if (canonical) canonical.setAttribute('href', url);
+        
+        // Update Open Graph tags
+        const ogTitle = document.querySelector('meta[property="og:title"]');
+        if (ogTitle) ogTitle.setAttribute('content', title);
+        const ogDesc = document.querySelector('meta[property="og:description"]');
+        if (ogDesc) ogDesc.setAttribute('content', desc);
+        const ogImg = document.querySelector('meta[property="og:image"]');
+        if (ogImg) ogImg.setAttribute('content', img);
+        const ogUrl = document.querySelector('meta[property="og:url"]');
+        if (ogUrl) ogUrl.setAttribute('content', url);
+        
+        // Update Twitter Card tags
+        const twTitle = document.querySelector('meta[property="twitter:title"]');
+        if (twTitle) twTitle.setAttribute('content', title);
+        const twDesc = document.querySelector('meta[property="twitter:description"]');
+        if (twDesc) twDesc.setAttribute('content', desc);
+        const twImg = document.querySelector('meta[property="twitter:image"]');
+        if (twImg) twImg.setAttribute('content', img);
+        const twUrl = document.querySelector('meta[property="twitter:url"]');
+        if (twUrl) twUrl.setAttribute('content', url);
+    }
+
     function showView(viewId, pushState = true, scrollTop = true) {
         viewElements.forEach(view => {
             if (view) {
@@ -681,6 +743,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pushState) {
             window.pushNavigationState('view', viewId);
         }
+        updateSEOMetadata(viewId);
     }
 
     window.goBack = function() {
@@ -1027,7 +1090,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let subtotal = 0;
         
         cart.forEach(item => {
-            const product = window.products[item.productId] || { name: item.productId, price: 149, image: 'assets/images/lipley-gallery-closed.jpg' };
+            const product = window.products[item.productId] || { name: item.productId, price: 149, image: 'assets/images/lipley-beetroot-lip-balm-8g.webp' };
             const itemTotal = product.price * item.quantity;
             subtotal += itemTotal;
             
@@ -1220,7 +1283,7 @@ document.addEventListener('DOMContentLoaded', () => {
         wishlist.forEach(id => {
             wishlistHTML += `
                 <div class="cart-item">
-                    <img src="assets/images/lipley-balm-product.png" alt="LIPLEY Tinted Lip Balm" class="cart-item-img">
+                    <img src="assets/images/lipley-beetroot-lip-balm-8g.webp" alt="Lipley Beetroot Tinted Lip Balm 8g" class="cart-item-img" loading="lazy" width="1024" height="1024">
                     <div class="cart-item-details">
                         <h4 class="cart-item-name">LIPLEY Strawberry Beetroot Tinted Lip Balm</h4>
                         <span class="cart-item-price">₹149</span>
@@ -2310,7 +2373,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             let html = '<div style="display: flex; flex-direction: column; gap: 20px;">';
             cart.forEach(item => {
-                const product = window.products[item.productId] || { name: item.productId, price: 149, image: 'assets/images/lipley-gallery-closed.jpg' };
+                const product = window.products[item.productId] || { name: item.productId, price: 149, image: 'assets/images/lipley-beetroot-lip-balm-8g.webp' };
                 const itemTotal = product.price * item.quantity;
                 html += `
                     <div class="checkout-item-row" style="border-bottom: 1px solid rgba(30, 58, 52, 0.06); padding-bottom: 15px; display: flex; gap: 12px; align-items: flex-start;">
@@ -2346,7 +2409,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             
-            const product = window.products[selectedProductId] || { name: "LIPLEY Strawberry Beetroot Tinted Lip Balm", price: 149, image: 'assets/images/lipley-gallery-closed.jpg' };
+            const product = window.products[selectedProductId] || { name: "LIPLEY Strawberry Beetroot Tinted Lip Balm", price: 149, image: 'assets/images/lipley-beetroot-lip-balm-8g.webp' };
             const itemTotal = product.price * currentQty;
             summaryList.innerHTML = `
                 <div class="checkout-item-row" style="border-bottom: 1px solid rgba(30, 58, 52, 0.06); padding-bottom: 15px; display: flex; gap: 12px; align-items: flex-start;">
@@ -2674,26 +2737,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const localFallbackPosts = [
         {
             "url": "https://www.instagram.com/lipleycare",
-            "image": "assets/images/instagram-featured.jpg?v=2",
-            "alt": "LIPLEY Featured Banner Poster",
+            "image": "assets/images/lipley-instagram-featured.webp",
+            "alt": "Natural Organic Lip Care by Lipley - Featured Poster",
             "filter": "none"
         },
         {
             "url": "https://www.instagram.com/lipleycare",
-            "image": "assets/images/instagram-model.jpg?v=2",
-            "alt": "LIPLEY Tinted Lip Balm Model Showcase",
+            "image": "assets/images/lipley-instagram-model.webp",
+            "alt": "Natural Organic Lip Care by Lipley Showcase",
             "filter": "none"
         },
         {
             "url": "https://www.instagram.com/lipleycare",
-            "image": "assets/images/instagram-essential.jpg?v=2",
-            "alt": "LIPLEY Lip Balm Product Showcase",
+            "image": "assets/images/lipley-instagram-essential.webp",
+            "alt": "Natural Organic Lip Care by Lipley Product Showcase",
             "filter": "none"
         },
         {
             "url": "https://www.instagram.com/lipleycare",
-            "image": "assets/images/instagram-pyramid.jpg?v=2",
-            "alt": "LIPLEY Lip Balm Stack Showcase",
+            "image": "assets/images/lipley-instagram-pyramid.webp",
+            "alt": "Natural Organic Lip Care by Lipley Stack Showcase",
             "filter": "none"
         }
     ];

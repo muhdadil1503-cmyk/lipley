@@ -4,22 +4,52 @@
     <meta name="google-site-verification" content="IGuvkZBTvqRS1pnTSxyqJM9GkVqXAWLb1vwio8Gk3qo" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIPLEY | Premium Tinted Strawberry Beetroot Lip Balm</title>
-    <meta name="description" content="Discover LIPLEY Premium Strawberry Beetroot Tinted Lip Balm. Crafted with 100% natural ingredients, organic extracts, and rich plant oils for everyday luxury moisture.">
-    <meta name="keywords" content="lip balm, organic lip balm, beetroot lip balm, strawberry lip balm, tinted lip balm, lip nourishment, natural cosmetics, LIPLEY">
-    <link rel="canonical" href="https://lipley.pages.dev">
+    <title>Lipley | Premium Organic Lip Care</title>
+    <meta name="description" content="Premium Organic Beetroot Tinted Lip Balm & Ayurvedic Hair Oil made with natural ingredients.">
+    <meta name="keywords" content="lip balm, organic lip balm, beetroot lip balm, hair oil, ayurvedic hair oil, tinted lip balm, lip nourishment, natural cosmetics, LIPLEY">
+    <link rel="canonical" href="https://lipley.in/">
+    <link rel="icon" type="image/webp" href="assets/images/lipley-logo.webp">
+    
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://lipley.pages.dev">
-    <meta property="og:title" content="LIPLEY | Premium Tinted Strawberry Beetroot Lip Balm">
-    <meta property="og:description" content="Nourishing, organic, and beautifully tinted lips with LIPLEY Strawberry Beetroot Balm.">
-    <meta property="og:image" content="assets/images/lipley-gallery-closed.jpg">
+    <meta property="og:url" content="https://lipley.in/">
+    <meta property="og:title" content="Lipley | Premium Organic Lip Care">
+    <meta property="og:description" content="Premium Organic Beetroot Tinted Lip Balm & Ayurvedic Hair Oil made with natural ingredients.">
+    <meta property="og:image" content="https://lipley.in/assets/images/social-preview.png">
+    <meta property="og:site_name" content="Lipley">
+ 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://lipleycare.com">
-    <meta property="twitter:title" content="LIPLEY | Premium Tinted Strawberry Beetroot Lip Balm">
-    <meta property="twitter:description" content="Nourishing, organic, and beautifully tinted lips with LIPLEY Strawberry Beetroot Balm.">
-    <meta property="twitter:image" content="assets/images/lipley-gallery-closed.jpg">
+    <meta property="twitter:url" content="https://lipley.in/">
+    <meta property="twitter:title" content="Lipley | Premium Organic Lip Care">
+    <meta property="twitter:description" content="Premium Organic Beetroot Tinted Lip Balm & Ayurvedic Hair Oil made with natural ingredients.">
+    <meta property="twitter:image" content="https://lipley.in/assets/images/social-preview.png">
+
+    <!-- Dynamic URL/Image Fallback Script for Multiple Domains -->
+    <script>
+        (function() {
+            var origin = window.location.origin;
+            if (origin.indexOf('localhost') === -1 && origin.indexOf('127.0.0.1') === -1) {
+                // Update canonical link
+                var canonical = document.querySelector('link[rel="canonical"]');
+                if (canonical) canonical.setAttribute('href', origin + '/');
+                
+                // Update Open Graph tags
+                var ogUrl = document.querySelector('meta[property="og:url"]');
+                if (ogUrl) ogUrl.setAttribute('content', origin + '/');
+                
+                var ogImage = document.querySelector('meta[property="og:image"]');
+                if (ogImage) ogImage.setAttribute('content', origin + '/assets/images/social-preview.png');
+                
+                // Update Twitter tags
+                var twitterUrl = document.querySelector('meta[property="twitter:url"]');
+                if (twitterUrl) twitterUrl.setAttribute('content', origin + '/');
+                
+                var twitterImage = document.querySelector('meta[property="twitter:image"]');
+                if (twitterImage) twitterImage.setAttribute('content', origin + '/assets/images/social-preview.png');
+            }
+        })();
+    </script>
     <!-- Google Fonts - Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -62,8 +92,8 @@
         <div class="intro-bg-glow"></div>
         <div class="intro-content">
             <div class="brand-wrapper">
-                <img src="assets/images/logo-lipley.png" alt="LIPLEY Icon" class="intro-logo-large">
-                <img src="assets/images/lipley-text.png" alt="LIPLEY Wordmark" class="intro-wordmark-large">
+                <img src="assets/images/lipley-logo.webp" alt="Lipley Official Logo" class="intro-logo-large" width="425" height="425">
+                <img src="assets/images/lipley-text.webp" alt="Lipley Official Wordmark Logo" class="intro-wordmark-large" width="425" height="425">
                 <div class="shine-effect"></div>
             </div>
         </div>
@@ -73,8 +103,8 @@
     <header id="main-header" class="main-header">
         <div class="header-container container">
             <a href="#" class="logo-link">
-                <img src="assets/images/logo-lipley.png" alt="LIPLEY Icon" class="header-logo-icon">
-                <img src="assets/images/lipley-text.png" alt="LIPLEY Wordmark" class="header-logo-wordmark">
+                <img src="assets/images/lipley-logo.webp" alt="Lipley Official Logo" class="header-logo-icon" width="425" height="425">
+                <img src="assets/images/lipley-text.webp" alt="Lipley Official Wordmark Logo" class="header-logo-wordmark" width="425" height="425">
             </a>
             
             <!-- Desktop Navigation -->
@@ -147,8 +177,8 @@
             <section id="home" class="hero-section">
                 <!-- Slider Background Slides -->
                 <div class="hero-slides">
-                    <div class="hero-slide active" style="background-image: url('assets/images/lipley-hero-banner.jpg'); background-position: center right;"></div>
-                    <div class="hero-slide" style="background-image: url('assets/images/lipley-product-slide.jpg?v=2'); background-position: center;"></div>
+                    <div class="hero-slide active" style="background-image: url('assets/images/lipley-homepage-hero.webp'); background-position: center right;"></div>
+                    <div class="hero-slide" style="background-image: url('assets/images/lipley-product-slide.webp'); background-position: center;"></div>
                 </div>
                 
                 <!-- Overlay to ensure high text contrast -->
@@ -197,7 +227,7 @@
                         <!-- Featured Product Card: Lip Balm -->
                         <div class="product-card featured-product scroll-reveal reveal-blur shop-now-trigger" id="product-strawberry-beetroot-card" data-product-id="strawberry-beetroot">
                             <div class="product-visual">
-                                <img src="assets/images/lipley-gallery-closed.jpg" alt="LIPLEY Strawberry Beetroot Tinted Lip Balm" class="product-main-img" loading="lazy">
+                                <img src="assets/images/lipley-beetroot-lip-balm-8g.webp" alt="Lipley Beetroot Tinted Lip Balm 8g" class="product-main-img" loading="lazy" width="1024" height="1024">
                                 <span class="product-badge">Best Seller</span>
                             </div>
                             <div class="product-content" style="text-align: center; padding: 25px 20px;">
@@ -214,7 +244,7 @@
                         <!-- Featured Product Card: Hair Oil -->
                         <div class="product-card featured-product scroll-reveal reveal-blur shop-now-trigger" id="product-hair-oil-card" data-product-id="hair-oil" style="transition-delay: 0.15s;">
                             <div class="product-visual">
-                                <img src="assets/images/lipley-hair-oil.jpg" alt="Lipley Hair Oil" class="product-main-img" loading="lazy">
+                                <img src="assets/images/lipley-ayurvedic-hair-oil-100ml.webp" alt="Lipley Ayurvedic Hair Oil 100ml" class="product-main-img" loading="lazy" width="1024" height="1024">
                                 <span class="product-badge">New Launch</span>
                             </div>
                             <div class="product-content" style="text-align: center; padding: 25px 20px;">
@@ -252,7 +282,7 @@
                         <div class="about-visual scroll-reveal reveal-fade-left delay-1">
                             <div class="about-logo-wrapper flex-center">
                                 <div class="about-logo-inner flex-center">
-                                    <img src="assets/images/logo-lipley.png" alt="LIPLEY Icon" class="about-logo-icon" loading="lazy">
+                                    <img src="assets/images/lipley-logo.webp" alt="Lipley Official Logo" class="about-logo-icon" loading="lazy" width="425" height="425">
                                 </div>
                             </div>
                         </div>
@@ -484,7 +514,7 @@
                             <div style="display: grid; grid-template-columns: 1fr; gap: 0;" class="shop-product-grid-layout">
                                 <!-- Image column -->
                                 <div style="aspect-ratio: 1/1; background: radial-gradient(circle at center, #ffffff 0%, var(--color-secondary) 100%); display: flex; align-items: center; justify-content: center; padding: 30px; position: relative; border-bottom: 1px solid rgba(30, 58, 52, 0.08);" class="shop-product-img-col">
-                                    <img src="assets/images/lipley-gallery-closed.jpg?v=2" alt="LIPLEY Strawberry Beetroot Tinted Lip Balm" style="max-width: 95%; max-height: 95%; object-fit: contain;" class="shop-product-item-img">
+                                    <img src="assets/images/lipley-beetroot-lip-balm-8g.webp" alt="Lipley Beetroot Tinted Lip Balm 8g" style="max-width: 95%; max-height: 95%; object-fit: contain;" class="shop-product-item-img" loading="lazy" width="1024" height="1024">
                                     <span style="position: absolute; top: 20px; left: 20px; background-color: var(--color-primary); border: 1px solid var(--color-accent); color: var(--color-secondary); font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; padding: 4px 10px; border-radius: 2px; z-index: 10;">Best Seller</span>
                                 </div>
                                 <!-- Content column -->
@@ -539,7 +569,7 @@
                             <div style="display: grid; grid-template-columns: 1fr; gap: 0;" class="shop-product-grid-layout">
                                 <!-- Image column -->
                                 <div style="aspect-ratio: 1/1; background: radial-gradient(circle at center, #ffffff 0%, var(--color-secondary) 100%); display: flex; align-items: center; justify-content: center; padding: 30px; position: relative; border-bottom: 1px solid rgba(30, 58, 52, 0.08);" class="shop-product-img-col">
-                                    <img src="assets/images/lipley-hair-oil.jpg?v=2" alt="Lipley Hair Oil" style="max-width: 95%; max-height: 95%; object-fit: contain;" class="shop-product-item-img">
+                                    <img src="assets/images/lipley-ayurvedic-hair-oil-100ml.webp" alt="Lipley Ayurvedic Hair Oil 100ml" style="max-width: 95%; max-height: 95%; object-fit: contain;" class="shop-product-item-img" loading="lazy" width="1024" height="1024">
                                     <span style="position: absolute; top: 20px; left: 20px; background-color: var(--color-primary); border: 1px solid var(--color-accent); color: var(--color-secondary); font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; padding: 4px 10px; border-radius: 2px; z-index: 10;">New Launch</span>
                                 </div>
                                 <!-- Content column -->
@@ -613,18 +643,18 @@
                     <!-- Left: Gallery -->
                     <div class="product-gallery-container">
                         <div class="main-gallery-visual">
-                            <img id="gallery-main-img" src="assets/images/lipley-gallery-closed.jpg?v=2" alt="LIPLEY Strawberry Beetroot Lip Balm" class="gallery-display-img">
+                            <img id="gallery-main-img" src="assets/images/lipley-beetroot-lip-balm-8g.webp" alt="Lipley Beetroot Tinted Lip Balm 8g" class="gallery-display-img" width="1024" height="1024">
                             <span class="gallery-badge">Flagship Product</span>
                         </div>
                         <div class="thumbnail-gallery-grid">
-                            <div class="gallery-thumb active" data-img="assets/images/lipley-gallery-closed.jpg?v=2">
-                                <img src="assets/images/lipley-gallery-closed.jpg?v=2" alt="Full Product Image">
+                            <div class="gallery-thumb active" data-img="assets/images/lipley-beetroot-lip-balm-8g.webp">
+                                <img src="assets/images/lipley-beetroot-lip-balm-8g.webp" alt="Lipley Beetroot Tinted Lip Balm 8g - Packaging Closed" loading="lazy" width="1024" height="1024">
                             </div>
-                            <div class="gallery-thumb" data-img="assets/images/lipley-gallery-open.jpg?v=2">
-                                <img src="assets/images/lipley-gallery-open.jpg?v=2" alt="Product Without Cap">
+                            <div class="gallery-thumb" data-img="assets/images/lipley-beetroot-lip-balm-open.webp">
+                                <img src="assets/images/lipley-beetroot-lip-balm-open.webp" alt="Lipley Beetroot Tinted Lip Balm 8g - Packaging Open" loading="lazy" width="1024" height="1024">
                             </div>
-                            <div class="gallery-thumb" data-img="assets/images/lipley-gallery-hand.jpg?v=2">
-                                <img src="assets/images/lipley-gallery-hand.jpg?v=2" alt="Product in a Woman's Hand">
+                            <div class="gallery-thumb" data-img="assets/images/lipley-beetroot-lip-balm-hand.webp">
+                                <img src="assets/images/lipley-beetroot-lip-balm-hand.webp" alt="Natural Organic Lip Care by Lipley" loading="lazy" width="1024" height="1024">
                             </div>
                         </div>
                     </div>
@@ -865,7 +895,7 @@
             <div id="sticky-purchase-bar" class="sticky-purchase-bar">
                 <div class="container sticky-bar-container">
                     <div class="sticky-bar-product-info">
-                        <img src="assets/images/lipley-gallery-closed.jpg" alt="Product Thumbnail" class="sticky-bar-thumb">
+                        <img src="assets/images/lipley-beetroot-lip-balm-8g.webp" alt="Lipley Beetroot Tinted Lip Balm 8g" class="sticky-bar-thumb" loading="lazy" width="1024" height="1024">
                         <div class="sticky-bar-text">
                             <h4 class="sticky-bar-title">LIPLEY Strawberry Beetroot Tinted Lip Balm</h4>
                             <span class="sticky-bar-price">₹149</span>
@@ -1066,7 +1096,7 @@
                     
                     <div class="summary-items-list">
                         <div class="summary-item" style="border-bottom: 1px solid rgba(30, 58, 52, 0.08); padding-bottom: 15px; margin-bottom: 15px;">
-                            <img src="assets/images/lipley-gallery-closed.jpg" alt="LIPLEY Strawberry Beetroot Tinted Lip Balm" class="summary-item-img">
+                            <img src="assets/images/lipley-beetroot-lip-balm-8g.webp" alt="Lipley Beetroot Tinted Lip Balm 8g" class="summary-item-img" loading="lazy" width="1024" height="1024">
                             <div class="summary-item-details">
                                 <span class="summary-item-name">LIPLEY Strawberry Beetroot Tinted Lip Balm</span>
                                 <span class="summary-item-qty" style="margin-top: 4px; display: block; opacity: 0.85;">Strawberry + Beetroot Tinted</span>

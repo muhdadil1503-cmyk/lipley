@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://lipley.pages.dev/sitemap.xml

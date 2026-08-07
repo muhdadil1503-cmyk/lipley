@@ -631,11 +631,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (typeof calculateOrder === 'function') {
             calculateOrder();
         }
-
-        // Trigger SEO Metadata update for the loaded product
-        if (typeof updateSEOMetadata === 'function') {
-            updateSEOMetadata('view-product', productId);
-        }
     };
 
     // --- 6. E-COMMERCE SPA ROUTER ---
@@ -671,63 +666,6 @@ document.addEventListener('DOMContentLoaded', () => {
         history.pushState(stateObj, '', '#' + hash);
     };
 
-    function updateSEOMetadata(viewId, productId = null) {
-        let title = "Lipley | Premium Organic Lip Care";
-        let desc = "Premium Organic Beetroot Tinted Lip Balm & Ayurvedic Hair Oil made with natural ingredients.";
-        let img = window.location.origin + "/assets/images/social-preview.png";
-        let url = window.location.origin + "/";
-        
-        if (viewId === 'view-product') {
-            const pId = productId || selectedProductId;
-            url = window.location.origin + "/#product";
-            if (pId === 'strawberry-beetroot') {
-                title = "Lipley Strawberry Beetroot Tinted Lip Balm 8g";
-                desc = "Naturally soft and beautifully tinted. Formulated with 100% natural organic beetroot extract and strawberry oils.";
-                img = window.location.origin + "/assets/images/lipley-gallery-closed.jpg";
-            } else if (pId === 'hair-oil') {
-                title = "Lipley Ayurvedic Hair Oil 100ml";
-                desc = "Root strength and healthy hair growth. Handcrafted with traditional herbs, virgin coconut oil, amla, bhringraj, and brahmi.";
-                img = window.location.origin + "/assets/images/lipley-hair-oil.jpg";
-            }
-        } else if (viewId === 'view-shop') {
-            title = "The Lipley Collection | Organic Boutique";
-            desc = "Explore our boutique collection of premium organic lip balms and ayurvedic hair oils.";
-            img = window.location.origin + "/assets/images/lipley-gallery-closed.jpg";
-            url = window.location.origin + "/#shop";
-        }
-        
-        // Update Title
-        document.title = title;
-        
-        // Update Meta Description
-        const metaDesc = document.querySelector('meta[name="description"]');
-        if (metaDesc) metaDesc.setAttribute('content', desc);
-        
-        // Update Canonical Link
-        const canonical = document.querySelector('link[rel="canonical"]');
-        if (canonical) canonical.setAttribute('href', url);
-        
-        // Update Open Graph tags
-        const ogTitle = document.querySelector('meta[property="og:title"]');
-        if (ogTitle) ogTitle.setAttribute('content', title);
-        const ogDesc = document.querySelector('meta[property="og:description"]');
-        if (ogDesc) ogDesc.setAttribute('content', desc);
-        const ogImg = document.querySelector('meta[property="og:image"]');
-        if (ogImg) ogImg.setAttribute('content', img);
-        const ogUrl = document.querySelector('meta[property="og:url"]');
-        if (ogUrl) ogUrl.setAttribute('content', url);
-        
-        // Update Twitter Card tags
-        const twTitle = document.querySelector('meta[property="twitter:title"]');
-        if (twTitle) twTitle.setAttribute('content', title);
-        const twDesc = document.querySelector('meta[property="twitter:description"]');
-        if (twDesc) twDesc.setAttribute('content', desc);
-        const twImg = document.querySelector('meta[property="twitter:image"]');
-        if (twImg) twImg.setAttribute('content', img);
-        const twUrl = document.querySelector('meta[property="twitter:url"]');
-        if (twUrl) twUrl.setAttribute('content', url);
-    }
-
     function showView(viewId, pushState = true, scrollTop = true) {
         viewElements.forEach(view => {
             if (view) {
@@ -743,7 +681,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pushState) {
             window.pushNavigationState('view', viewId);
         }
-        updateSEOMetadata(viewId);
     }
 
     window.goBack = function() {

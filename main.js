@@ -657,6 +657,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let hash = 'home';
         if (type === 'view') {
             hash = id.replace('view-', '');
+        } else if (type === 'anchor') {
+            hash = id;
         } else if (type === 'popup') {
             hash = id;
         } else if (type === 'policy') {
@@ -750,6 +752,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Set up native popstate pop handling
+    // Set up native popstate pop handling
     window.addEventListener('popstate', (e) => {
         const state = e.state;
         
@@ -781,6 +784,21 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (state.id === 'view-product') {
                 updateNavActive('nav-shop-link');
             }
+        } else if (state.type === 'anchor') {
+            showView('view-home', false, false);
+            const targetEl = document.getElementById(state.id);
+            if (targetEl) {
+                const navLinks = document.querySelectorAll('.desktop-nav .nav-link');
+                navLinks.forEach(nl => {
+                    nl.classList.remove('active');
+                    if (nl.getAttribute('href') === '#' + state.id) {
+                        nl.classList.add('active');
+                    }
+                });
+                setTimeout(() => {
+                    targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 50);
+            }
         } else if (state.type === 'popup') {
             openPopupById(state.id, false);
         } else if (state.type === 'policy') {
@@ -794,8 +812,18 @@ document.addEventListener('DOMContentLoaded', () => {
     function initRouter() {
         const hash = window.location.hash || '#home';
         
-        // Push initial Home state as base of history stack
-        history.replaceState({ type: 'view', id: 'view-home', productId: selectedProductId }, '', '#home');
+        // Push initial state matching the loaded hash
+        if (hash === '#home' || hash === '#') {
+            history.replaceState({ type: 'view', id: 'view-home', productId: selectedProductId }, '', '#home');
+        } else if (hash === '#shop') {
+            history.replaceState({ type: 'view', id: 'view-shop', productId: selectedProductId }, '', '#shop');
+        } else if (hash === '#product') {
+            history.replaceState({ type: 'view', id: 'view-product', productId: selectedProductId }, '', '#product');
+        } else if (hash.startsWith('#') && document.getElementById(hash.substring(1))) {
+            history.replaceState({ type: 'anchor', id: hash.substring(1), productId: selectedProductId }, '', hash);
+        } else {
+            history.replaceState({ type: 'view', id: 'view-home', productId: selectedProductId }, '', '#home');
+        }
         historyEntryCount = 0;
         
         if (hash === '#home' || hash === '#') {
@@ -804,11 +832,9 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (hash === '#shop') {
             showView('view-shop', false);
             updateNavActive('nav-shop-link');
-            window.pushNavigationState('view', 'view-shop');
         } else if (hash === '#product') {
             showView('view-product', false);
             updateNavActive('nav-shop-link');
-            window.pushNavigationState('view', 'view-product');
         } else if (hash === '#cart-drawer' || hash === '#cart') {
             showView('view-home', false);
             openPopupById('cart-drawer', true);
@@ -816,7 +842,25 @@ document.addEventListener('DOMContentLoaded', () => {
             showView('view-home', false);
             openPopupById('purchase-options-modal', true);
         } else {
-            showView('view-home', false);
+            const targetId = hash.substring(1);
+            const targetEl = document.getElementById(targetId);
+            if (targetEl) {
+                showView('view-home', false, false);
+                
+                const navLinks = document.querySelectorAll('.desktop-nav .nav-link');
+                navLinks.forEach(nl => {
+                    nl.classList.remove('active');
+                    if (nl.getAttribute('href') === hash) {
+                        nl.classList.add('active');
+                    }
+                });
+                
+                setTimeout(() => {
+                    targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 500);
+            } else {
+                showView('view-home', false);
+            }
         }
     }
     
@@ -905,8 +949,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.preventDefault();
                 const wasHomeActive = viewHome.classList.contains('active');
                 if (!wasHomeActive) {
-                    showView('view-home', true, false);
+                    showView('view-home', false, false);
                 }
+                
+                window.pushNavigationState('anchor', href.substring(1));
+                
                 const navLinks = document.querySelectorAll('.desktop-nav .nav-link');
                 navLinks.forEach(nl => {
                     nl.classList.remove('active');
@@ -2058,7 +2105,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Configurable Coupon Codes database
     const couponDatabase = {
-        'LIPLEY001': { code: 'LIPLEY001', discountPercent: 0.15, status: 'active', minQty: 2 },
+        'LIPLEY001': { code: 'LIPLEY001', discountPercent: 0.10, status: 'active', minSubtotal: 447 },
         'EXPIRED15': { code: 'EXPIRED15', discountPercent: 0.15, status: 'expired', minQty: 2 },
         'USED15': { code: 'USED15', discountPercent: 0.15, status: 'used', minQty: 2 }
     };
@@ -2066,7 +2113,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let appliedCoupon = null; // Stores the currently applied coupon object, or null
     let couponApplied = false;
     let validCouponCode = 'LIPLEY001';
-    let discountPercent = 0.15; // 15% Discount
+    let discountPercent = 0.10; // 10% Discount
     let isPinValid = false;
     let activeState = "";
     let isCartCheckout = false;
@@ -2077,9 +2124,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!code) {
             return { valid: false, reason: 'Please enter a coupon code.', status: 'invalid' };
         }
-        
-        // Calculate current total items quantity in cart/checkout
-        const totalItemsQty = isCartCheckout ? cart.reduce((sum, item) => sum + item.quantity, 0) : currentQty;
         
         const coupon = couponDatabase[code];
         if (!coupon) {
@@ -2094,8 +2138,31 @@ document.addEventListener('DOMContentLoaded', () => {
             return { valid: false, reason: 'This coupon code has already been used.', status: 'used' };
         }
         
-        if (totalItemsQty < coupon.minQty) {
-            return { valid: false, reason: 'Coupon is available only for orders of 2 or more products.', status: 'min_qty' };
+        // Calculate subtotal of normal products
+        let subtotal = 0;
+        if (isCartCheckout) {
+            cart.forEach(item => {
+                const product = window.products[item.productId] || { price: 149 };
+                subtotal += product.price * item.quantity;
+            });
+        } else {
+            if (currentQty > 0) {
+                const product = window.products[selectedProductId] || { price: 149 };
+                subtotal = currentQty * product.price;
+            }
+        }
+        
+        if (coupon.minSubtotal && subtotal < coupon.minSubtotal) {
+            if (code === 'LIPLEY001') {
+                return { valid: false, reason: 'Add products worth ₹447 or more to use this offer.', status: 'min_subtotal' };
+            }
+            return { valid: false, reason: `Minimum purchase of ₹${coupon.minSubtotal} required.`, status: 'min_subtotal' };
+        }
+        
+        // Calculate current total items quantity in cart/checkout for minQty check
+        const totalItemsQty = isCartCheckout ? cart.reduce((sum, item) => sum + item.quantity, 0) : currentQty;
+        if (coupon.minQty && totalItemsQty < coupon.minQty) {
+            return { valid: false, reason: `Coupon is available only for orders of ${coupon.minQty} or more products.`, status: 'min_qty' };
         }
         
         return { valid: true, coupon: coupon };
@@ -2444,9 +2511,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // Apply coupon overrides for delivery charge
+        if (couponApplied && appliedCoupon && appliedCoupon.code === 'LIPLEY001') {
+            if (deliveryCharge !== null) {
+                deliveryCharge = 0;
+            }
+        }
+
         let deliveryMsg = "";
         if (deliveryCharge !== null) {
-            deliveryMsg = `Delivery to ${activeState}: ₹${deliveryCharge}`;
+            deliveryMsg = deliveryCharge === 0 ? `Delivery to ${activeState}: FREE` : `Delivery to ${activeState}: ₹${deliveryCharge}`;
         }
         
         if (couponApplied && appliedCoupon) {
@@ -2465,6 +2539,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 billDeliveryCharge.textContent = "Select State";
                 billDeliveryCharge.style.color = 'var(--color-accent)';
                 billDeliveryCharge.style.fontWeight = "";
+            } else if (deliveryCharge === 0) {
+                billDeliveryCharge.textContent = "FREE";
+                billDeliveryCharge.style.color = "#4CAF50";
+                billDeliveryCharge.style.fontWeight = "600";
             } else {
                 billDeliveryCharge.textContent = `₹${deliveryCharge}`;
                 billDeliveryCharge.style.color = "";
@@ -2474,6 +2552,14 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (billDiscountRow && billDiscountValue) {
             if (discountAmount > 0) {
+                const labelSpan = billDiscountRow.querySelector('span:first-child');
+                if (labelSpan) {
+                    if (appliedCoupon && appliedCoupon.code === 'LIPLEY001') {
+                        labelSpan.textContent = "Discount: 10% OFF";
+                    } else {
+                        labelSpan.textContent = "Discount";
+                    }
+                }
                 billDiscountValue.textContent = `-₹${discountAmount}`;
                 billDiscountRow.style.display = 'flex';
             } else {
@@ -2520,18 +2606,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             
-            // Check eligibility (total items quantity >= 2) before validating other rules
-            const totalItemsQty = isCartCheckout ? cart.reduce((sum, item) => sum + item.quantity, 0) : currentQty;
-            if (totalItemsQty < 2) {
-                couponFeedback.style.display = 'block';
-                couponFeedback.textContent = 'Coupon is available only for orders of 2 or more products.';
-                couponFeedback.className = 'promo-feedback-msg error';
-                appliedCoupon = null;
-                couponApplied = false;
-                calculateOrder();
-                return;
-            }
-            
             // Disable button and show "Validating..."
             applyCouponBtn.disabled = true;
             const originalBtnText = applyCouponBtn.textContent || 'Apply';
@@ -2550,7 +2624,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     discountPercent = res.coupon.discountPercent;
                     
                     couponFeedback.style.display = 'block';
-                    couponFeedback.textContent = `Coupon applied successfully! Saved ${res.coupon.discountPercent * 100}% on your items.`;
+                    if (res.coupon.code === 'LIPLEY001') {
+                        couponFeedback.textContent = 'LIPLEY001 applied';
+                    } else {
+                        couponFeedback.textContent = `Coupon applied successfully! Saved ${res.coupon.discountPercent * 100}% on your items.`;
+                    }
                     couponFeedback.className = 'promo-feedback-msg success';
                 } else {
                     appliedCoupon = null;
@@ -2639,10 +2717,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 message += `*Product Total:* ₹${productTotal}\n`;
             }
             
+            // Apply coupon overrides for delivery charge
+            if (couponApplied && appliedCoupon && appliedCoupon.code === 'LIPLEY001') {
+                deliveryCharge = 0;
+                offerString = 'LIPLEY001 Applied (FREE)';
+            }
+            
             const discountAmount = couponApplied ? Math.round(productTotal * discountPercent) : 0;
             const grandTotal = productTotal + deliveryCharge - discountAmount;
             
-            message += `*Delivery Charge:* ₹${deliveryCharge}\n`;
+            if (deliveryCharge === 0 && couponApplied && appliedCoupon && appliedCoupon.code === 'LIPLEY001') {
+                message += `*Delivery Charge:* FREE (LIPLEY001)\n`;
+            } else {
+                message += `*Delivery Charge:* ₹${deliveryCharge}\n`;
+            }
             if (couponApplied) {
                 const couponCode = appliedCoupon ? appliedCoupon.code : 'LIPLEY001';
                 message += `*Coupon Discount:* -₹${discountAmount} (${couponCode})\n`;

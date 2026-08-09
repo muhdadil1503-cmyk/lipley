@@ -2105,7 +2105,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Configurable Coupon Codes database
     const couponDatabase = {
-        'LIPLEY001': { code: 'LIPLEY001', discountPercent: 0.10, status: 'active', minSubtotal: 447 },
+        'LIPLEY001': { code: 'LIPLEY001', discountPercent: 0.10, status: 'active' },
         'EXPIRED15': { code: 'EXPIRED15', discountPercent: 0.15, status: 'expired', minQty: 2 },
         'USED15': { code: 'USED15', discountPercent: 0.15, status: 'used', minQty: 2 }
     };
@@ -2153,9 +2153,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         if (coupon.minSubtotal && subtotal < coupon.minSubtotal) {
-            if (code === 'LIPLEY001') {
-                return { valid: false, reason: 'Add products worth ₹447 or more to use this offer.', status: 'min_subtotal' };
-            }
             return { valid: false, reason: `Minimum purchase of ₹${coupon.minSubtotal} required.`, status: 'min_subtotal' };
         }
         
@@ -2189,47 +2186,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Keep window.shippingConfig for backwards compatibility but shipping charge calculation uses new engine
     window.shippingConfig = {
-        freeDeliveryMinAmountKerala: 700,
-        freeDeliveryMinAmountRestOfIndia: 700
+        freeDeliveryMinAmountKerala: 447,
+        freeDeliveryMinAmountRestOfIndia: 894
     };
 
-    function getUnifiedShippingRate(state, items) {
+    function getUnifiedShippingRate(state, subtotal = 0) {
         if (!state) {
             return { charge: null, text: '' };
         }
         const stateKey = state.toLowerCase().trim();
         if (stateKey === 'kerala') {
-            let lbQty = 0;
-            let hoQty = 0;
-            if (Array.isArray(items)) {
-                items.forEach(item => {
-                    if (item.productId === 'strawberry-beetroot') {
-                        lbQty += item.quantity || 0;
-                    } else if (item.productId === 'hair-oil') {
-                        hoQty += item.quantity || 0;
-                    }
-                });
-            }
-            
-            if (hoQty > 0 || lbQty >= 2) {
+            if (subtotal >= 447) {
                 return { charge: 0, text: 'Kerala Delivery (FREE)' };
-            } else if (lbQty === 1) {
-                return { charge: 30, text: 'Kerala Delivery (₹30)' };
             } else {
-                return { charge: 0, text: 'Kerala Delivery (FREE)' };
+                return { charge: 30, text: 'Kerala Delivery (₹30)' };
             }
         } else {
-            return { charge: 60, text: 'Standard Delivery (₹60)' };
+            if (subtotal >= 894) {
+                return { charge: 0, text: 'Standard Delivery (FREE)' };
+            } else {
+                return { charge: 69, text: 'Standard Delivery (₹69)' };
+            }
         }
     }
 
-    function getShippingRate(state, productId, qty) {
-        const items = [{ productId, quantity: qty }];
-        return getUnifiedShippingRate(state, items);
+    function getShippingRate(state, productId, qty, subtotal) {
+        if (typeof subtotal !== 'number') {
+            const product = window.products[productId] || { price: 149 };
+            subtotal = qty * product.price;
+        }
+        return getUnifiedShippingRate(state, subtotal);
     }
 
     function getCartShippingRate(state, subtotal, cartItems) {
-        return getUnifiedShippingRate(state, cartItems);
+        return getUnifiedShippingRate(state, subtotal);
     }
 
     // Setup state searchable dropdown
@@ -2511,22 +2501,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Apply coupon overrides for delivery charge
-        if (couponApplied && appliedCoupon && appliedCoupon.code === 'LIPLEY001') {
-            if (deliveryCharge !== null) {
-                const stateKey = (activeState || "").toLowerCase().trim();
-                if (stateKey === 'kerala') {
-                    if (productTotal >= 447) {
-                        deliveryCharge = 0;
-                    }
-                } else {
-                    if (productTotal >= 894) {
-                        deliveryCharge = 0;
-                    }
-                }
-            }
-        }
-
         let deliveryMsg = "";
         if (deliveryCharge !== null) {
             deliveryMsg = deliveryCharge === 0 ? `Delivery to ${activeState}: FREE` : `Delivery to ${activeState}: ₹${deliveryCharge}`;
@@ -2726,27 +2700,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 message += `*Product Total:* ₹${productTotal}\n`;
             }
             
-            // Apply coupon overrides for delivery charge
-            if (couponApplied && appliedCoupon && appliedCoupon.code === 'LIPLEY001') {
-                const stateKey = (state || "").toLowerCase().trim();
-                if (stateKey === 'kerala') {
-                    if (productTotal >= 447) {
-                        deliveryCharge = 0;
-                        offerString = 'LIPLEY001 Applied (FREE)';
-                    }
-                } else {
-                    if (productTotal >= 894) {
-                        deliveryCharge = 0;
-                        offerString = 'LIPLEY001 Applied (FREE)';
-                    }
-                }
-            }
-            
             const discountAmount = couponApplied ? Math.round(productTotal * discountPercent) : 0;
-            const grandTotal = productTotal + deliveryCharge - discountAmount;
+            const grandTotal = productTotal + (deliveryCharge || 0) - discountAmount;
             
-            if (deliveryCharge === 0 && couponApplied && appliedCoupon && appliedCoupon.code === 'LIPLEY001') {
-                message += `*Delivery Charge:* FREE (LIPLEY001)\n`;
+            if (deliveryCharge === 0) {
+                message += `*Delivery Charge:* FREE\n`;
             } else {
                 message += `*Delivery Charge:* ₹${deliveryCharge}\n`;
             }

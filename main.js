@@ -2514,7 +2514,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // Apply coupon overrides for delivery charge
         if (couponApplied && appliedCoupon && appliedCoupon.code === 'LIPLEY001') {
             if (deliveryCharge !== null) {
-                deliveryCharge = 0;
+                const stateKey = (activeState || "").toLowerCase().trim();
+                if (stateKey === 'kerala') {
+                    if (productTotal >= 447) {
+                        deliveryCharge = 0;
+                    }
+                } else {
+                    if (productTotal >= 894) {
+                        deliveryCharge = 0;
+                    }
+                }
             }
         }
 
@@ -2719,8 +2728,18 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Apply coupon overrides for delivery charge
             if (couponApplied && appliedCoupon && appliedCoupon.code === 'LIPLEY001') {
-                deliveryCharge = 0;
-                offerString = 'LIPLEY001 Applied (FREE)';
+                const stateKey = (state || "").toLowerCase().trim();
+                if (stateKey === 'kerala') {
+                    if (productTotal >= 447) {
+                        deliveryCharge = 0;
+                        offerString = 'LIPLEY001 Applied (FREE)';
+                    }
+                } else {
+                    if (productTotal >= 894) {
+                        deliveryCharge = 0;
+                        offerString = 'LIPLEY001 Applied (FREE)';
+                    }
+                }
             }
             
             const discountAmount = couponApplied ? Math.round(productTotal * discountPercent) : 0;

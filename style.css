@@ -325,19 +325,76 @@ body.intro-active {
     100% { opacity: 0.9; transform: translateY(0); }
 }
 
+/* --- PROMOTIONAL ANNOUNCEMENT TICKER BAR --- */
+.announcement-bar {
+    width: 100%;
+    height: 42px;
+    background-color: #1E3A34; /* Dark deep-green matching Lipley brand */
+    color: #ffffff;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    border-top: 1px solid rgba(212, 175, 55, 0.35);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.35);
+    box-sizing: border-box;
+    user-select: none;
+    flex-shrink: 0;
+}
+
+.ticker-track {
+    display: flex;
+    width: max-content;
+    animation: marqueeScroll 25s linear infinite;
+    will-change: transform;
+}
+
+.announcement-bar:hover .ticker-track {
+    animation-play-state: paused;
+}
+
+.ticker-content {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.ticker-content span {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #ffffff;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+@keyframes marqueeScroll {
+    0% {
+        transform: translate3d(0, 0, 0);
+    }
+    100% {
+        transform: translate3d(-50%, 0, 0);
+    }
+}
+
 /* --- GLASSMORPHISM HEADER --- */
 .main-header {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: 90px;
+    height: auto;
     z-index: 1000;
     display: flex;
-    align-items: center;
+    flex-direction: column;
     transition: var(--transition-premium);
     border-bottom: 1px solid transparent;
-    background-color: rgba(248, 246, 241, 0.85); /* Locked Off White bg */
+    background-color: rgba(248, 246, 241, 0.92); /* Locked Off White bg */
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
     color: var(--color-primary); /* Locked Dark Green text */
@@ -348,6 +405,8 @@ body.intro-active {
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    height: 90px;
+    transition: var(--transition-quick);
 }
 
 /* Logo brand styles */
@@ -482,9 +541,13 @@ body.intro-active {
 
 /* Scroll variations for Header */
 .main-header.scrolled {
-    height: 75px;
+    height: auto;
     border-bottom: 1px solid rgba(212, 175, 55, 0.15);
     box-shadow: 0 4px 20px rgba(30, 58, 52, 0.05); /* Scroll shadow */
+}
+
+.main-header.scrolled .header-container {
+    height: 75px;
 }
 
 /* --- MOBILE DRAWER --- */
@@ -573,13 +636,13 @@ body.intro-active {
 /* --- HERO SECTION --- */
 .hero-section {
     width: 100%;
-    height: 85vh;
-    min-height: 520px;
-    max-height: 750px;
-    background-color: #0a1c18;
+    height: 100vh;
+    min-height: 550px;
+    max-height: 850px;
+    background-color: #F8F3EA;
     position: relative;
     overflow: hidden;
-    margin-top: 90px; /* Align precisely below header */
+    margin-top: 132px; /* Align precisely below announcement bar + header */
     display: flex;
     align-items: center;
 }
@@ -608,6 +671,60 @@ body.intro-active {
 
 .hero-slide.active {
     opacity: 1;
+}
+
+/* --- KERALA ONAM CAMPAIGN BANNER SLIDE --- */
+.hero-slide.independence-slide {
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    background-color: #F8F3EA !important;
+    cursor: pointer;
+    transition: opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* --- ONAM HERO CTA BUTTON --- */
+.hero-onam-cta-container {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.btn-hero-onam-offer {
+    background-color: #123C32;
+    color: #FFFFFF;
+    border: 1.5px solid #C9A227;
+    padding: 14px 38px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border-radius: 30px;
+    box-shadow: 0 8px 24px rgba(18, 60, 50, 0.3);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+}
+
+.btn-hero-onam-offer:hover {
+    background-color: #1A4F43;
+    border-color: #E2BC43;
+    box-shadow: 0 0 24px rgba(201, 162, 39, 0.5);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .hero-slide.independence-slide {
+        background-size: cover !important;
+        background-position: center center !important;
+        background-color: #F8F3EA !important;
+    }
 }
 
 .hero-slides-overlay {
@@ -955,14 +1072,21 @@ body.intro-active {
     display: grid;
     grid-template-columns: 1fr;
     gap: 40px;
-    max-width: 1000px;
+    max-width: 1200px;
     margin: 0 auto;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 768px) and (max-width: 991px) {
     .products-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 50px;
+        gap: 30px;
+    }
+}
+
+@media (min-width: 992px) {
+    .products-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 32px;
     }
 }
 
@@ -1886,18 +2010,24 @@ textarea.form-input-modern, textarea.form-input {
     /* Header & Navigation changes */
     .main-header {
         height: auto !important;
-        padding: 12px 0;
+        padding: 0 !important;
     }
     
     .main-header.scrolled {
         height: auto !important;
-        padding: 8px 0;
+        padding: 0 !important;
     }
     
     .header-container {
         flex-wrap: wrap;
         justify-content: space-between;
         gap: 8px;
+        height: 75px !important;
+        padding: 8px 16px !important;
+    }
+
+    .main-header.scrolled .header-container {
+        height: 65px !important;
     }
     
     .logo-link {
@@ -2047,7 +2177,7 @@ textarea.form-input-modern, textarea.form-input {
 /* SPA Dynamic View Transitions */
 .page-view {
     display: none;
-    padding-top: 90px; /* Clear fixed header */
+    padding-top: 132px; /* Clear fixed header + announcement bar */
     box-sizing: border-box;
 }
 
@@ -4157,12 +4287,33 @@ textarea.form-input-modern, textarea.form-input {
 }
 /* --- HERO SECTION MOBILE RESPONSIVE REDESIGN --- */
 @media (max-width: 768px) {
+    .announcement-bar {
+        height: 38px;
+    }
+    .ticker-content span {
+        font-size: 11.5px;
+        letter-spacing: 0.02em;
+    }
+    .ticker-track {
+        animation-duration: 20s;
+    }
     .hero-section {
-        height: 58vh !important;
-        min-height: 380px !important;
-        max-height: 480px !important;
-        margin-top: 75px !important;
+        width: 100% !important;
+        height: 85vh !important;
+        min-height: 480px !important;
+        max-height: 650px !important;
+        margin-top: 113px !important;
         aspect-ratio: auto !important;
+    }
+    .hero-onam-cta-container {
+        bottom: 35px !important;
+    }
+    .btn-hero-onam-offer {
+        padding: 12px 28px !important;
+        font-size: 12px !important;
+    }
+    .page-view {
+        padding-top: 113px !important;
     }
     
     .hero-content {
@@ -4310,5 +4461,137 @@ textarea.form-input-modern, textarea.form-input {
     }
     .sticky-buy-btn {
         padding: 0 16px !important;
+    }
+}
+
+/* ==========================================================================
+   MAVELI ONAM WELCOME ANIMATION STYLES
+   ========================================================================== */
+.maveli-welcome-container {
+    position: fixed;
+    bottom: 25px;
+    left: -200px; /* Start offscreen */
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: left 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease, transform 0.4s ease;
+    opacity: 1;
+}
+
+.maveli-character-wrap {
+    position: relative;
+    width: 130px;
+    height: 173px;
+    filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.22));
+    transition: transform 0.4s ease;
+}
+
+.maveli-character-wrap:hover {
+    transform: scale(1.05);
+}
+
+.maveli-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+/* Walking Bobbing Animation */
+.maveli-welcome-container.walking .maveli-img {
+    animation: maveliBob 0.4s ease-in-out infinite alternate;
+}
+
+@keyframes maveliBob {
+    0% { transform: translateY(0) rotate(0deg); }
+    100% { transform: translateY(-6px) rotate(2deg); }
+}
+
+/* Waving Pose */
+.maveli-welcome-container.waving .maveli-img {
+    animation: maveliWave 0.8s ease-in-out 2 alternate;
+}
+
+@keyframes maveliWave {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(6deg) translateY(-2px); }
+    100% { transform: rotate(-4deg); }
+}
+
+/* Pointing Pose */
+.maveli-welcome-container.pointing .maveli-img {
+    transform: rotate(5deg) scale(1.08);
+}
+
+/* Speech Bubble */
+.maveli-speech-bubble {
+    position: absolute;
+    top: -55px;
+    background: #123C32;
+    color: #FAF6EE;
+    border: 1.5px solid #C9A227;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+    box-shadow: 0 8px 24px rgba(18, 60, 50, 0.25);
+    opacity: 0;
+    transform: scale(0.8) translateY(10px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    pointer-events: none;
+}
+
+.maveli-speech-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 8px 7px 0;
+    border-style: solid;
+    border-color: #123C32 transparent transparent;
+}
+
+.maveli-speech-bubble.active {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+}
+
+/* Floating Yellow Flower Petals */
+.maveli-petal {
+    position: absolute;
+    font-size: 14px;
+    opacity: 0;
+    pointer-events: none;
+    animation: petalFloat 2.5s ease-in-out infinite;
+}
+
+.petal-1 { top: 20%; left: -10px; animation-delay: 0s; }
+.petal-2 { top: 40%; right: -12px; animation-delay: 0.8s; }
+.petal-3 { top: 10%; right: 10px; animation-delay: 1.4s; }
+
+@keyframes petalFloat {
+    0% { opacity: 0; transform: translateY(0) rotate(0deg); }
+    30% { opacity: 0.9; }
+    100% { opacity: 0; transform: translateY(-30px) rotate(180deg); }
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    .maveli-welcome-container {
+        bottom: 75px; /* Above sticky bar */
+    }
+    .maveli-character-wrap {
+        width: 85px;
+        height: 110px;
+    }
+    .maveli-speech-bubble {
+        top: -48px;
+        font-size: 11.5px;
+        padding: 6px 12px;
     }
 }

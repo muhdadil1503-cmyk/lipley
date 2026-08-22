@@ -210,11 +210,36 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 3.1 HERO SLIDER CONTROLLER ---
+    // --- 3.1 HERO SLIDER CONTROLLER & AUTOMATED ONAM CAMPAIGN MANAGER ---
+    const ONAM_CAMPAIGN_EXPIRY = new Date('2026-09-30T23:59:59+05:30').getTime();
+    const independenceSlide = document.getElementById('independence-slide');
+    const isCampaignActive = Date.now() <= ONAM_CAMPAIGN_EXPIRY;
+
+    if (!isCampaignActive && independenceSlide) {
+        independenceSlide.remove();
+    }
+
     const slides = document.querySelectorAll('.hero-slide');
+    const dotsContainer = document.getElementById('hero-dots');
+    
+    // Dynamic Dot Generation
+    if (dotsContainer) {
+        dotsContainer.innerHTML = '';
+        slides.forEach((_, idx) => {
+            const dot = document.createElement('span');
+            dot.className = `hero-dot${idx === 0 ? ' active' : ''}`;
+            dot.setAttribute('data-slide', idx);
+            dotsContainer.appendChild(dot);
+        });
+    }
+
     const dots = document.querySelectorAll('.hero-dot');
     const prevBtn = document.getElementById('hero-prev-btn');
     const nextBtn = document.getElementById('hero-next-btn');
+    const heroContent = document.querySelector('.hero-overlay-container');
+    const heroSlidesOverlay = document.querySelector('.hero-slides-overlay');
+    const heroOnamCtaContainer = document.getElementById('hero-onam-cta-container');
+    const btnHeroOnamOffer = document.getElementById('btn-hero-onam-offer');
     let currentSlide = 0;
     let slideInterval = null;
 
@@ -229,6 +254,23 @@ document.addEventListener('DOMContentLoaded', () => {
         slides.forEach((slide, i) => {
             if (i === currentSlide) {
                 slide.classList.add('active');
+                if (slide.classList.contains('independence-slide')) {
+                    if (heroContent) heroContent.style.opacity = '0';
+                    if (heroContent) heroContent.style.pointerEvents = 'none';
+                    if (heroSlidesOverlay) heroSlidesOverlay.style.opacity = '0';
+                    if (heroOnamCtaContainer) {
+                        heroOnamCtaContainer.style.opacity = '1';
+                        heroOnamCtaContainer.style.pointerEvents = 'auto';
+                    }
+                } else {
+                    if (heroContent) heroContent.style.opacity = '1';
+                    if (heroContent) heroContent.style.pointerEvents = 'auto';
+                    if (heroSlidesOverlay) heroSlidesOverlay.style.opacity = '1';
+                    if (heroOnamCtaContainer) {
+                        heroOnamCtaContainer.style.opacity = '0';
+                        heroOnamCtaContainer.style.pointerEvents = 'none';
+                    }
+                }
             } else {
                 slide.classList.remove('active');
             }
@@ -283,9 +325,146 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Direct routing to Onam Bundle Product Page
+    function navigateToOnamBundlePage(e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        if (typeof window.loadProductDetails === 'function') {
+            window.loadProductDetails('independence-bundle');
+        }
+        if (typeof showView === 'function') {
+            showView('view-product');
+        }
+        if (typeof updateNavActive === 'function') {
+            updateNavActive('nav-shop-link');
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    if (btnHeroOnamOffer) {
+        btnHeroOnamOffer.addEventListener('click', navigateToOnamBundlePage);
+    }
+
+    slides.forEach(slide => {
+        if (slide.classList.contains('independence-slide')) {
+            slide.addEventListener('click', navigateToOnamBundlePage);
+        }
+    });
+
+    // Initialize slide show & initial slide view
+    showSlide(0);
+    startSlideShow();
+
     if (slides.length > 0) {
         startSlideShow();
     }
+
+    // --- 3.2 LIMITED-TIME ONAM MAVELI WELCOME ANIMATION CONTROLLER ---
+    window.replayMaveliAnimation = function() {
+        sessionStorage.removeItem('lipley_maveli_played');
+        initMaveliWelcomeAnimation();
+    };
+
+    function initMaveliWelcomeAnimation() {
+        const isMaveliCampaignActive = Date.now() <= ONAM_CAMPAIGN_EXPIRY;
+        let maveliContainer = document.getElementById('maveli-welcome-container');
+        
+        if (!isMaveliCampaignActive) {
+            if (maveliContainer) maveliContainer.remove();
+            return;
+        }
+
+        if (!maveliContainer) {
+            maveliContainer = document.createElement('div');
+            maveliContainer.id = 'maveli-welcome-container';
+            maveliContainer.className = 'maveli-welcome-container';
+            maveliContainer.style.display = 'none';
+            maveliContainer.innerHTML = `
+                <div id="maveli-speech-bubble" class="maveli-speech-bubble">
+                    <span id="maveli-speech-text">Hi!</span>
+                </div>
+                <div id="maveli-character-wrap" class="maveli-character-wrap">
+                    <img src="assets/images/lipley-maveli-mascot.png" alt="Maveli Onam Mascot" class="maveli-img" width="300" height="360">
+                    <span class="maveli-petal petal-1">🌼</span>
+                    <span class="maveli-petal petal-2">🌸</span>
+                    <span class="maveli-petal petal-3">✨</span>
+                </div>
+            `;
+            document.body.appendChild(maveliContainer);
+        }
+
+        const speechBubble = document.getElementById('maveli-speech-bubble');
+        const speechText = document.getElementById('maveli-speech-text');
+
+        // Reset state & positioning
+        maveliContainer.style.opacity = '1';
+        maveliContainer.style.left = '-200px';
+        maveliContainer.style.display = 'none';
+        maveliContainer.className = 'maveli-welcome-container';
+        if (speechBubble) speechBubble.classList.remove('active');
+        if (speechText) speechText.textContent = 'Hi!';
+
+        sessionStorage.setItem('lipley_maveli_played', 'true');
+
+        // Click listener: route to Onam Bundle Product Page
+        maveliContainer.onclick = function(e) {
+            e.preventDefault();
+            navigateToOnamBundlePage(e);
+        };
+
+        // Step 1: Wait 2 seconds, then Maveli enters from bottom-left corner
+        setTimeout(() => {
+            maveliContainer.style.display = 'flex';
+            maveliContainer.classList.add('walking');
+            const targetLeft = window.innerWidth <= 768 ? '20px' : '50px';
+            maveliContainer.style.left = targetLeft;
+
+            // Step 2: 3.0s - Stop walking, wave, show speech bubble "Hi!"
+            setTimeout(() => {
+                maveliContainer.classList.remove('walking');
+                maveliContainer.classList.add('waving');
+                if (speechText) speechText.textContent = 'Hi!';
+                if (speechBubble) speechBubble.classList.add('active');
+            }, 1000);
+
+            // Step 3: 4.5s (3.5s after speech bubble appears) - Update speech text to "Onam Offer kaanan marakkalle! 🌼" & point to CTA
+            setTimeout(() => {
+                if (speechText) speechText.textContent = 'Onam Offer kaanan marakkalle! 🌼';
+                maveliContainer.classList.remove('waving');
+                maveliContainer.classList.add('pointing');
+            }, 2500);
+
+            // Step 4: 6.5s - Resume walking toward bottom-right exit
+            setTimeout(() => {
+                maveliContainer.classList.remove('pointing');
+                maveliContainer.classList.add('walking');
+                if (speechBubble) speechBubble.classList.remove('active');
+                
+                const exitTargetLeft = window.innerWidth <= 768 ? 'calc(100vw - 110px)' : 'calc(100vw - 170px)';
+                maveliContainer.style.left = exitTargetLeft;
+            }, 4500);
+
+            // Step 5: 7.8s - Final wave before exit
+            setTimeout(() => {
+                maveliContainer.classList.remove('walking');
+                maveliContainer.classList.add('waving');
+            }, 5800);
+
+            // Step 6: 8.6s - Soft fade out
+            setTimeout(() => {
+                maveliContainer.style.opacity = '0';
+                setTimeout(() => {
+                    maveliContainer.style.display = 'none';
+                }, 600);
+            }, 6600);
+
+        }, 2000);
+    }
+
+    // Launch Maveli Welcome Animation
+    initMaveliWelcomeAnimation();
 
 
     // --- 4. SCROLL REVEAL (FADE / SLIDE ENTRANCE) ---
@@ -423,6 +602,37 @@ document.addEventListener('DOMContentLoaded', () => {
                 { q: "Can children use this hair oil?", a: "Yes, it is formulated with 100% safe, traditional Ayurvedic ingredients and is suitable for men, women, and children." },
                 { q: "Is it suitable for all hair types?", a: "Yes, our rich formulation works effectively for dry, oily, damaged, or color-treated hair." }
             ]
+        },
+        "independence-bundle": {
+            id: "independence-bundle",
+            name: "LIPLEY ONAM BUNDLE",
+            type: "ONAM SPECIAL BUNDLE",
+            tagline: "Buy 2 Hair Oil + Get 1 Lip Balm FREE",
+            price: 498,
+            originalPrice: 647,
+            description: "Celebrate Onam with Lipley's premium natural care collection. Buy 2 Hair Oil (100ml) and get 1 Beetroot Tinted Lip Balm (8g) FREE.",
+            variant: "Buy 2 Hair Oil + 1 Lip Balm FREE",
+            image: "assets/images/lipley-onam-bundle-scene.jpg",
+            gallery: [
+                "assets/images/lipley-onam-bundle-scene.jpg"
+            ],
+            benefits: [
+                "Includes 2 × 100ml Ayurvedic Hair Oil",
+                "Includes 1 × 8g Beetroot Tinted Lip Balm FREE",
+                "Perfect Onam gifting bundle",
+                "Natural nourishment for hair and lips",
+                "Limited-time Onam Special Offer"
+            ],
+            instructions: "Use products as directed on individual packaging.",
+            reviews: [
+                { text: "Wonderful Onam gifting bundle! The hair oil and beetroot lip balm are incredible quality.", author: "Priya S." }
+            ],
+            netQty: "2 × 100ml Hair Oil + 1 × 8g Lip Balm",
+            storage: "Store in a cool, dry place.",
+            faqs: [
+                { q: "What is included in the Onam Special Bundle?", a: "The Onam Special Bundle includes 2 bottles of Lipley Ayurvedic Hair Oil (100ml each) plus 1 jar of Lipley Beetroot Tinted Lip Balm (8g) FREE." },
+                { q: "Is this offer available for a limited time?", a: "Yes, this exclusive Onam bundle pricing of ₹498 is valid only during the festive season." }
+            ]
         }
     };
 
@@ -501,7 +711,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (subtitleTagline) subtitleTagline.textContent = product.tagline;
         
         const priceVal = document.querySelector('.price-value');
-        if (priceVal) priceVal.textContent = `₹${product.price}`;
+        if (priceVal) {
+            if (product.originalPrice) {
+                priceVal.innerHTML = `₹${product.price} <span style="font-size: 16px; text-decoration: line-through; color: #888888; font-weight: 500; margin-left: 10px;">₹${product.originalPrice}</span>`;
+            } else {
+                priceVal.textContent = `₹${product.price}`;
+            }
+        }
         
         // Update sidebar shipping details
         const sidebarShipping = document.querySelector('.p-shipping-list');
@@ -540,10 +756,17 @@ document.addEventListener('DOMContentLoaded', () => {
             `).join('');
         }
         
-        // Update ingredients
+        // Update ingredients block visibility
+        const ingredientsBlock = document.querySelector('.p-ingredients-block');
         const ingredientsGrid = document.querySelector('.drawer-ingredients-grid');
-        if (ingredientsGrid && product.ingredients) {
-            ingredientsGrid.innerHTML = product.ingredients.map(ing => `<span class="ingredient-pill" style="font-size: 12px; padding: 6px 12px; background: rgba(30, 58, 52, 0.05); border: 1px solid rgba(30, 58, 52, 0.1); border-radius: 20px; color: var(--color-primary);">${ing}</span>`).join('');
+        
+        if (product.id === 'independence-bundle' || !product.ingredients) {
+            if (ingredientsBlock) ingredientsBlock.style.display = 'none';
+        } else {
+            if (ingredientsBlock) ingredientsBlock.style.display = 'block';
+            if (ingredientsGrid) {
+                ingredientsGrid.innerHTML = product.ingredients.map(ing => `<span class="ingredient-pill" style="font-size: 12px; padding: 6px 12px; background: rgba(30, 58, 52, 0.05); border: 1px solid rgba(30, 58, 52, 0.1); border-radius: 20px; color: var(--color-primary);">${ing}</span>`).join('');
+            }
         }
         
         // Update tab benefits
@@ -878,6 +1101,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             showView('view-product');
             updateNavActive('nav-shop-link');
+        });
+    });
+
+    const bundleActionBtns = document.querySelectorAll('.btn-shop-bundle-action');
+    bundleActionBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const productId = btn.getAttribute('data-product-id') || 'independence-bundle';
+            addToCart(productId, 1, true);
         });
     });
 

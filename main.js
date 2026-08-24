@@ -520,6 +520,7 @@ document.addEventListener('DOMContentLoaded', () => {
         "strawberry-beetroot": {
             id: "strawberry-beetroot",
             name: "LIPLEY Strawberry Beetroot Tinted Lip Balm",
+            badge: "BEST SELLER",
             type: "Organic Lip Balm",
             tagline: "Organic Ingredients. Natural Nourishment. Beautifully Tinted Lips.",
             price: 149,
@@ -566,7 +567,8 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         "hair-oil": {
             id: "hair-oil",
-            name: "Lipley Hair Oil",
+            name: "LIPLEY Hair Oil",
+            badge: "NEW LAUNCH",
             type: "Hair Care",
             tagline: "100% Ayurvedic. Root Strength. Healthy Growth.",
             price: 249,
@@ -605,7 +607,8 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         "independence-bundle": {
             id: "independence-bundle",
-            name: "LIPLEY ONAM BUNDLE",
+            name: "LIPLEY Onam Bundle",
+            badge: "ONAM SPECIAL",
             type: "ONAM SPECIAL BUNDLE",
             tagline: "Buy 2 Hair Oil + Get 1 Lip Balm FREE",
             price: 498,
@@ -656,6 +659,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Update breadcrumb
         const breadcrumbActive = document.querySelector('.breadcrumb-active');
         if (breadcrumbActive) breadcrumbActive.textContent = product.name;
+
+        // Update detail page badge dynamically
+        const galleryBadge = document.getElementById('gallery-badge');
+        if (galleryBadge && product.badge) {
+            galleryBadge.textContent = product.badge;
+        }
         
         // Update images
         const mainImg = document.getElementById('gallery-main-img');

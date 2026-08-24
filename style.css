@@ -4360,81 +4360,118 @@ textarea.form-input-modern, textarea.form-input {
         overflow-x: hidden !important;
     }
 
-    /* 3. Hero Banner (Directly below Ticker) */
-    .hero-section {
-        position: relative !important;
-        top: 0 !important;
-        left: 0 !important;
-        margin-top: 0 !important;
-        margin-bottom: 0 !important;
-        padding-top: 0 !important;
-        transform: none !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        min-height: 520px !important;
-        height: min(100svh, 720px) !important;
-        aspect-ratio: auto !important;
-        overflow: hidden !important;
-        box-sizing: border-box !important;
-        z-index: 1 !important;
-    }
-
-    /* 4. Hero Slides and Presentation */
+    /* 3. Hero Banner (Directly below Announcement Ticker) */
+    .hero-section,
     .hero-slides,
     .hero-slide {
         width: 100% !important;
         max-width: 100% !important;
-        height: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+    }
+
+    .hero-section {
+        position: relative !important;
         top: 0 !important;
         left: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        transform: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        aspect-ratio: 1024 / 582 !important;
+        overflow: hidden !important;
+        box-sizing: border-box !important;
+        z-index: 1 !important;
+        background-color: #F8F3EA !important;
+    }
+
+    /* 4. Hero Slides and Presentation */
+    .hero-slides {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    .hero-slide {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        background-size: cover !important;
+        background-position: center center !important;
+        background-repeat: no-repeat !important;
     }
 
     .hero-slide.independence-slide {
-        background-size: cover !important;
-        background-position: center bottom !important;
+        background-size: contain !important;
+        background-position: center center !important;
         background-repeat: no-repeat !important;
         background-color: #F8F3EA !important;
     }
 
-    /* 5. Mobile Hero Text Positioning (Safely centered around 45-50% of hero fold) */
+    /* 5. Mobile Hero Text Positioning */
     .hero-overlay-container {
         position: absolute !important;
-        top: 45% !important;
-        left: 0 !important;
-        right: 0 !important;
+        top: 26% !important;
+        left: 24px !important;
+        right: 24px !important;
+        width: auto !important;
+        max-width: 100% !important;
         transform: translateY(-50%) !important;
-        width: 100% !important;
-        padding: 0 24px !important;
+        padding: 0 !important;
+        margin: 0 !important;
         z-index: 5 !important;
         box-sizing: border-box !important;
+        pointer-events: none !important;
     }
 
     .hero-content {
+        position: relative !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
         max-width: 100% !important;
         margin: 0 auto !important;
         text-align: center !important;
         padding: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .hero-brand {
+        font-size: clamp(8px, 2.2vw, 11px) !important;
+        letter-spacing: 0.15em !important;
+        margin-bottom: 2px !important;
+        display: block !important;
     }
 
     .hero-title-premium {
-        font-size: clamp(20px, 6vw, 28px) !important;
-        line-height: 1.25 !important;
-        margin-bottom: 8px !important;
+        font-size: clamp(13px, 4.2vw, 22px) !important;
+        line-height: 1.15 !important;
+        margin-bottom: 3px !important;
     }
 
     .hero-subtitle-premium {
-        font-size: clamp(12px, 3.5vw, 15px) !important;
-        line-height: 1.4 !important;
+        font-size: clamp(9px, 2.6vw, 13px) !important;
+        line-height: 1.25 !important;
+        margin-bottom: 0 !important;
     }
 
     /* 6. Mobile Hero CTA Button */
     .hero-onam-cta-container {
         position: absolute !important;
-        bottom: 28px !important;
+        bottom: 14% !important;
         left: 50% !important;
         transform: translateX(-50%) !important;
-        width: calc(100% - 48px) !important;
-        max-width: 340px !important;
+        width: auto !important;
+        max-width: calc(100% - 48px) !important;
         margin: 0 !important;
         text-align: center !important;
         z-index: 10 !important;
@@ -4442,12 +4479,14 @@ textarea.form-input-modern, textarea.form-input {
     }
 
     .btn-hero-onam-offer {
-        width: 100% !important;
-        padding: 14px 20px !important;
-        font-size: 12px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: clamp(6px, 1.8vw, 10px) clamp(16px, 4vw, 26px) !important;
+        font-size: clamp(9.5px, 2.6vw, 12px) !important;
         font-weight: 700 !important;
         letter-spacing: 0.08em !important;
-        border-radius: 30px !important;
+        border-radius: 24px !important;
         white-space: nowrap !important;
         box-sizing: border-box !important;
     }
@@ -4457,19 +4496,32 @@ textarea.form-input-modern, textarea.form-input {
         z-index: 10 !important;
         top: 50% !important;
         transform: translateY(-50%) !important;
+        width: clamp(24px, 7vw, 32px) !important;
+        height: clamp(24px, 7vw, 32px) !important;
+        padding: 0 !important;
     }
 
     .hero-arrow.prev-arrow {
-        left: 8px !important;
+        left: 6px !important;
     }
 
     .hero-arrow.next-arrow {
-        right: 8px !important;
+        right: 6px !important;
     }
 
     .hero-dots {
-        bottom: 10px !important;
+        bottom: 6px !important;
         z-index: 10 !important;
+    }
+
+    .hero-dot {
+        width: clamp(5px, 1.6vw, 8px) !important;
+        height: clamp(5px, 1.6vw, 8px) !important;
+        margin: 0 3px !important;
+    }
+
+    .hero-scroll-indicator {
+        display: none !important;
     }
 
     /* 8. Featured Products Section (Directly below Hero) */

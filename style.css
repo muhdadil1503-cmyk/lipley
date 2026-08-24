@@ -157,7 +157,8 @@ body.intro-active {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
+    width: 100%;
+    max-width: 100%;
     height: 100vh;
     background-color: #F8F6F1; /* Off White Background */
     z-index: 9999;
@@ -555,7 +556,8 @@ body.intro-active {
     position: fixed;
     top: 0;
     right: -100%;
-    width: 100vw;
+    width: 100%;
+    max-width: 100%;
     height: 100vh;
     background-color: var(--color-primary);
     color: var(--text-light);
@@ -1671,7 +1673,8 @@ textarea.form-input-modern, textarea.form-input {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
+    width: 100%;
+    max-width: 100%;
     height: 100vh;
     z-index: 2000;
     visibility: hidden;
@@ -2049,25 +2052,11 @@ textarea.form-input-modern, textarea.form-input {
     }
     
     .desktop-nav {
-        display: flex !important;
-        order: 3;
-        width: 100%;
-        justify-content: center;
-        margin-top: 10px;
-        border-top: 1px solid rgba(30, 58, 52, 0.08);
-        padding-top: 10px;
-        gap: 16px;
-        flex-wrap: wrap;
-    }
-    
-    .nav-link {
-        font-size: 11px;
-        letter-spacing: 0.08em;
-        padding: 4px 0;
+        display: none !important;
     }
     
     .menu-toggle {
-        display: none !important;
+        display: flex !important;
     }
     
     /* Hero Changes */
@@ -4285,39 +4274,166 @@ textarea.form-input-modern, textarea.form-input {
     color: #888888 !important;
     text-align: center !important;
 }
-/* --- HERO SECTION MOBILE RESPONSIVE REDESIGN --- */
+/* --- MOBILE RESPONSIVE REDESIGN (320px to 480px) --- */
 @media (max-width: 768px) {
-    .announcement-bar {
-        height: 38px;
+    html, body {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: hidden !important;
     }
+    
+    .announcement-bar {
+        height: 38px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+        box-sizing: border-box !important;
+    }
+    
     .ticker-content span {
         font-size: 11.5px;
         letter-spacing: 0.02em;
     }
+    
     .ticker-track {
         animation-duration: 20s;
     }
+    
+    .main-header {
+        top: 38px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    
+    .header-container {
+        height: 70px !important;
+        padding: 0 16px !important;
+        box-sizing: border-box !important;
+    }
+    
     .hero-section {
         width: 100% !important;
-        height: 85vh !important;
-        min-height: 480px !important;
-        max-height: 650px !important;
-        margin-top: 113px !important;
+        max-width: 100% !important;
+        height: 65vh !important;
+        min-height: 420px !important;
+        max-height: 580px !important;
+        margin-top: 108px !important;
         aspect-ratio: auto !important;
+        overflow: hidden !important;
+        position: relative !important;
+        box-sizing: border-box !important;
     }
+    
+    .hero-slide {
+        width: 100% !important;
+        max-width: 100% !important;
+        background-size: cover !important;
+        background-position: center center !important;
+    }
+    
     .hero-onam-cta-container {
-        bottom: 35px !important;
+        position: absolute !important;
+        bottom: 24px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        width: 90% !important;
+        max-width: 320px !important;
+        text-align: center !important;
+        z-index: 10 !important;
+        box-sizing: border-box !important;
     }
+    
     .btn-hero-onam-offer {
-        padding: 12px 28px !important;
-        font-size: 12px !important;
+        width: 100% !important;
+        padding: 12px 20px !important;
+        font-size: 11.5px !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.08em !important;
+        white-space: nowrap !important;
+        box-sizing: border-box !important;
     }
+    
+    .products-grid {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 28px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 16px !important;
+        box-sizing: border-box !important;
+    }
+    
+    .product-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 auto !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+    }
+    
+    .product-visual {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 260px !important;
+        box-sizing: border-box !important;
+    }
+    
+    .product-main-img {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 100% !important;
+        object-fit: contain !important;
+    }
+    
     .page-view {
-        padding-top: 113px !important;
+        padding-top: 108px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: hidden !important;
     }
     
     .hero-content {
         max-width: 85% !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 16px !important;
+    }
+    .logo-link {
+        gap: 8px !important;
+    }
+    .header-logo-icon {
+        height: 42px !important;
+    }
+    .header-logo-wordmark {
+        height: 44px !important;
+    }
+    .header-actions {
+        gap: 12px !important;
+    }
+    .action-icon {
+        width: 18px !important;
+        height: 18px !important;
+    }
+    .btn-hero-onam-offer {
+        font-size: 11px !important;
+        padding: 10px 16px !important;
+    }
+}
+
+@media (max-width: 360px) {
+    .header-logo-icon {
+        height: 36px !important;
+    }
+    .header-logo-wordmark {
+        height: 38px !important;
+    }
+    .btn-hero-onam-offer {
+        font-size: 10.5px !important;
+        padding: 10px 12px !important;
     }
 }
 

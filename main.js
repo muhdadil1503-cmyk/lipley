@@ -210,15 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 3.1 HERO SLIDER CONTROLLER & AUTOMATED ONAM CAMPAIGN MANAGER ---
-    const ONAM_CAMPAIGN_EXPIRY = new Date('2026-09-30T23:59:59+05:30').getTime();
-    const independenceSlide = document.getElementById('independence-slide');
-    const isCampaignActive = Date.now() <= ONAM_CAMPAIGN_EXPIRY;
-
-    if (!isCampaignActive && independenceSlide) {
-        independenceSlide.remove();
-    }
-
+    // --- 3.1 HERO SLIDER CONTROLLER ---
     const slides = document.querySelectorAll('.hero-slide');
     const dotsContainer = document.getElementById('hero-dots');
     
@@ -238,8 +230,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextBtn = document.getElementById('hero-next-btn');
     const heroContent = document.querySelector('.hero-overlay-container');
     const heroSlidesOverlay = document.querySelector('.hero-slides-overlay');
-    const heroOnamCtaContainer = document.getElementById('hero-onam-cta-container');
-    const btnHeroOnamOffer = document.getElementById('btn-hero-onam-offer');
     let currentSlide = 0;
     let slideInterval = null;
 
@@ -254,27 +244,18 @@ document.addEventListener('DOMContentLoaded', () => {
         slides.forEach((slide, i) => {
             if (i === currentSlide) {
                 slide.classList.add('active');
-                if (slide.classList.contains('independence-slide')) {
-                    if (heroContent) heroContent.style.opacity = '0';
-                    if (heroContent) heroContent.style.pointerEvents = 'none';
-                    if (heroSlidesOverlay) heroSlidesOverlay.style.opacity = '0';
-                    if (heroOnamCtaContainer) {
-                        heroOnamCtaContainer.style.opacity = '1';
-                        heroOnamCtaContainer.style.pointerEvents = 'auto';
-                    }
-                } else {
-                    if (heroContent) heroContent.style.opacity = '1';
-                    if (heroContent) heroContent.style.pointerEvents = 'auto';
-                    if (heroSlidesOverlay) heroSlidesOverlay.style.opacity = '1';
-                    if (heroOnamCtaContainer) {
-                        heroOnamCtaContainer.style.opacity = '0';
-                        heroOnamCtaContainer.style.pointerEvents = 'none';
-                    }
-                }
             } else {
                 slide.classList.remove('active');
             }
         });
+        
+        if (heroContent) {
+            heroContent.style.opacity = '1';
+            heroContent.style.pointerEvents = 'auto';
+        }
+        if (heroSlidesOverlay) {
+            heroSlidesOverlay.style.opacity = '1';
+        }
         
         dots.forEach((dot, i) => {
             if (i === currentSlide) {
@@ -325,146 +306,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Direct routing to Onam Bundle Product Page
-    function navigateToOnamBundlePage(e) {
-        if (e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-        if (typeof window.loadProductDetails === 'function') {
-            window.loadProductDetails('independence-bundle');
-        }
-        if (typeof showView === 'function') {
-            showView('view-product');
-        }
-        if (typeof updateNavActive === 'function') {
-            updateNavActive('nav-shop-link');
-        }
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    if (btnHeroOnamOffer) {
-        btnHeroOnamOffer.addEventListener('click', navigateToOnamBundlePage);
-    }
-
-    slides.forEach(slide => {
-        if (slide.classList.contains('independence-slide')) {
-            slide.addEventListener('click', navigateToOnamBundlePage);
-        }
-    });
-
     // Initialize slide show & initial slide view
     showSlide(0);
-    startSlideShow();
-
     if (slides.length > 0) {
         startSlideShow();
     }
-
-    // --- 3.2 LIMITED-TIME ONAM MAVELI WELCOME ANIMATION CONTROLLER ---
-    window.replayMaveliAnimation = function() {
-        sessionStorage.removeItem('lipley_maveli_played');
-        initMaveliWelcomeAnimation();
-    };
-
-    function initMaveliWelcomeAnimation() {
-        const isMaveliCampaignActive = Date.now() <= ONAM_CAMPAIGN_EXPIRY;
-        let maveliContainer = document.getElementById('maveli-welcome-container');
-        
-        if (!isMaveliCampaignActive) {
-            if (maveliContainer) maveliContainer.remove();
-            return;
-        }
-
-        if (!maveliContainer) {
-            maveliContainer = document.createElement('div');
-            maveliContainer.id = 'maveli-welcome-container';
-            maveliContainer.className = 'maveli-welcome-container';
-            maveliContainer.style.display = 'none';
-            maveliContainer.innerHTML = `
-                <div id="maveli-speech-bubble" class="maveli-speech-bubble">
-                    <span id="maveli-speech-text">Hi!</span>
-                </div>
-                <div id="maveli-character-wrap" class="maveli-character-wrap">
-                    <img src="assets/images/lipley-maveli-mascot.png" alt="Maveli Onam Mascot" class="maveli-img" width="300" height="360">
-                    <span class="maveli-petal petal-1">🌼</span>
-                    <span class="maveli-petal petal-2">🌸</span>
-                    <span class="maveli-petal petal-3">✨</span>
-                </div>
-            `;
-            document.body.appendChild(maveliContainer);
-        }
-
-        const speechBubble = document.getElementById('maveli-speech-bubble');
-        const speechText = document.getElementById('maveli-speech-text');
-
-        // Reset state & positioning
-        maveliContainer.style.opacity = '1';
-        maveliContainer.style.left = '-200px';
-        maveliContainer.style.display = 'none';
-        maveliContainer.className = 'maveli-welcome-container';
-        if (speechBubble) speechBubble.classList.remove('active');
-        if (speechText) speechText.textContent = 'Hi!';
-
-        sessionStorage.setItem('lipley_maveli_played', 'true');
-
-        // Click listener: route to Onam Bundle Product Page
-        maveliContainer.onclick = function(e) {
-            e.preventDefault();
-            navigateToOnamBundlePage(e);
-        };
-
-        // Step 1: Wait 2 seconds, then Maveli enters from bottom-left corner
-        setTimeout(() => {
-            maveliContainer.style.display = 'flex';
-            maveliContainer.classList.add('walking');
-            const targetLeft = window.innerWidth <= 768 ? '20px' : '50px';
-            maveliContainer.style.left = targetLeft;
-
-            // Step 2: 3.0s - Stop walking, wave, show speech bubble "Hi!"
-            setTimeout(() => {
-                maveliContainer.classList.remove('walking');
-                maveliContainer.classList.add('waving');
-                if (speechText) speechText.textContent = 'Hi!';
-                if (speechBubble) speechBubble.classList.add('active');
-            }, 1000);
-
-            // Step 3: 4.5s (3.5s after speech bubble appears) - Update speech text to "Onam Offer kaanan marakkalle! 🌼" & point to CTA
-            setTimeout(() => {
-                if (speechText) speechText.textContent = 'Onam Offer kaanan marakkalle! 🌼';
-                maveliContainer.classList.remove('waving');
-                maveliContainer.classList.add('pointing');
-            }, 2500);
-
-            // Step 4: 6.5s - Resume walking toward bottom-right exit
-            setTimeout(() => {
-                maveliContainer.classList.remove('pointing');
-                maveliContainer.classList.add('walking');
-                if (speechBubble) speechBubble.classList.remove('active');
-                
-                const exitTargetLeft = window.innerWidth <= 768 ? 'calc(100vw - 110px)' : 'calc(100vw - 170px)';
-                maveliContainer.style.left = exitTargetLeft;
-            }, 4500);
-
-            // Step 5: 7.8s - Final wave before exit
-            setTimeout(() => {
-                maveliContainer.classList.remove('walking');
-                maveliContainer.classList.add('waving');
-            }, 5800);
-
-            // Step 6: 8.6s - Soft fade out
-            setTimeout(() => {
-                maveliContainer.style.opacity = '0';
-                setTimeout(() => {
-                    maveliContainer.style.display = 'none';
-                }, 600);
-            }, 6600);
-
-        }, 2000);
-    }
-
-    // Launch Maveli Welcome Animation
-    initMaveliWelcomeAnimation();
 
 
     // --- 4. SCROLL REVEAL (FADE / SLIDE ENTRANCE) ---
@@ -607,34 +453,33 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         "independence-bundle": {
             id: "independence-bundle",
-            name: "LIPLEY Onam Bundle",
-            badge: "ONAM SPECIAL",
-            type: "ONAM SPECIAL BUNDLE",
+            name: "Lipley Hair & Lip Care Bundle",
+            badge: "SPECIAL OFFER",
+            type: "HAIR & LIP CARE BUNDLE",
             tagline: "Buy 2 Hair Oil + Get 1 Lip Balm FREE",
             price: 498,
             originalPrice: 647,
-            description: "Celebrate Onam with Lipley's premium natural care collection. Buy 2 Hair Oil (100ml) and get 1 Beetroot Tinted Lip Balm (8g) FREE.",
+            description: "Lipley's premium natural care collection. Buy 2 Hair Oil (100ml) and get 1 Beetroot Tinted Lip Balm (8g) FREE.",
             variant: "Buy 2 Hair Oil + 1 Lip Balm FREE",
-            image: "assets/images/lipley-onam-bundle-scene.jpg",
+            image: "assets/images/lipley-hair-lip-care-bundle.jpg",
             gallery: [
-                "assets/images/lipley-onam-bundle-scene.jpg"
+                "assets/images/lipley-hair-lip-care-bundle.jpg"
             ],
             benefits: [
                 "Includes 2 × 100ml Ayurvedic Hair Oil",
                 "Includes 1 × 8g Beetroot Tinted Lip Balm FREE",
-                "Perfect Onam gifting bundle",
                 "Natural nourishment for hair and lips",
-                "Limited-time Onam Special Offer"
+                "Special Offer Bundle"
             ],
             instructions: "Use products as directed on individual packaging.",
             reviews: [
-                { text: "Wonderful Onam gifting bundle! The hair oil and beetroot lip balm are incredible quality.", author: "Priya S." }
+                { text: "Wonderful bundle! The hair oil and beetroot lip balm are incredible quality.", author: "Priya S." }
             ],
             netQty: "2 × 100ml Hair Oil + 1 × 8g Lip Balm",
             storage: "Store in a cool, dry place.",
             faqs: [
-                { q: "What is included in the Onam Special Bundle?", a: "The Onam Special Bundle includes 2 bottles of Lipley Ayurvedic Hair Oil (100ml each) plus 1 jar of Lipley Beetroot Tinted Lip Balm (8g) FREE." },
-                { q: "Is this offer available for a limited time?", a: "Yes, this exclusive Onam bundle pricing of ₹498 is valid only during the festive season." }
+                { q: "What is included in the Hair & Lip Care Bundle?", a: "The Hair & Lip Care Bundle includes 2 bottles of Lipley Ayurvedic Hair Oil (100ml each) plus 1 jar of Lipley Beetroot Tinted Lip Balm (8g) FREE." },
+                { q: "Is this offer available for a limited time?", a: "Yes, this exclusive bundle pricing of ₹498 is valid for a limited time." }
             ]
         }
     };
@@ -1104,6 +949,7 @@ document.addEventListener('DOMContentLoaded', () => {
     shopNowTriggers.forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
+            e.stopPropagation();
             const productId = btn.getAttribute('data-product-id') || 'strawberry-beetroot';
             if (typeof window.loadProductDetails === 'function') {
                 window.loadProductDetails(productId);
@@ -1127,6 +973,7 @@ document.addEventListener('DOMContentLoaded', () => {
     shopBuyTriggers.forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
+            e.stopPropagation();
             const productId = btn.getAttribute('data-product-id');
             
             // Add to cart if not already present
@@ -1147,6 +994,7 @@ document.addEventListener('DOMContentLoaded', () => {
     shopAddTriggers.forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
+            e.stopPropagation();
             const productId = btn.getAttribute('data-product-id');
             addToCart(productId, 1, false); // Add 1 unit, do NOT open drawer
             showToast("Product added to cart.");
@@ -1416,9 +1264,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const pAddToCartBtn = document.getElementById('btn-add-to-cart');
     if (pAddToCartBtn) {
-        pAddToCartBtn.addEventListener('click', () => {
-            const productId = pAddToCartBtn.getAttribute('data-product-id') || 'strawberry-beetroot';
-            addToCart(productId, 1, false);
+        pAddToCartBtn.addEventListener('click', (e) => {
+            if (e) { e.preventDefault(); e.stopPropagation(); }
+            const productId = pAddToCartBtn.getAttribute('data-product-id') || selectedProductId || 'strawberry-beetroot';
+            const qtyToAdd = typeof productPageQty === 'number' && productPageQty > 0 ? productPageQty : 1;
+            addToCart(productId, qtyToAdd, false);
             showToast("Product added to cart.");
         });
     }
@@ -1667,6 +1517,14 @@ document.addEventListener('DOMContentLoaded', () => {
         activeState = "";
         isPinValid = false;
         
+        // Ensure coupon input is EMPTY when checkout/cart opens and NO auto-apply coupon
+        appliedCoupon = null;
+        couponApplied = false;
+        const couponCodeInput = document.getElementById('coupon-code-input');
+        if (couponCodeInput) couponCodeInput.value = '';
+        const couponFeedback = document.getElementById('coupon-feedback');
+        if (couponFeedback) couponFeedback.style.display = 'none';
+
         const billPinRow = document.getElementById('bill-pin-row');
         const billStateRow = document.getElementById('bill-state-row');
         const billDeliveryStatusRow = document.getElementById('bill-delivery-status-row');
@@ -1753,12 +1611,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (btn) {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
-                const productId = btn.getAttribute('data-product-id') || 'strawberry-beetroot';
+                e.stopPropagation();
+                const productId = btn.getAttribute('data-product-id') || selectedProductId || 'strawberry-beetroot';
+                const qtyToAdd = typeof productPageQty === 'number' && productPageQty > 0 ? productPageQty : 1;
                 
-                // Add to cart if not already present
-                const inCart = cart.some(item => item.productId === productId);
-                if (!inCart) {
-                    addToCart(productId, 1, false);
+                const existing = cart.find(item => item.productId === productId);
+                if (existing) {
+                    existing.quantity = Math.max(existing.quantity, qtyToAdd);
+                } else {
+                    addToCart(productId, qtyToAdd, false);
                 }
                 
                 isCartCheckout = true; // Cart checkout mode
@@ -2345,6 +2206,31 @@ document.addEventListener('DOMContentLoaded', () => {
         orderPinInput.parentNode.appendChild(pincodeFeedback);
     }
     
+    if (checkoutQtyMinus) {
+        checkoutQtyMinus.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (isCartCheckout) {
+                if (cart.length > 0) {
+                    window.changeCheckoutQty(cart[0].productId, cart[0].quantity - 1);
+                }
+            } else {
+                window.changeCheckoutQty(selectedProductId, currentQty - 1);
+            }
+        });
+    }
+    if (checkoutQtyPlus) {
+        checkoutQtyPlus.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (isCartCheckout) {
+                if (cart.length > 0) {
+                    window.changeCheckoutQty(cart[0].productId, cart[0].quantity + 1);
+                }
+            } else {
+                window.changeCheckoutQty(selectedProductId, currentQty + 1);
+            }
+        });
+    }
+    
     // Configurable Coupon Codes database
     const couponDatabase = {
         'LIPLEY001': { code: 'LIPLEY001', discountPercent: 0.10, status: 'active' },
@@ -2361,6 +2247,24 @@ document.addEventListener('DOMContentLoaded', () => {
     let isCartCheckout = false;
     currentQty = 1;
 
+    function isOrderEligibleForLIPLEY001() {
+        let subtotal = 0;
+        if (isCartCheckout) {
+            cart.forEach(item => {
+                const product = window.products[item.productId] || { price: 149 };
+                subtotal += product.price * item.quantity;
+            });
+            const hasBundle = cart.some(item => item.productId === 'independence-bundle');
+            return hasBundle || subtotal >= 447;
+        } else {
+            if (currentQty > 0) {
+                const product = window.products[selectedProductId] || { price: 149 };
+                subtotal = currentQty * product.price;
+            }
+            return selectedProductId === 'independence-bundle' || subtotal >= 447;
+        }
+    }
+
     function validateCouponState(couponCode) {
         const code = couponCode.trim().toUpperCase();
         if (!code) {
@@ -2372,6 +2276,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return { valid: false, reason: 'Invalid coupon code. (Discount not applied)', status: 'invalid' };
         }
         
+        if (code === 'LIPLEY001') {
+            if (!isOrderEligibleForLIPLEY001()) {
+                return { valid: false, reason: 'LIPLEY001 is available only for eligible orders of ₹447 or more.', status: 'ineligible_offer' };
+            }
+        }
+
         if (coupon.status === 'expired') {
             return { valid: false, reason: 'This coupon code has expired.', status: 'expired' };
         }
@@ -2670,6 +2580,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function formatMoney(amount) {
+        if (typeof amount !== 'number' || isNaN(amount)) return '0';
+        return (amount % 1 === 0) ? amount.toString() : amount.toFixed(2);
+    }
+
     function calculateOrder() {
         autoRevalidateAppliedCoupon();
         let productTotal = 0;
@@ -2689,6 +2604,10 @@ document.addEventListener('DOMContentLoaded', () => {
         let lbQty = 0;
         let hoQty = 0;
         
+        const isKerala = (activeState || "").toLowerCase().trim() === 'kerala';
+        const isEligibleOffer = isOrderEligibleForLIPLEY001();
+        const isLIPLEY001 = couponApplied && appliedCoupon && appliedCoupon.code === 'LIPLEY001' && isEligibleOffer;
+
         if (isCartCheckout) {
             cart.forEach(item => {
                 const product = window.products[item.productId] || { price: 149 };
@@ -2749,15 +2668,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         if (couponApplied && appliedCoupon) {
-            discountAmount = Math.round(productTotal * appliedCoupon.discountPercent);
+            if (appliedCoupon.code === 'LIPLEY001') {
+                if (isLIPLEY001) {
+                    discountAmount = Math.round(productTotal * 0.10 * 100) / 100;
+                } else {
+                    discountAmount = 0;
+                    couponApplied = false;
+                    appliedCoupon = null;
+                }
+            } else {
+                discountAmount = Math.round(productTotal * appliedCoupon.discountPercent * 100) / 100;
+            }
         } else {
             discountAmount = 0;
             couponApplied = false;
         }
         
-        let grandTotal = productTotal + (deliveryCharge || 0) - discountAmount;
+        let grandTotal = Math.max(0, productTotal + (deliveryCharge || 0) - discountAmount);
         
-        if (billProductPrice) billProductPrice.textContent = `₹${productTotal}`;
+        if (billProductPrice) billProductPrice.textContent = `₹${formatMoney(productTotal)}`;
         
         if (billDeliveryCharge) {
             if (deliveryCharge === null) {
@@ -2769,7 +2698,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 billDeliveryCharge.style.color = "#4CAF50";
                 billDeliveryCharge.style.fontWeight = "600";
             } else {
-                billDeliveryCharge.textContent = `₹${deliveryCharge}`;
+                billDeliveryCharge.textContent = `₹${formatMoney(deliveryCharge)}`;
                 billDeliveryCharge.style.color = "";
                 billDeliveryCharge.style.fontWeight = "";
             }
@@ -2780,34 +2709,44 @@ document.addEventListener('DOMContentLoaded', () => {
                 const labelSpan = billDiscountRow.querySelector('span:first-child');
                 if (labelSpan) {
                     if (appliedCoupon && appliedCoupon.code === 'LIPLEY001') {
-                        labelSpan.textContent = "Discount: 10% OFF";
+                        labelSpan.textContent = "Discount (10% OFF)";
                     } else {
                         labelSpan.textContent = "Discount";
                     }
                 }
-                billDiscountValue.textContent = `-₹${discountAmount}`;
+                billDiscountValue.textContent = `-₹${formatMoney(discountAmount)}`;
                 billDiscountRow.style.display = 'flex';
             } else {
                 billDiscountRow.style.display = 'none';
             }
         }
         
-        if (billGrandTotal) billGrandTotal.textContent = `₹${grandTotal}`;
+        if (billGrandTotal) billGrandTotal.textContent = `₹${formatMoney(grandTotal)}`;
         
         if (billDeliveryStatusBox && billDeliveryStatusText) {
             if (deliveryCharge === null) {
                 billDeliveryStatusBox.style.display = 'none';
             } else {
-                billDeliveryStatusText.textContent = deliveryMsg;
+                if (isLIPLEY001) {
+                    billDeliveryStatusText.textContent = `${deliveryMsg} | LIPLEY001 10% OFF Applied`;
+                } else {
+                    billDeliveryStatusText.textContent = deliveryMsg;
+                }
                 billDeliveryStatusText.style.color = "";
                 billDeliveryStatusBox.style.borderLeftColor = "var(--color-accent)";
                 billDeliveryStatusBox.style.backgroundColor = "rgba(30, 58, 52, 0.03)";
                 billDeliveryStatusBox.style.display = 'block';
             }
         }
+
+        // Dynamically update coupon feedback message for LIPLEY001
+        if (isLIPLEY001 && couponFeedback) {
+            couponFeedback.style.display = 'block';
+            couponFeedback.textContent = `✓ LIPLEY001 Applied — You Saved ₹${formatMoney(discountAmount)}`;
+            couponFeedback.className = 'promo-feedback-msg success';
+        }
     }
 
-    
     // Coupon Apply Event
     if (applyCouponBtn && couponCodeInput) {
         applyCouponBtn.addEventListener('click', () => {
@@ -2850,7 +2789,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     couponFeedback.style.display = 'block';
                     if (res.coupon.code === 'LIPLEY001') {
-                        couponFeedback.textContent = 'LIPLEY001 applied';
+                        couponFeedback.textContent = `✓ LIPLEY001 Applied — You Saved ₹${formatMoney(discountAmount)}`;
                     } else {
                         couponFeedback.textContent = `Coupon applied successfully! Saved ${res.coupon.discountPercent * 100}% on your items.`;
                     }
@@ -2942,19 +2881,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 message += `*Product Total:* ₹${productTotal}\n`;
             }
             
-            const discountAmount = couponApplied ? Math.round(productTotal * discountPercent) : 0;
-            const grandTotal = productTotal + (deliveryCharge || 0) - discountAmount;
+            let discountAmount = 0;
+            if (couponApplied && appliedCoupon) {
+                if (appliedCoupon.code === 'LIPLEY001') {
+                    if (isOrderEligibleForLIPLEY001()) {
+                        discountAmount = Math.round(productTotal * 0.10 * 100) / 100;
+                    }
+                } else {
+                    discountAmount = Math.round(productTotal * appliedCoupon.discountPercent * 100) / 100;
+                }
+            }
+            const grandTotal = Math.max(0, productTotal + (deliveryCharge || 0) - discountAmount);
             
             if (deliveryCharge === 0) {
                 message += `*Delivery Charge:* FREE\n`;
             } else {
-                message += `*Delivery Charge:* ₹${deliveryCharge}\n`;
+                message += `*Delivery Charge:* ₹${formatMoney(deliveryCharge)}\n`;
             }
-            if (couponApplied) {
+            if (couponApplied && discountAmount > 0) {
                 const couponCode = appliedCoupon ? appliedCoupon.code : 'LIPLEY001';
-                message += `*Coupon Discount:* -₹${discountAmount} (${couponCode})\n`;
+                message += `*Coupon Discount:* -₹${formatMoney(discountAmount)} (${couponCode} 10% OFF)\n`;
             }
-            message += `*Grand Total:* ₹${grandTotal}\n\n`;
+            message += `*Grand Total:* ₹${formatMoney(grandTotal)}\n\n`;
             
             message += `*Customer Details:*\n`;
             message += `*Name:* ${fullName}\n`;

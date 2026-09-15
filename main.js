@@ -4,6 +4,31 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
+    // Silent Referral Tracking (TEST)
+    (function initReferralTracking() {
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const refParam = urlParams.get('ref');
+            if (refParam && refParam.trim().toLowerCase() === 'peter') {
+                localStorage.setItem('lipley_ref_source', 'peter');
+            }
+        } catch (e) {
+            console.error('Referral tracking error:', e);
+        }
+    })();
+
+    function getReferralSource() {
+        try {
+            const storedRef = localStorage.getItem('lipley_ref_source');
+            if (storedRef && storedRef.trim().toLowerCase() === 'peter') {
+                return 'Peter';
+            }
+        } catch (e) {
+            console.error('Referral reading error:', e);
+        }
+        return 'Direct Website';
+    }
+
     // Indian States and Union Territories
     const indianStates = [
         "Andaman and Nicobar Islands",
@@ -2908,7 +2933,8 @@ document.addEventListener('DOMContentLoaded', () => {
             message += `*Name:* ${fullName}\n`;
             message += `*Phone:* ${phone}\n`;
             message += `*State / UT:* ${state}\n`;
-            message += `*Address:* ${house}, ${address}, ${district}, ${state} - PIN: ${pin}\n`;
+            message += `*Address:* ${house}, ${address}, ${district}, ${state} - PIN: ${pin}\n\n`;
+            message += `Source: ${getReferralSource()}\n`;
             
             // URL encode message and open WhatsApp
             const encodedMessage = encodeURIComponent(message);

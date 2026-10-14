@@ -4,13 +4,24 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Silent Referral Tracking (TEST)
+    // Silent Referral Tracking
+    let inMemoryRef = null;
     (function initReferralTracking() {
         try {
             const urlParams = new URLSearchParams(window.location.search);
             const refParam = urlParams.get('ref');
-            if (refParam && refParam.trim().toLowerCase() === 'peter') {
-                localStorage.setItem('lipley_ref_source', 'peter');
+            if (refParam && refParam.trim()) {
+                const cleanRef = refParam.trim();
+                if (cleanRef.toLowerCase() === 'ma01') {
+                    inMemoryRef = 'MA01';
+                    localStorage.setItem('lipley_ref_source', 'MA01');
+                } else if (cleanRef.toLowerCase() === 'peter') {
+                    inMemoryRef = 'peter';
+                    localStorage.setItem('lipley_ref_source', 'peter');
+                } else {
+                    inMemoryRef = cleanRef;
+                    localStorage.setItem('lipley_ref_source', cleanRef);
+                }
             }
         } catch (e) {
             console.error('Referral tracking error:', e);
@@ -19,9 +30,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getReferralSource() {
         try {
-            const storedRef = localStorage.getItem('lipley_ref_source');
-            if (storedRef && storedRef.trim().toLowerCase() === 'peter') {
-                return 'Peter';
+            const storedRef = localStorage.getItem('lipley_ref_source') || inMemoryRef;
+            if (storedRef && storedRef.trim()) {
+                const clean = storedRef.trim();
+                if (clean.toLowerCase() === 'ma01') {
+                    return 'MA01';
+                }
+                if (clean.toLowerCase() === 'peter') {
+                    return 'Peter';
+                }
+                return clean;
+            }
+            // Fallback to URL query param if localStorage was not set or blocked
+            const urlParams = new URLSearchParams(window.location.search);
+            const refParam = urlParams.get('ref');
+            if (refParam && refParam.trim()) {
+                const clean = refParam.trim();
+                if (clean.toLowerCase() === 'ma01') {
+                    return 'MA01';
+                }
+                if (clean.toLowerCase() === 'peter') {
+                    return 'Peter';
+                }
+                return clean;
             }
         } catch (e) {
             console.error('Referral reading error:', e);

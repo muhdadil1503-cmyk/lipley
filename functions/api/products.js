@@ -19,7 +19,7 @@ const INITIAL_PRODUCTS = [
             "assets/images/lipley-beetroot-lip-balm-open.webp",
             "assets/images/lipley-beetroot-lip-balm-hand.webp"
         ],
-        ingredients: ["Beeswax", "Shea Butter", "Cocoa Butter", "Almond Oil", "Jojoba Oil", "Castor Oil", "Beetroot Oil", "Coconut Oil", "Alkanet Root", "Manjistha", "Vitamin E", "Strawberry Oil"],
+        ingredients: ["Almond Oil", "Beetroot Oil", "Jojoba Oil", "Castor Oil", "Beeswax", "Shea Butter", "Cocoa Butter", "Tinte", "Alkanet", "Manjishta", "Coconut Oil", "Rose Oil", "Strawberry Oil", "Avocado Oil"],
         benefits: [
             "Helps deeply moisturize dry lips.",
             "Helps reduce the appearance of lip dryness and flakiness.",
@@ -53,7 +53,7 @@ const INITIAL_PRODUCTS = [
             "assets/images/lipley-strawberry-lip-balm-open.jpg",
             "assets/images/lipley-strawberry-lip-balm-hand.jpg"
         ],
-        ingredients: ["Beeswax", "Shea Butter", "Cocoa Butter", "Almond Oil", "Jojoba Oil", "Castor Oil", "Coconut Oil", "Strawberry Extract", "Vitamin E"],
+        ingredients: ["Almond Oil", "Beetroot Oil", "Jojoba Oil", "Castor Oil", "Beeswax", "Shea Butter", "Cocoa Butter", "Alkanet", "Manjishta", "Coconut Oil", "Rose Oil", "Strawberry Oil", "Avocado Oil"],
         benefits: [
             "Helps deeply moisturize dry lips.",
             "Helps reduce the appearance of lip dryness and flakiness.",

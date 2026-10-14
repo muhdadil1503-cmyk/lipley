@@ -1107,6 +1107,91 @@ body.intro-active {
     position: relative !important;
     margin: 0 !important;
     padding: 0 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    filter: none !important;
+}
+
+/* Featured Card Action Buttons (Buy Now & WhatsApp Order) */
+.card-actions-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.card-actions-row .btn-card-buy {
+    flex: 1;
+    min-width: 0;
+    padding: 11px 8px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    border-radius: 6px;
+    background-color: #123C32 !important;
+    color: #FFFFFF !important;
+    border: 1.5px solid #C9A227 !important;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    box-shadow: 0 4px 12px rgba(18, 60, 50, 0.15);
+    transition: all 0.25s ease;
+    text-transform: uppercase;
+    text-decoration: none;
+    box-sizing: border-box;
+}
+
+.card-actions-row .btn-card-buy:hover {
+    background-color: #1A5245 !important;
+    border-color: #E5BE42 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(18, 60, 50, 0.25);
+}
+
+.card-actions-row .btn-card-whatsapp {
+    flex: 1;
+    min-width: 0;
+    padding: 11px 8px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    border-radius: 6px;
+    background-color: #25D366 !important;
+    color: #FFFFFF !important;
+    border: 1.5px solid #1EBE5D !important;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2);
+    transition: all 0.25s ease;
+    text-transform: uppercase;
+    text-decoration: none;
+    box-sizing: border-box;
+}
+
+.card-actions-row .btn-card-whatsapp:hover {
+    background-color: #20BA5A !important;
+    border-color: #199B4B !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(37, 211, 102, 0.3);
+}
+
+@media (max-width: 480px) {
+    .card-actions-row {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .card-actions-row .btn-card-buy,
+    .card-actions-row .btn-card-whatsapp {
+        width: 100%;
+        padding: 12px;
+        font-size: 12.5px;
+    }
 }
 
 #featured-product-section .product-card::before,
@@ -2711,7 +2796,7 @@ textarea.form-input-modern, textarea.form-input {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
-    transition: transform 0.5s ease, filter 0.5s ease;
+    transition: opacity 0.25s ease, transform 0.4s ease, filter 0.4s ease;
 }
 
 .gallery-badge {
@@ -2738,27 +2823,41 @@ textarea.form-input-modern, textarea.form-input {
 .gallery-thumb {
     aspect-ratio: 1/1;
     background-color: var(--color-secondary);
-    border: 1px solid rgba(212, 175, 55, 0.15);
-    border-radius: 6px;
+    border: 1.5px solid rgba(212, 175, 55, 0.2);
+    border-radius: 8px;
     cursor: pointer;
     overflow: hidden;
-    padding: 10px;
+    padding: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: border-color 0.2s ease, transform 0.2s ease;
+    transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.gallery-thumb:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(18, 60, 50, 0.08);
 }
 
 .gallery-thumb img {
     max-width: 90%;
     max-height: 90%;
     object-fit: contain;
+    transition: transform 0.25s ease;
+}
+
+.gallery-thumb:hover img {
+    transform: scale(1.05);
 }
 
 .gallery-thumb.active {
     border-color: var(--color-accent);
-    transform: scale(1.02);
-    box-shadow: var(--shadow-soft);
+    border-width: 2px;
+    transform: scale(1.03);
+    box-shadow: 0 4px 16px rgba(201, 162, 39, 0.25);
 }
 
 .product-info-container {
@@ -5014,4 +5113,89 @@ textarea.form-input-modern, textarea.form-input {
         font-size: 11.5px;
         padding: 6px 12px;
     }
+}
+
+/* ==========================================================================
+   LIPLEY SPECIAL OFFER & FREE DELIVERY STYLING
+   ========================================================================== */
+
+.special-offer-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-primary);
+    color: var(--color-accent);
+    border: 1px solid rgba(212, 175, 55, 0.5);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 3px 10px;
+    border-radius: 12px;
+    text-transform: uppercase;
+}
+
+#p-detail-offer-box {
+    margin-bottom: 22px;
+    background: linear-gradient(135deg, rgba(248, 243, 234, 0.95), rgba(255, 255, 255, 0.95));
+    border: 1.5px solid var(--color-accent);
+    border-radius: 8px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    box-shadow: 0 4px 14px rgba(30, 58, 52, 0.06);
+}
+
+@media (max-width: 600px) {
+    #p-detail-offer-box {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 12px 14px;
+    }
+}
+
+
+
+/* ==========================================================================
+   CHECKOUT WHATSAPP BUTTON EXPLANATION & VALIDATION STYLING
+   ========================================================================== */
+
+.checkout-whatsapp-explanation {
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--color-primary);
+    opacity: 0.85;
+    text-align: center;
+    margin: 20px 0 0 0;
+    font-style: italic;
+    font-family: var(--font-sans);
+}
+
+.checkout-form-feedback {
+    display: none;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    line-height: 1.4;
+    background-color: rgba(220, 53, 69, 0.08);
+    border: 1px solid rgba(220, 53, 69, 0.3);
+    color: #8B2635;
+    font-weight: 500;
+}
+
+.form-input.field-error {
+    border-color: #dc3545 !important;
+    background-color: #fff8f8 !important;
+    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.15) !important;
+}
+
+.product-card .shop-buy-trigger {
+    width: 100% !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
 }

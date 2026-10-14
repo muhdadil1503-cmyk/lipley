@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return 'Direct Website';
     }
+    window.getReferralSource = getReferralSource;
 
     // Indian States and Union Territories
     const indianStates = [
@@ -386,17 +387,18 @@ document.addEventListener('DOMContentLoaded', () => {
     scrollSections.forEach(sec => activeLinkObserver.observe(sec));
 
 
-    // --- 5.1 FUTURE-READY DYNAMIC PRODUCT DATA MODEL ---
+    // --- 5.1 FUTURE-READY DYNAMIC PRODUCT DATA MODEL & SYNC ---
     window.products = {
         "strawberry-beetroot": {
             id: "strawberry-beetroot",
-            name: "LIPLEY Strawberry Beetroot Tinted Lip Balm",
-            badge: "BEST SELLER",
+            name: "LIPLEY Beetroot Tinted Lip Balm",
+            badge: "SPECIAL OFFER",
             type: "Organic Lip Balm",
             tagline: "Organic Ingredients. Natural Nourishment. Beautifully Tinted Lips.",
             price: 149,
+            originalPrice: 179,
             description: "Premium organic lip balm enriched with Strawberry Extract and Beetroot Oil to help moisturize lips while providing a beautiful natural tinted finish.",
-            variant: "Strawberry + Beetroot Tinted",
+            variant: "Beetroot Tinted",
             image: "assets/images/lipley-beetroot-lip-balm-8g.webp",
             gallery: [
                 "assets/images/lipley-beetroot-lip-balm-8g.webp",
@@ -436,78 +438,309 @@ document.addEventListener('DOMContentLoaded', () => {
                 { q: "How long does one lip balm last?", a: "With daily use, one 8g lip balm jar typically lasts between 2 to 3 months." }
             ]
         },
-        "hair-oil": {
-            id: "hair-oil",
-            name: "LIPLEY Hair Oil",
-            badge: "NEW LAUNCH",
-            type: "Hair Care",
-            tagline: "100% Ayurvedic. Root Strength. Healthy Growth.",
-            price: 249,
-            description: "Experience the power of Ayurveda with Lipley Hair Oil. Formulated with a rich blend of traditional herbs like Amla, Bhringraj, Hibiscus, Rosemary, Brahmi, Neem, Fenugreek, Aloe Vera, and pure Virgin Coconut Oil. This 100% Ayurvedic herbal oil deeply nourishes the scalp, strengthens roots to reduce hair fall, repairs damage, and supports healthy, voluminous hair growth for men, women, and children.",
-            variant: "100% Ayurvedic Herbal Oil",
-            image: "assets/images/lipley-ayurvedic-hair-oil-100ml.webp",
+        "strawberry-zero": {
+            id: "strawberry-zero",
+            name: "LIPLEY Strawberry Zero Tinted Lip Balm",
+            badge: "SPECIAL OFFER",
+            type: "Organic Lip Balm",
+            tagline: "Natural Organic Strawberry Care. Beautiful Lips.",
+            price: 149,
+            originalPrice: 179,
+            description: "Premium organic lip balm infused with pure strawberry extract to nourish, deeply hydrate and protect lips with a clear, radiant, non-sticky touch.",
+            variant: "Strawberry Zero Tinted",
+            image: "assets/images/lipley-strawberry-lip-balm-8g.jpg",
             gallery: [
-                "assets/images/lipley-ayurvedic-hair-oil-100ml.webp"
+                "assets/images/lipley-strawberry-lip-balm-8g.jpg",
+                "assets/images/lipley-strawberry-lip-balm-open.jpg",
+                "assets/images/lipley-strawberry-lip-balm-hand.jpg"
             ],
-            ingredients: [
-                "Virgin Coconut Oil", "Amla", "Hibiscus", "Bhringraj", "Brahmi", "Neem Leaves", "Curry Leaves", "Rosemary Leaf", "Fenugreek", "Aloe Vera", "Manjistha", "Alkanet Root", "Vetiver", "Tulsi", "Betel Leaves", "Henna", "Black Pepper", "Black Cumins", "Karpooram", "Vitamin E"
-            ],
+            ingredients: ["Beeswax", "Shea Butter", "Cocoa Butter", "Almond Oil", "Jojoba Oil", "Castor Oil", "Coconut Oil", "Strawberry Extract", "Vitamin E"],
             benefits: [
-                "Helps Reduce Hair Fall",
-                "Helps Promote Healthy Hair Growth",
-                "Helps Control Dandruff",
-                "Nourishes Hair & Scalp",
-                "Strengthens Hair Roots",
-                "Adds Natural Shine & Softness",
-                "Helps Reduce Scalp Dryness",
-                "Suitable for Men, Women & Children",
-                "Suitable for Regular Use"
+                "Helps deeply moisturize dry lips.",
+                "Helps reduce the appearance of lip dryness and flakiness.",
+                "Pure natural strawberry essence for refreshing lip hydration.",
+                "Nourishes lips with clean botanical oils and butter.",
+                "Supports soft, smooth and healthy-looking lips.",
+                "Lightweight, non-sticky and comfortable for daily use.",
+                "Free from harsh chemicals.",
+                "Suitable for Men & Women."
             ],
-            instructions: "• Apply evenly to the scalp and hair.<br><br>• Gently massage for 5–10 minutes.<br><br>• Leave on for 30–45 minutes or overnight for deeper nourishment.<br><br>• Wash with a mild shampoo.<br><br>• Use 2–3 times a week for best results.",
+            instructions: "Apply evenly on clean lips whenever needed.<br><br>Reapply throughout the day for continuous hydration.<br><br>Apply before bedtime for overnight nourishment.",
             reviews: [
-                { text: "My hair fall has reduced significantly. Highly recommend this natural hair oil!", author: "Rohan S." },
-                { text: "Smells wonderful and leaves my hair feeling super soft and shiny.", author: "Meera K." }
+                { text: "Love the strawberry fragrance and how soft it leaves my lips!", author: "Pooja K." },
+                { text: "My everyday lip balm. Super moisturizing without being sticky.", author: "Divya N." }
             ],
-            netQty: "100ml",
-            storage: "Store in a cool, dry place. For external use only.",
+            netQty: "8g",
+            storage: "Store in a cool, dry place. Keep away from direct sunlight.",
             faqs: [
-                { q: "How often should I use the hair oil?", a: "For best results, use 2–3 times a week. Apply evenly, massage the scalp, and leave it on for 30–45 minutes or overnight before washing off." },
-                { q: "Can children use this hair oil?", a: "Yes, it is formulated with 100% safe, traditional Ayurvedic ingredients and is suitable for men, women, and children." },
-                { q: "Is it suitable for all hair types?", a: "Yes, our rich formulation works effectively for dry, oily, damaged, or color-treated hair." }
+                { q: "Is it suitable for daily use?", a: "Yes, LIPLEY balm is formulated with 100% clean, organic botanicals and is safe to reapply as often as needed throughout the day." },
+                { q: "Is it suitable for men and women?", a: "Absolutely. Suitable for both men and women." },
+                { q: "Is it organic?", a: "Yes, made with premium cold-pressed botanical oils and waxes." },
+                { q: "How long does one lip balm last?", a: "With daily use, one 8g jar typically lasts between 2 to 3 months." }
             ]
         },
-        "independence-bundle": {
-            id: "independence-bundle",
-            name: "Lipley Hair & Lip Care Bundle",
-            badge: "SPECIAL OFFER",
-            type: "HAIR & LIP CARE BUNDLE",
-            tagline: "Buy 2 Hair Oil + Get 1 Lip Balm FREE",
-            price: 498,
-            originalPrice: 647,
-            description: "Lipley's premium natural care collection. Buy 2 Hair Oil (100ml) and get 1 Beetroot Tinted Lip Balm (8g) FREE.",
-            variant: "Buy 2 Hair Oil + 1 Lip Balm FREE",
-            image: "assets/images/lipley-hair-lip-care-bundle.jpg",
-            gallery: [
-                "assets/images/lipley-hair-lip-care-bundle.jpg"
-            ],
-            benefits: [
-                "Includes 2 × 100ml Ayurvedic Hair Oil",
-                "Includes 1 × 8g Beetroot Tinted Lip Balm FREE",
-                "Natural nourishment for hair and lips",
-                "Special Offer Bundle"
-            ],
-            instructions: "Use products as directed on individual packaging.",
-            reviews: [
-                { text: "Wonderful bundle! The hair oil and beetroot lip balm are incredible quality.", author: "Priya S." }
-            ],
-            netQty: "2 × 100ml Hair Oil + 1 × 8g Lip Balm",
-            storage: "Store in a cool, dry place.",
-            faqs: [
-                { q: "What is included in the Hair & Lip Care Bundle?", a: "The Hair & Lip Care Bundle includes 2 bottles of Lipley Ayurvedic Hair Oil (100ml each) plus 1 jar of Lipley Beetroot Tinted Lip Balm (8g) FREE." },
-                { q: "Is this offer available for a limited time?", a: "Yes, this exclusive bundle pricing of ₹498 is valid for a limited time." }
-            ]
-        }
+
     };
+
+    // --- 5.2 REAL-TIME DYNAMIC PRODUCTS SYNC FROM SHARED DATABASE / API ---
+    window.renderDynamicProductCards = function() {
+        const featuredGrid = document.querySelector('#featured-product-section .products-grid');
+        const shopContainer = document.querySelector('#view-shop .shop-products-container');
+
+        const activeProductKeys = Object.keys(window.products).filter(id => {
+            const p = window.products[id];
+            return p && p.active !== false && p.status !== 'disabled' && p.status !== 'draft';
+        });
+
+        if (activeProductKeys.length === 0) return;
+
+        // Ensure strict order: Beetroot Lip Balm first, Strawberry Zero second
+        const desiredOrder = ['strawberry-beetroot', 'strawberry-zero'];
+        activeProductKeys.sort((a, b) => {
+            const idxA = desiredOrder.indexOf(a);
+            const idxB = desiredOrder.indexOf(b);
+            if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+            if (idxA !== -1) return -1;
+            if (idxB !== -1) return 1;
+            return 0;
+        });
+
+        // 1. Render Featured Products Section on Home Page
+        if (featuredGrid) {
+            let featuredHTML = '';
+            activeProductKeys.forEach((id) => {
+                const p = window.products[id];
+                const isLipBalm = p.category === 'Organic Lip Balm' || p.type === 'Organic Lip Balm' || p.id === 'strawberry-beetroot' || p.id === 'strawberry-zero';
+                const badgeText = isLipBalm ? 'SPECIAL OFFER' : (p.badge || (p.bestseller ? 'Best Seller' : (p.is_new ? 'New Launch' : '')));
+                const taglineText = p.short_description || p.tagline || (isLipBalm ? 'Naturally Soft. Beautifully Tinted.' : 'Natural Organic Formula');
+                const netQtyText = p.netQty ? `<div style="font-size: 12px; margin-bottom: 12px; font-weight: 600; opacity: 0.7;">Net Quantity: ${p.netQty}</div>` : '';
+
+                let priceBlockHTML = '';
+                if (isLipBalm && (p.price === 149 || !p.price)) {
+                    priceBlockHTML = `
+                        <div class="product-price-container" style="display: flex; flex-direction: column; align-items: center; gap: 4px; margin-bottom: 14px;">
+                            <div style="display: flex; align-items: baseline; justify-content: center; gap: 8px;">
+                                <span class="product-original-price" style="font-size: 15px; text-decoration: line-through; color: #767676; font-weight: 500;" aria-label="Original price ₹179">₹179</span>
+                                <span class="product-price" style="font-size: 19px; font-weight: 700; color: var(--color-primary);">₹149 ONLY</span>
+                            </div>
+                            <div class="product-offer-pill" style="font-size: 11px; font-weight: 600; color: #2E7D32; background: rgba(46, 125, 50, 0.08); padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(46, 125, 50, 0.2);">Buy 2 Lip Balms — FREE DELIVERY</div>
+                        </div>
+                    `;
+                } else {
+                    const originalPriceHTML = p.originalPrice || p.compare_price ? `<span style="font-size: 15px; text-decoration: line-through; color: #767676; font-weight: 500; margin-left: 8px;">₹${p.originalPrice || p.compare_price}</span>` : '';
+                    priceBlockHTML = `
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px;">
+                            <span class="product-price" style="font-size: 18px; font-weight: 700; color: var(--color-primary);">₹${p.price}</span>
+                            ${originalPriceHTML}
+                        </div>
+                    `;
+                }
+
+                featuredHTML += `
+                    <div class="product-card featured-product shop-now-trigger" id="product-${p.id}-card" data-product-id="${p.id}" style="background-color: #F8F3EA; border-radius: 24px; border: 1.5px solid #C9A227; box-shadow: 0 12px 36px rgba(18, 60, 50, 0.08); overflow: hidden; position: relative; cursor: pointer; opacity: 1 !important; visibility: visible !important;">
+                        <div class="product-visual" style="background-color: #F8F3EA; display: flex; align-items: center; justify-content: center; overflow: hidden; height: 300px; padding: 10px; position: relative;">
+                            <img src="${p.image}" alt="${p.name}" class="product-main-img" loading="lazy" width="1024" height="1024" style="object-fit: contain; width: 100%; height: 100%; object-position: center; border-radius: 12px; transition: transform 0.4s ease;">
+                            ${badgeText ? `<span class="product-badge" style="background: #123C32; color: #C9A227; font-weight: 700; font-size: 11px; letter-spacing: 0.08em; padding: 6px 14px; border-radius: 20px; border: 1px solid rgba(201, 162, 39, 0.5); position: absolute; top: 14px; left: 14px; z-index: 2;">${badgeText}</span>` : ''}
+                        </div>
+                        <div class="product-content" style="text-align: center; padding: 25px 20px; background-color: #F8F3EA;">
+                            <span style="font-size: 11px; letter-spacing: 0.14em; font-weight: 700; color: #C9A227; text-transform: uppercase; display: block; margin-bottom: 6px;">${badgeText || 'SPECIAL OFFER'}</span>
+                            <h3 class="product-name" style="font-size: 17px; margin: 0 0 8px 0; font-weight: 600; color: var(--color-primary); line-height: 1.3;">${p.name}</h3>
+                            <p class="product-short-tagline" style="font-size: 13px; font-style: italic; opacity: 0.85; margin-bottom: 8px;">${taglineText}</p>
+                            ${netQtyText}
+                            ${priceBlockHTML}
+                            <button class="btn btn-primary shop-buy-trigger" data-product-id="${p.id}" aria-label="Buy ${p.name} Now" style="width: 100%; margin-top: 14px; padding: 13px 20px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;">⚡ BUY NOW</button>
+                        </div>
+                    </div>
+                `;
+            });
+            featuredGrid.innerHTML = featuredHTML;
+        }
+
+        // 2. Render Shop Page Grid
+        if (shopContainer) {
+            let shopHTML = '';
+            activeProductKeys.forEach((id) => {
+                const p = window.products[id];
+                const isLipBalm = p.category === 'Organic Lip Balm' || p.type === 'Organic Lip Balm' || p.id === 'strawberry-beetroot' || p.id === 'strawberry-zero';
+                const badgeText = isLipBalm ? 'SPECIAL OFFER' : (p.badge || (p.bestseller ? 'Best Seller' : (p.is_new ? 'New Launch' : '')));
+                const categoryText = p.category || p.type || 'Organic Cosmetic';
+
+                let shopPriceBlockHTML = '';
+                if (isLipBalm && p.price === 149) {
+                    shopPriceBlockHTML = `
+                        <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px;">
+                            <div style="display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;">
+                                <span style="font-size: 16px; text-decoration: line-through; color: #767676; font-weight: 500;" aria-label="Original price ₹179">₹179</span>
+                                <span style="font-size: 24px; font-weight: 700; color: var(--color-primary);">₹149 ONLY</span>
+                                <span style="font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: #D4AF37; background: #1E3A34; padding: 3px 8px; border-radius: 12px; border: 1px solid rgba(212, 175, 55, 0.4); text-transform: uppercase;">SPECIAL OFFER</span>
+                            </div>
+                            <div style="font-size: 11.5px; font-weight: 600; color: #2E7D32; background: rgba(46, 125, 50, 0.08); padding: 3px 10px; border-radius: 4px; display: inline-block; width: fit-content; border: 1px solid rgba(46, 125, 50, 0.2);">Buy 2 Lip Balms — FREE DELIVERY</div>
+                        </div>
+                    `;
+                } else {
+                    const originalPriceHTML = p.originalPrice || p.compare_price ? `<span style="font-size: 15px; text-decoration: line-through; color: #767676; font-weight: 500; margin-left: 8px;">₹${p.originalPrice || p.compare_price}</span>` : '';
+                    shopPriceBlockHTML = `
+                        <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 15px;">
+                            <span style="font-size: 24px; font-weight: 700; color: var(--color-primary);">₹${p.price}</span>
+                            ${originalPriceHTML}
+                        </div>
+                    `;
+                }
+
+                shopHTML += `
+                    <div class="shop-product-row" style="display: flex; flex-direction: column; background: #ffffff; border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 8px; overflow: hidden; box-shadow: var(--shadow-soft); margin-bottom: 30px;">
+                        <div style="display: grid; grid-template-columns: 1fr;" class="shop-product-grid-layout">
+                            <div style="aspect-ratio: 1/1; background: radial-gradient(circle at center, #ffffff 0%, var(--color-secondary) 100%); display: flex; align-items: center; justify-content: center; padding: 30px; position: relative; border-bottom: 1px solid rgba(30, 58, 52, 0.08);" class="shop-product-img-col">
+                                <img src="${p.image}" alt="${p.name}" style="max-width: 95%; max-height: 95%; object-fit: contain;" class="shop-product-item-img" loading="lazy" width="1024" height="1024">
+                                ${badgeText ? `<span style="position: absolute; top: 20px; left: 20px; background-color: var(--color-primary); border: 1px solid var(--color-accent); color: var(--color-secondary); font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; padding: 4px 10px; border-radius: 2px; z-index: 10;">${badgeText}</span>` : ''}
+                            </div>
+                            <div style="padding: 30px 24px; text-align: left; display: flex; flex-direction: column; justify-content: space-between;" class="shop-product-desc-col">
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                        <span style="font-size: 11px; letter-spacing: 0.15em; font-weight: 700; color: var(--color-accent); text-transform: uppercase;">${categoryText}</span>
+                                    </div>
+                                    <h2 style="font-family: var(--font-serif); font-size: 22px; font-weight: 500; color: var(--color-primary); margin: 0 0 10px 0; text-transform: uppercase;">${p.name}</h2>
+                                    ${shopPriceBlockHTML}
+                                    <p style="font-size: 13.5px; opacity: 0.85; line-height: 1.6; margin-bottom: 20px;">${p.description || p.short_description || ''}</p>
+                                </div>
+                                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                                    <button class="btn btn-primary shop-buy-trigger" data-product-id="${p.id}" style="flex: 1; height: 44px; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 4px;">Buy Now</button>
+                                    <button class="btn btn-secondary shop-add-trigger" data-product-id="${p.id}" style="height: 44px; padding: 0 20px; font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; border-radius: 4px; border: 1px solid rgba(30,58,52,0.2);">Add to Cart</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            shopContainer.innerHTML = shopHTML;
+        }
+
+        bindDynamicProductTriggers();
+    };
+
+    function bindDynamicProductTriggers() {
+        document.querySelectorAll('.shop-now-trigger').forEach(btn => {
+            btn.removeEventListener('click', handleShopNowClick);
+            btn.addEventListener('click', handleShopNowClick);
+        });
+
+        document.querySelectorAll('.shop-buy-trigger').forEach(btn => {
+            btn.removeEventListener('click', handleShopBuyClick);
+            btn.addEventListener('click', handleShopBuyClick);
+        });
+
+        document.querySelectorAll('.shop-add-trigger').forEach(btn => {
+            btn.removeEventListener('click', handleShopAddClick);
+            btn.addEventListener('click', handleShopAddClick);
+        });
+
+
+    }
+
+    function handleCardWhatsAppOrder(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const btn = e.currentTarget;
+        const productId = btn.getAttribute('data-product-id');
+        const p = (window.products && window.products[productId]) || null;
+        const productName = p ? p.name : 'LIPLEY Organic Product';
+        const isLipBalm = productId === 'strawberry-beetroot' || productId === 'strawberry-zero' || (p && (p.category === 'Organic Lip Balm' || p.type === 'Organic Lip Balm'));
+        
+        let msg = `*NEW ORDER INQUIRY - LIPLEY*\n\n`;
+        msg += `Product: ${productName}\n`;
+        if (isLipBalm) {
+            msg += `Original price: ₹179\n`;
+            msg += `Offer price: ₹149 ONLY\n`;
+            msg += `Special Offer: Buy 2 Lip Balms — FREE DELIVERY\n\n`;
+        } else if (p && (p.originalPrice || p.compare_price)) {
+            msg += `Original price: ₹${p.originalPrice || p.compare_price}\n`;
+            msg += `Offer price: ₹${p.price}\n\n`;
+        } else {
+            msg += `Price: ₹${p ? p.price : 149}\n\n`;
+        }
+        msg += `I would like to place an order for this product. Please share delivery and payment details.\n\n`;
+        const source = (typeof getReferralSource === 'function') ? getReferralSource() : 'Direct Website';
+        msg += `Source: ${source}\n\n`;
+        msg += `Thank you for choosing LIPLEY!`;
+        
+        const whatsappUrl = `https://wa.me/917591900437?text=${encodeURIComponent(msg)}`;
+        window.open(whatsappUrl, '_blank');
+    }
+    window.handleCardWhatsAppOrder = handleCardWhatsAppOrder;
+
+    function handleShopNowClick(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const btn = e.currentTarget;
+        const productId = btn.getAttribute('data-product-id') || 'strawberry-beetroot';
+        if (typeof window.loadProductDetails === 'function') {
+            window.loadProductDetails(productId);
+        }
+        showView('view-product');
+        updateNavActive('nav-shop-link');
+    }
+
+    function handleShopBuyClick(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const btn = e.currentTarget;
+        const productId = btn.getAttribute('data-product-id') || 'strawberry-beetroot';
+        selectedProductId = productId;
+        currentQty = 1;
+        isCartCheckout = false;
+        if (typeof calculateOrder === 'function') {
+            calculateOrder();
+        }
+        window.openPurchaseOptions();
+    }
+
+    function handleShopAddClick(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const btn = e.currentTarget;
+        const productId = btn.getAttribute('data-product-id');
+        addToCart(productId, 1, false);
+        showToast("Product added to cart.");
+    }
+
+    async function initDynamicProductsSystem() {
+        if (typeof LipleyAPI !== 'undefined') {
+            try {
+                const fetchedProducts = await LipleyAPI.getProducts();
+                if (Array.isArray(fetchedProducts) && fetchedProducts.length > 0) {
+                    fetchedProducts.forEach(p => {
+                        window.products[p.id] = {
+                            ...(window.products[p.id] || {}),
+                            ...p,
+                            image: p.image || window.products[p.id]?.image || 'assets/images/lipley-beetroot-lip-balm-8g.webp',
+                            gallery: (Array.isArray(p.gallery) && p.gallery.length > 0) ? p.gallery : (window.products[p.id]?.gallery || [p.image]),
+                            type: p.category || p.type || "Organic Cosmetic",
+                            tagline: p.short_description || p.tagline || "",
+                            originalPrice: p.originalPrice || p.compare_price || null
+                        };
+                    });
+                    window.renderDynamicProductCards();
+                }
+            } catch (err) {
+                console.warn("Could not fetch products from API, using default products:", err);
+            }
+        }
+    }
+
+    // Auto-sync products when updated in Admin Web in another tab or session
+    window.addEventListener('lipley_products_updated', async () => {
+        await initDynamicProductsSystem();
+    });
+
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'lipley_persistent_products_db_v1') {
+            initDynamicProductsSystem();
+        }
+    });
+
+    // Run dynamic initialization and bind initial fallback triggers
+    bindDynamicProductTriggers();
+    initDynamicProductsSystem();
 
     let selectedProductId = "strawberry-beetroot";
 
@@ -561,10 +794,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     thumb.style.display = 'flex';
                     const imgPath = product.gallery[idx] + '?v=2';
                     thumb.setAttribute('data-img', imgPath);
+                    thumb.setAttribute('tabindex', '0');
+                    thumb.setAttribute('role', 'button');
+                    thumb.setAttribute('aria-label', `${product.name} - View ${idx + 1}`);
                     
                     const thumbImg = thumb.querySelector('img');
                     if (thumbImg) {
                         thumbImg.src = imgPath;
+                        thumbImg.alt = `${product.name} - View ${idx + 1}`;
                     }
                     
                     // Reset active class
@@ -589,19 +826,28 @@ document.addEventListener('DOMContentLoaded', () => {
         const subtitleTagline = document.querySelector('.p-subtitle-tagline');
         if (subtitleTagline) subtitleTagline.textContent = product.tagline;
         
+        const isLipBalm = product.id === 'strawberry-beetroot' || product.id === 'strawberry-zero' || product.type === 'Organic Lip Balm' || product.category === 'Organic Lip Balm';
         const priceVal = document.querySelector('.price-value');
         if (priceVal) {
-            if (product.originalPrice) {
-                priceVal.innerHTML = `₹${product.price} <span style="font-size: 16px; text-decoration: line-through; color: #888888; font-weight: 500; margin-left: 10px;">₹${product.originalPrice}</span>`;
+            if (isLipBalm && product.price === 149) {
+                priceVal.innerHTML = `<span style="font-size: 18px; text-decoration: line-through; color: #767676; font-weight: 500; margin-right: 8px;" aria-label="Original price ₹179">₹179</span> ₹149 ONLY`;
+            } else if (product.originalPrice) {
+                priceVal.innerHTML = `₹${product.price} <span style="font-size: 16px; text-decoration: line-through; color: #767676; font-weight: 500; margin-left: 10px;">₹${product.originalPrice}</span>`;
             } else {
                 priceVal.textContent = `₹${product.price}`;
             }
         }
-        
+
+        // Show/hide detail page Buy 2 offer box
+        const detailOfferBox = document.getElementById('p-detail-offer-box');
+        if (detailOfferBox) {
+            detailOfferBox.style.display = isLipBalm ? 'flex' : 'none';
+        }
+
         // Update sidebar shipping details
         const sidebarShipping = document.querySelector('.p-shipping-list');
         if (sidebarShipping) {
-            const shippingCostText = product.id === 'hair-oil' ? '<strong>Shipping:</strong> Free Delivery on All Orders' : '<strong>Shipping:</strong> ₹30 (Free Delivery on 2 or more)';
+            const shippingCostText = '<strong>Offer:</strong> Buy 2 for ₹298 & Get FREE DELIVERY (Buy 1: ₹149 + delivery)';
             sidebarShipping.innerHTML = `
                 <li style="display: flex; gap: 6px;"><strong>Processing:</strong> Dispatched within 24 hours.</li>
                 <li style="display: flex; gap: 6px;"><strong>Delivery Time:</strong> 2–7 business days across India.</li>
@@ -639,7 +885,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const ingredientsBlock = document.querySelector('.p-ingredients-block');
         const ingredientsGrid = document.querySelector('.drawer-ingredients-grid');
         
-        if (product.id === 'independence-bundle' || !product.ingredients) {
+        if (!product.ingredients) {
             if (ingredientsBlock) ingredientsBlock.style.display = 'none';
         } else {
             if (ingredientsBlock) ingredientsBlock.style.display = 'block';
@@ -711,7 +957,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Select active product option in review dropdown form
         const reviewProductSelect = document.getElementById('review-product');
         if (reviewProductSelect) {
-            reviewProductSelect.value = productId === 'hair-oil' ? 'Hair Oil' : 'Lip Balm';
+            reviewProductSelect.value = productId === 'strawberry-zero' ? 'Strawberry Zero Lip Balm' : 'Beetroot Lip Balm';
         }
         
         // Update sticky bar details
@@ -722,7 +968,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (stickyTitle) stickyTitle.textContent = product.name;
         
         const stickyPrice = document.querySelector('.sticky-bar-price');
-        if (stickyPrice) stickyPrice.textContent = `₹${product.price}`;
+        if (stickyPrice) {
+            if (isLipBalm && product.price === 149) {
+                stickyPrice.innerHTML = `<span style="text-decoration: line-through; font-size: 11px; color: #767676; margin-right: 4px;">₹179</span> ₹149 ONLY`;
+            } else {
+                stickyPrice.textContent = `₹${product.price}`;
+            }
+        }
         
         // Trigger reviews refetch to filter by active product dynamically
         if (typeof fetchReviews === 'function') {
@@ -969,62 +1221,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Run initialization
     initRouter();
 
-    // Connect page routing triggers
-    const shopNowTriggers = document.querySelectorAll('.shop-now-trigger');
-    shopNowTriggers.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const productId = btn.getAttribute('data-product-id') || 'strawberry-beetroot';
-            if (typeof window.loadProductDetails === 'function') {
-                window.loadProductDetails(productId);
-            }
-            showView('view-product');
-            updateNavActive('nav-shop-link');
-        });
-    });
-
-    const bundleActionBtns = document.querySelectorAll('.btn-shop-bundle-action');
-    bundleActionBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const productId = btn.getAttribute('data-product-id') || 'independence-bundle';
-            addToCart(productId, 1, true);
-        });
-    });
-
-    const shopBuyTriggers = document.querySelectorAll('.shop-buy-trigger');
-    shopBuyTriggers.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const productId = btn.getAttribute('data-product-id');
-            
-            // Add to cart if not already present
-            const inCart = cart.some(item => item.productId === productId);
-            if (!inCart) {
-                addToCart(productId, 1, false);
-            }
-            
-            isCartCheckout = true; // Cart checkout mode
-            if (typeof calculateOrder === 'function') {
-                calculateOrder();
-            }
-            window.openPurchaseOptions();
-        });
-    });
-
-    const shopAddTriggers = document.querySelectorAll('.shop-add-trigger');
-    shopAddTriggers.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const productId = btn.getAttribute('data-product-id');
-            addToCart(productId, 1, false); // Add 1 unit, do NOT open drawer
-            showToast("Product added to cart.");
-        });
-    });
+    // Page routing triggers are unified and managed via bindDynamicProductTriggers()
 
     document.addEventListener('click', (e) => {
         const link = e.target.closest('a');
@@ -1103,7 +1300,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const saved = localStorage.getItem('lipley_cart');
             if (saved) {
-                cart = JSON.parse(saved);
+                cart = JSON.parse(saved).filter(item => item && (item.productId === 'strawberry-beetroot' || item.productId === 'strawberry-zero'));
             }
         } catch(e) {
             console.error(e);
@@ -1184,8 +1381,32 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             return;
         }
-        
-        let html = '<div class="cart-items-wrapper" style="display: flex; flex-direction: column; gap: 20px; max-height: calc(100vh - 280px); overflow-y: auto; padding-right: 5px;">';
+
+        let lbCount = 0;
+        cart.forEach(item => {
+            const p = window.products[item.productId];
+            const isLb = item.productId === 'strawberry-beetroot' || item.productId === 'strawberry-zero' || (p && (p.category === 'Organic Lip Balm' || p.type === 'Organic Lip Balm'));
+            if (isLb) lbCount += item.quantity;
+        });
+
+        let offerBannerHTML = '';
+        if (lbCount >= 2) {
+            offerBannerHTML = `
+                <div style="background: rgba(46, 125, 50, 0.08); border: 1px solid rgba(46, 125, 50, 0.3); border-radius: 6px; padding: 10px 12px; margin-bottom: 15px; font-size: 12px; color: #2E7D32; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 15px;">🎉</span>
+                    <span>Buy 2 Lip Balms Offer Applied: <strong>FREE DELIVERY Unlocked!</strong></span>
+                </div>
+            `;
+        } else if (lbCount === 1) {
+            offerBannerHTML = `
+                <div style="background: rgba(212, 175, 55, 0.1); border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 6px; padding: 10px 12px; margin-bottom: 15px; font-size: 12px; color: #1E3A34; font-weight: 500; display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 15px;">🚚</span>
+                    <span>Add 1 more Lip Balm for ₹149 to get <strong>FREE DELIVERY!</strong></span>
+                </div>
+            `;
+        }
+
+        let html = offerBannerHTML + '<div class="cart-items-wrapper" style="display: flex; flex-direction: column; gap: 20px; max-height: calc(100vh - 280px); overflow-y: auto; padding-right: 5px;">';
         let subtotal = 0;
         
         cart.forEach(item => {
@@ -1263,14 +1484,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     window.closeCartDrawer = function() {
+        if (cartDrawer) {
+            cartDrawer.classList.remove('open');
+            document.body.classList.remove('intro-active');
+        }
         const state = history.state;
         if (state && state.type === 'popup' && state.id === 'cart-drawer') {
-            window.goBack();
-        } else {
-            if (cartDrawer) {
-                cartDrawer.classList.remove('open');
-                document.body.classList.remove('intro-active');
-            }
+            history.back();
         }
     };
     
@@ -1413,20 +1633,31 @@ document.addEventListener('DOMContentLoaded', () => {
     const galleryThumbs = document.querySelectorAll('.gallery-thumb');
 
     galleryThumbs.forEach(thumb => {
-        thumb.addEventListener('click', () => {
+        const switchGalleryImage = () => {
             if (!mainGalleryImg) return;
+            const newImgSrc = thumb.getAttribute('data-img');
+            if (!newImgSrc) return;
+            
+            // Check if already active and matches current src
+            if (thumb.classList.contains('active') && mainGalleryImg.getAttribute('src') === newImgSrc) return;
             
             galleryThumbs.forEach(t => t.classList.remove('active'));
             thumb.classList.add('active');
-            
-            const newImgSrc = thumb.getAttribute('data-img');
             
             // Smooth fade transition
             mainGalleryImg.style.opacity = '0';
             setTimeout(() => {
                 mainGalleryImg.src = newImgSrc;
                 mainGalleryImg.style.opacity = '1';
-            }, 200);
+            }, 180);
+        };
+
+        thumb.addEventListener('click', switchGalleryImage);
+        thumb.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                switchGalleryImage();
+            }
         });
     });
 
@@ -1567,14 +1798,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.closePurchaseOptions = function() {
+        if (purchaseModal) {
+            purchaseModal.classList.remove('open');
+            document.body.classList.remove('intro-active');
+        }
         const state = history.state;
         if (state && state.type === 'popup' && state.id === 'purchase-options-modal') {
-            window.goBack();
-        } else {
-            if (purchaseModal) {
-                purchaseModal.classList.remove('open');
-                document.body.classList.remove('intro-active');
-            }
+            history.back();
         }
     };
 
@@ -1640,14 +1870,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const productId = btn.getAttribute('data-product-id') || selectedProductId || 'strawberry-beetroot';
                 const qtyToAdd = typeof productPageQty === 'number' && productPageQty > 0 ? productPageQty : 1;
                 
-                const existing = cart.find(item => item.productId === productId);
-                if (existing) {
-                    existing.quantity = Math.max(existing.quantity, qtyToAdd);
-                } else {
-                    addToCart(productId, qtyToAdd, false);
-                }
-                
-                isCartCheckout = true; // Cart checkout mode
+                selectedProductId = productId;
+                currentQty = qtyToAdd;
+                isCartCheckout = false;
                 if (typeof calculateOrder === 'function') {
                     calculateOrder();
                 }
@@ -1754,8 +1979,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Sort newest first
         allReviews.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-        // Filter approved reviews for public and by product (Lip Balm vs Hair Oil)
-        const activeProductLabel = selectedProductId === 'hair-oil' ? 'Hair Oil' : 'Lip Balm';
+        // Filter approved reviews for public and by product
+        const activeProductLabel = selectedProductId === 'strawberry-zero' ? 'Strawberry Zero Lip Balm' : 'Beetroot Lip Balm';
         const publicReviews = allReviews.filter(r => {
             const isApproved = r.approved === true;
             const reviewProduct = r.product || 'Lip Balm';
@@ -2279,14 +2504,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 const product = window.products[item.productId] || { price: 149 };
                 subtotal += product.price * item.quantity;
             });
-            const hasBundle = cart.some(item => item.productId === 'independence-bundle');
-            return hasBundle || subtotal >= 447;
+            return subtotal >= 447;
         } else {
             if (currentQty > 0) {
                 const product = window.products[selectedProductId] || { price: 149 };
                 subtotal = currentQty * product.price;
             }
-            return selectedProductId === 'independence-bundle' || subtotal >= 447;
+            return subtotal >= 447;
         }
     }
 
@@ -2363,40 +2587,56 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Keep window.shippingConfig for backwards compatibility but shipping charge calculation uses new engine
     window.shippingConfig = {
-        freeDeliveryMinAmountKerala: 447,
-        freeDeliveryMinAmountRestOfIndia: 894
+        freeDeliveryMinQuantity: 2,
+        keralaDeliveryCharge: 30,
+        standardDeliveryCharge: 69
     };
 
-    function getUnifiedShippingRate(state, subtotal = 0) {
+    function isLipBalmProduct(productId) {
+        if (!productId) return false;
+        if (productId === 'strawberry-beetroot' || productId === 'strawberry-zero') return true;
+        const p = window.products ? window.products[productId] : null;
+        if (p && (p.category === 'Organic Lip Balm' || p.type === 'Organic Lip Balm')) return true;
+        return false;
+    }
+
+    function getUnifiedShippingRate(state, subtotal = 0, lipBalmQty = 0) {
         if (!state) {
             return { charge: null, text: '' };
         }
+        
+        // Buy 2 or more eligible lip balms -> FREE DELIVERY
+        if (lipBalmQty >= 2) {
+            return { charge: 0, text: 'FREE DELIVERY (Buy 2 Offer)' };
+        }
+
         const stateKey = state.toLowerCase().trim();
         if (stateKey === 'kerala') {
-            if (subtotal >= 447) {
-                return { charge: 0, text: 'Kerala Delivery (FREE)' };
-            } else {
-                return { charge: 30, text: 'Kerala Delivery (₹30)' };
-            }
+            return { charge: 30, text: 'Kerala Delivery (₹30)' };
         } else {
-            if (subtotal >= 894) {
-                return { charge: 0, text: 'Standard Delivery (FREE)' };
-            } else {
-                return { charge: 69, text: 'Standard Delivery (₹69)' };
-            }
+            return { charge: 69, text: 'Standard Delivery (₹69)' };
         }
     }
 
     function getShippingRate(state, productId, qty, subtotal) {
+        const lbQty = isLipBalmProduct(productId) ? qty : 0;
         if (typeof subtotal !== 'number') {
             const product = window.products[productId] || { price: 149 };
             subtotal = qty * product.price;
         }
-        return getUnifiedShippingRate(state, subtotal);
+        return getUnifiedShippingRate(state, subtotal, lbQty);
     }
 
-    function getCartShippingRate(state, subtotal, cartItems) {
-        return getUnifiedShippingRate(state, subtotal);
+    function getCartShippingRate(state, subtotal, cartItems = []) {
+        let lbQty = 0;
+        if (Array.isArray(cartItems)) {
+            cartItems.forEach(item => {
+                if (isLipBalmProduct(item.productId)) {
+                    lbQty += item.quantity;
+                }
+            });
+        }
+        return getUnifiedShippingRate(state, subtotal, lbQty);
     }
 
     // Setup state searchable dropdown
@@ -2531,6 +2771,32 @@ document.addEventListener('DOMContentLoaded', () => {
         const summaryList = document.querySelector('.summary-items-list');
         if (!summaryList) return;
         
+        let lbQty = 0;
+        if (isCartCheckout) {
+            cart.forEach(item => {
+                if (isLipBalmProduct(item.productId)) lbQty += item.quantity;
+            });
+        } else {
+            if (isLipBalmProduct(selectedProductId)) lbQty = currentQty;
+        }
+
+        let offerBannerHTML = '';
+        if (lbQty >= 2) {
+            offerBannerHTML = `
+                <div style="background: rgba(46, 125, 50, 0.08); border: 1px solid rgba(46, 125, 50, 0.3); border-radius: 6px; padding: 10px 12px; margin-bottom: 15px; font-size: 12px; color: #2E7D32; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 15px;">🎉</span>
+                    <span>Buy 2 Lip Balms Offer: <strong>FREE DELIVERY Applied!</strong></span>
+                </div>
+            `;
+        } else if (lbQty === 1) {
+            offerBannerHTML = `
+                <div style="background: rgba(212, 175, 55, 0.1); border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 6px; padding: 10px 12px; margin-bottom: 15px; font-size: 12px; color: #1E3A34; font-weight: 500; display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 15px;">🚚</span>
+                    <span>Add 1 more Lip Balm for ₹149 to get <strong>FREE DELIVERY!</strong></span>
+                </div>
+            `;
+        }
+
         if (isCartCheckout) {
             if (cart.length === 0) {
                 summaryList.innerHTML = `
@@ -2542,7 +2808,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             
-            let html = '<div style="display: flex; flex-direction: column; gap: 20px;">';
+            let html = offerBannerHTML + '<div style="display: flex; flex-direction: column; gap: 20px;">';
             cart.forEach(item => {
                 const product = window.products[item.productId] || { name: item.productId, price: 149, image: 'assets/images/lipley-beetroot-lip-balm-8g.webp' };
                 const itemTotal = product.price * item.quantity;
@@ -2580,9 +2846,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             
-            const product = window.products[selectedProductId] || { name: "LIPLEY Strawberry Beetroot Tinted Lip Balm", price: 149, image: 'assets/images/lipley-beetroot-lip-balm-8g.webp' };
+            const product = window.products[selectedProductId] || { name: "LIPLEY Beetroot Tinted Lip Balm", price: 149, image: 'assets/images/lipley-beetroot-lip-balm-8g.webp' };
             const itemTotal = product.price * currentQty;
-            summaryList.innerHTML = `
+            summaryList.innerHTML = offerBannerHTML + `
                 <div class="checkout-item-row" style="border-bottom: 1px solid rgba(30, 58, 52, 0.06); padding-bottom: 15px; display: flex; gap: 12px; align-items: flex-start;">
                     <img src="${product.image}" alt="${product.name}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid rgba(30,58,52,0.08);">
                     <div style="flex: 1; min-width: 0;">
@@ -2627,7 +2893,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const billDeliveryStatusText = document.getElementById('bill-delivery-status');
         
         let lbQty = 0;
-        let hoQty = 0;
         
         const isKerala = (activeState || "").toLowerCase().trim() === 'kerala';
         const isEligibleOffer = isOrderEligibleForLIPLEY001();
@@ -2637,8 +2902,7 @@ document.addEventListener('DOMContentLoaded', () => {
             cart.forEach(item => {
                 const product = window.products[item.productId] || { price: 149 };
                 productTotal += product.price * item.quantity;
-                if (item.productId === 'strawberry-beetroot') lbQty += item.quantity;
-                else if (item.productId === 'hair-oil') hoQty += item.quantity;
+                if (isLipBalmProduct(item.productId)) lbQty += item.quantity;
             });
             
             if (activeState) {
@@ -2663,8 +2927,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (currentQty > 0) {
                 const product = window.products[selectedProductId] || { price: 149 };
                 productTotal = currentQty * product.price;
-                if (selectedProductId === 'strawberry-beetroot') lbQty = currentQty;
-                else if (selectedProductId === 'hair-oil') hoQty = currentQty;
+                if (isLipBalmProduct(selectedProductId)) lbQty = currentQty;
             }
             
             if (activeState) {
@@ -2689,7 +2952,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let deliveryMsg = "";
         if (deliveryCharge !== null) {
-            deliveryMsg = deliveryCharge === 0 ? `Delivery to ${activeState}: FREE` : `Delivery to ${activeState}: ₹${deliveryCharge}`;
+            if (deliveryCharge === 0) {
+                deliveryMsg = lbQty >= 2 
+                    ? `Delivery to ${activeState}: FREE (Buy 2 Offer Applied)` 
+                    : `Delivery to ${activeState}: FREE`;
+            } else {
+                deliveryMsg = `Delivery to ${activeState}: ₹${formatMoney(deliveryCharge)}`;
+                if (lbQty === 1) {
+                    deliveryMsg += ` • Buy 1 more lip balm for FREE delivery`;
+                }
+            }
         }
         
         if (couponApplied && appliedCoupon) {
@@ -2719,7 +2991,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 billDeliveryCharge.style.color = 'var(--color-accent)';
                 billDeliveryCharge.style.fontWeight = "";
             } else if (deliveryCharge === 0) {
-                billDeliveryCharge.textContent = "FREE";
+                billDeliveryCharge.textContent = lbQty >= 2 ? "FREE (Buy 2 Offer)" : "FREE";
                 billDeliveryCharge.style.color = "#4CAF50";
                 billDeliveryCharge.style.fontWeight = "600";
             } else {
@@ -2832,80 +3104,144 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
+    // Checkout form real-time input error dismissal
+    const checkoutFieldIds = ['order-full-name', 'order-phone', 'order-house', 'order-address', 'order-district', 'order-state', 'order-pin'];
+    checkoutFieldIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('input', () => {
+                el.classList.remove('field-error');
+                const feedback = document.getElementById('checkout-form-feedback');
+                if (feedback) feedback.style.display = 'none';
+            });
+        }
+    });
+
+    function showCheckoutValidationError(inputEl, message) {
+        if (inputEl) {
+            inputEl.classList.add('field-error');
+            inputEl.focus();
+            inputEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        const feedback = document.getElementById('checkout-form-feedback');
+        if (feedback) {
+            feedback.textContent = message;
+            feedback.style.display = 'block';
+        }
+        if (typeof showToast === 'function') {
+            showToast(message, 'error');
+        }
+    }
+
     // Form Submit Event
     if (purchaseOrderForm) {
         purchaseOrderForm.addEventListener('submit', (e) => {
             e.preventDefault();
+
+            // Clear any previous error styling
+            checkoutFieldIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.remove('field-error');
+            });
+            const formFeedback = document.getElementById('checkout-form-feedback');
+            if (formFeedback) formFeedback.style.display = 'none';
+
             if (isCartCheckout) {
-                if (cart.length === 0) {
-                    alert("Your checkout cart is empty. Please add items to your cart before ordering.");
+                if (!cart || cart.length === 0) {
+                    showCheckoutValidationError(null, "Your checkout cart is empty. Please add items to your cart before ordering.");
                     return;
                 }
             } else {
                 if (currentQty <= 0) {
-                    alert("Your checkout summary is empty. Please select a product before ordering.");
+                    showCheckoutValidationError(null, "Your checkout summary is empty. Please select a product before ordering.");
                     return;
                 }
             }
-            
-            // Gather delivery fields
-            const fullName = document.getElementById('order-full-name').value.trim();
-            const phone = document.getElementById('order-phone').value.trim();
-            const house = document.getElementById('order-house').value.trim();
-            const address = document.getElementById('order-address').value.trim();
-            const district = document.getElementById('order-district').value.trim();
-            const pin = document.getElementById('order-pin').value.trim();
-            
-            // Validate state selection before submit
-            const state = orderStateInput ? orderStateInput.value.trim() : "";
-            if (!state || !indianStates.includes(state)) {
-                alert("Please select a valid Indian State / Union Territory from the list before placing your order.");
-                if (orderStateInput) orderStateInput.focus();
+
+            // 1. Validate Full Name
+            const nameInput = document.getElementById('order-full-name');
+            const fullName = nameInput ? nameInput.value.trim() : '';
+            if (!fullName || fullName.length < 2) {
+                showCheckoutValidationError(nameInput, "Please enter your full name.");
                 return;
             }
-            
+
+            // 2. Validate Phone Number (10 digits)
+            const phoneInput = document.getElementById('order-phone');
+            const rawPhone = phoneInput ? phoneInput.value.trim() : '';
+            const digitsOnlyPhone = rawPhone.replace(/[\s\-\+]/g, '');
+            const phone10 = (digitsOnlyPhone.startsWith('91') && digitsOnlyPhone.length === 12) ? digitsOnlyPhone.slice(2) : digitsOnlyPhone;
+            if (!/^\d{10}$/.test(phone10)) {
+                showCheckoutValidationError(phoneInput, "Please enter a valid 10-digit mobile number.");
+                return;
+            }
+
+            // 3. Validate Delivery Address
+            const houseInput = document.getElementById('order-house');
+            const addressInput = document.getElementById('order-address');
+            const districtInput = document.getElementById('order-district');
+            const house = houseInput ? houseInput.value.trim() : '';
+            const address = addressInput ? addressInput.value.trim() : '';
+            const district = districtInput ? districtInput.value.trim() : '';
+
+            if (!address) {
+                showCheckoutValidationError(addressInput, "Please enter your delivery address.");
+                return;
+            }
+            if (!district) {
+                showCheckoutValidationError(districtInput, "Please enter your district.");
+                return;
+            }
+
+            // 4. Validate State selection
+            const stateVal = orderStateInput ? orderStateInput.value.trim() : '';
+            const matchedState = indianStates.find(s => s.toLowerCase() === stateVal.toLowerCase());
+            if (!stateVal || !matchedState) {
+                showCheckoutValidationError(orderStateInput, "Please select your State / Union Territory from the list.");
+                return;
+            }
+
+            // 5. Validate PIN Code (6 digits)
+            const pinInput = document.getElementById('order-pin');
+            const pin = pinInput ? pinInput.value.trim() : '';
+            if (!/^\d{6}$/.test(pin)) {
+                showCheckoutValidationError(pinInput, "Please enter a valid 6-digit PIN code.");
+                return;
+            }
+
+            // Construct delivery address string
+            const deliveryAddress = house ? `${house}, ${address}, ${district}` : `${address}, ${district}`;
+
+            // Calculate totals dynamically before sending to WhatsApp
             let productTotal = 0;
             let deliveryCharge = 0;
-            let offerString = '';
-            
-            // Format WhatsApp Message
-            let message = `Hello LIPLEY,\n\n`;
-            message += `I would like to place an order for:\n`;
-            
+            let orderItems = [];
+
             if (isCartCheckout) {
-                cart.forEach((item, index) => {
+                cart.forEach(item => {
                     const product = window.products[item.productId] || { name: item.productId, price: 149 };
                     productTotal += product.price * item.quantity;
-                    message += `${index + 1}. *Product:* ${product.name}\n`;
-                    message += `   *Price:* ₹${product.price}\n`;
-                    message += `   *Quantity:* ${item.quantity}\n`;
-                    message += `   *Subtotal:* ₹${product.price * item.quantity}\n\n`;
+                    orderItems.push({
+                        name: product.name,
+                        quantity: item.quantity,
+                        price: product.price
+                    });
                 });
-                
-                const rate = getCartShippingRate(state, productTotal, cart);
+                const rate = getCartShippingRate(matchedState, productTotal, cart);
                 deliveryCharge = rate.charge;
-                offerString = rate.text;
-                
-                message += `*Order Subtotal:* ₹${productTotal}\n`;
             } else {
-                const product = window.products[selectedProductId] || { name: "LIPLEY Strawberry Beetroot Tinted Lip Balm", price: 149 };
-                const productName = product.name;
-                const itemPrice = product.price;
-                productTotal = currentQty * itemPrice;
-                
-                const rate = getShippingRate(state, selectedProductId, currentQty);
+                const product = window.products[selectedProductId] || { name: "LIPLEY Beetroot Tinted Lip Balm", price: 149 };
+                productTotal = currentQty * product.price;
+                orderItems.push({
+                    name: product.name,
+                    quantity: currentQty,
+                    price: product.price
+                });
+                const rate = getShippingRate(matchedState, selectedProductId, currentQty);
                 deliveryCharge = rate.charge;
-                offerString = rate.text;
-                
-                message += `*Product:* ${productName}\n`;
-                message += `*Price:* ₹${itemPrice}\n`;
-                message += `*Quantity:* ${currentQty}\n`;
-                if (offerString) {
-                    message += `*Offer:* ${offerString}\n`;
-                }
-                message += `*Product Total:* ₹${productTotal}\n`;
             }
-            
+
+            // Calculate coupon discount if applied
             let discountAmount = 0;
             if (couponApplied && appliedCoupon) {
                 if (appliedCoupon.code === 'LIPLEY001') {
@@ -2913,39 +3249,59 @@ document.addEventListener('DOMContentLoaded', () => {
                         discountAmount = Math.round(productTotal * 0.10 * 100) / 100;
                     }
                 } else {
-                    discountAmount = Math.round(productTotal * appliedCoupon.discountPercent * 100) / 100;
+                    discountAmount = Math.round(productTotal * (appliedCoupon.discountPercent || 0) * 100) / 100;
                 }
             }
             const grandTotal = Math.max(0, productTotal + (deliveryCharge || 0) - discountAmount);
-            
-            if (deliveryCharge === 0) {
-                message += `*Delivery Charge:* FREE\n`;
+
+            // Format WhatsApp Message exactly as specified
+            let message = "LIPLEY — NEW ORDER\n\n";
+
+            message += "Customer Details:\n";
+            message += `Name: ${fullName}\n`;
+            message += `Phone: ${phone10}\n`;
+            message += `Address: ${deliveryAddress}\n`;
+            message += `State: ${matchedState}\n`;
+            message += `PIN Code: ${pin}\n\n`;
+
+            message += "Order Details:\n";
+            if (orderItems.length === 1) {
+                const item = orderItems[0];
+                message += `${item.name} × ${item.quantity}\n`;
+                message += `Offer Price: ₹${item.price} each\n`;
             } else {
-                message += `*Delivery Charge:* ₹${formatMoney(deliveryCharge)}\n`;
+                orderItems.forEach((item, index) => {
+                    message += `${item.name} × ${item.quantity}\n`;
+                    message += `Offer Price: ₹${item.price} each\n\n`;
+                });
             }
+
+            message += `Subtotal: ₹${formatMoney(productTotal)}\n`;
+            if (deliveryCharge === 0) {
+                message += "Delivery: FREE\n";
+            } else {
+                message += `Delivery: ₹${formatMoney(deliveryCharge)}\n`;
+            }
+
             if (couponApplied && discountAmount > 0) {
-                const couponCode = appliedCoupon ? appliedCoupon.code : 'LIPLEY001';
-                message += `*Coupon Discount:* -₹${formatMoney(discountAmount)} (${couponCode} 10% OFF)\n`;
+                message += `Discount: ₹${formatMoney(discountAmount)}\n`;
             }
-            message += `*Grand Total:* ₹${formatMoney(grandTotal)}\n\n`;
-            
-            message += `*Customer Details:*\n`;
-            message += `*Name:* ${fullName}\n`;
-            message += `*Phone:* ${phone}\n`;
-            message += `*State / UT:* ${state}\n`;
-            message += `*Address:* ${house}, ${address}, ${district}, ${state} - PIN: ${pin}\n\n`;
-            message += `Source: ${getReferralSource()}\n`;
-            
-            // URL encode message and open WhatsApp
+
+            message += `Grand Total: ₹${formatMoney(grandTotal)}\n\n`;
+
+            message += `Source: ${getReferralSource()}\n\n`;
+            message += "Please confirm this order. Thank you!";
+
+            // Direct WhatsApp redirect with no false popups
             const encodedMessage = encodeURIComponent(message);
             const whatsappUrl = `https://wa.me/917591900437?text=${encodedMessage}`;
-            
-            // Clear cart if this was a cart checkout
+
+            // Reset cart on checkout submission if it was a cart checkout
             if (isCartCheckout) {
                 cart = [];
                 saveCart();
             }
-            
+
             window.open(whatsappUrl, '_blank');
         });
     }

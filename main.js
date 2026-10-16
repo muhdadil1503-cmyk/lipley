@@ -456,10 +456,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 "Suitable for everyday use."
             ],
             instructions: "Apply evenly on clean lips whenever needed.<br><br>Reapply throughout the day for continuous hydration and a natural tinted look.<br><br>Apply before bedtime for overnight nourishment.",
-            reviews: [
-                { text: "My lips have never felt softer! The beetroot tint is so natural and pretty.", author: "Anjali R." },
-                { text: "Truly organic. It stays hydrated for hours without feeling sticky.", author: "Siddharth M." }
-            ],
             netQty: "8g",
             storage: "Store in a cool, dry place. Keep away from direct sunlight.",
             faqs: [
@@ -497,10 +493,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 "Suitable for Men & Women."
             ],
             instructions: "Apply evenly on clean lips whenever needed.<br><br>Reapply throughout the day for continuous hydration.<br><br>Apply before bedtime for overnight nourishment.",
-            reviews: [
-                { text: "Love the strawberry fragrance and how soft it leaves my lips!", author: "Pooja K." },
-                { text: "My everyday lip balm. Super moisturizing without being sticky.", author: "Divya N." }
-            ],
             netQty: "8g",
             storage: "Store in a cool, dry place. Keep away from direct sunlight.",
             faqs: [
@@ -959,17 +951,6 @@ document.addEventListener('DOMContentLoaded', () => {
             `).join('');
         }
         
-        // Update sidebar reviews quotes
-        const sidebarQuotes = document.querySelector('.p-review-quotes');
-        if (sidebarQuotes && product.reviews) {
-            sidebarQuotes.innerHTML = product.reviews.map(rev => `
-                <div class="review-quote-item" style="background: rgba(30, 58, 52, 0.02); border-left: 3px solid var(--color-accent); padding: 10px 15px; border-radius: 0 4px 4px 0;">
-                    <p style="font-style: italic; font-size: 13px; line-height: 1.5; margin: 0 0 5px 0; color: var(--color-primary);">"${rev.text}"</p>
-                    <span style="font-size: 11px; font-weight: 600; color: var(--color-primary); opacity: 0.85;">— ${rev.author}</span>
-                </div>
-            `).join('');
-        }
-
         // Update checkout summary item details
         const checkoutImg = document.querySelector('.summary-item-img');
         if (checkoutImg) {
@@ -1783,6 +1764,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (purchaseModal) {
             purchaseModal.classList.add('open');
             document.body.classList.add('intro-active');
+            document.body.classList.add('modal-open');
+            const stickyCta = document.getElementById('mobile-sticky-cta');
+            if (stickyCta) stickyCta.classList.add('hidden');
             window.pushNavigationState('popup', 'purchase-options-modal');
         }
         
@@ -1832,6 +1816,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (purchaseModal) {
             purchaseModal.classList.remove('open');
             document.body.classList.remove('intro-active');
+            document.body.classList.remove('modal-open');
+            const stickyCta = document.getElementById('mobile-sticky-cta');
+            if (stickyCta) stickyCta.classList.remove('hidden');
         }
         const state = history.state;
         if (state && state.type === 'popup' && state.id === 'purchase-options-modal') {

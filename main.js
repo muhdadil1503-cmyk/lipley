@@ -1402,18 +1402,25 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         let offerBannerHTML = '';
-        if (lbCount >= 2) {
+        if (lbCount >= 3) {
             offerBannerHTML = `
                 <div style="background: rgba(46, 125, 50, 0.08); border: 1px solid rgba(46, 125, 50, 0.3); border-radius: 6px; padding: 10px 12px; margin-bottom: 15px; font-size: 12px; color: #2E7D32; font-weight: 600; display: flex; align-items: center; gap: 8px;">
                     <span style="font-size: 15px;">🎉</span>
-                    <span>Buy 2 Lip Balms Offer Applied: <strong>FREE DELIVERY Unlocked!</strong></span>
+                    <span>3+ Lip Balms: <strong>FREE DELIVERY Across India!</strong></span>
+                </div>
+            `;
+        } else if (lbCount === 2) {
+            offerBannerHTML = `
+                <div style="background: rgba(46, 125, 50, 0.08); border: 1px solid rgba(46, 125, 50, 0.3); border-radius: 6px; padding: 10px 12px; margin-bottom: 15px; font-size: 12px; color: #2E7D32; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 15px;">🚚</span>
+                    <span>2 Lip Balms: <strong>FREE in Kerala</strong> • <strong>₹40 for Other States</strong></span>
                 </div>
             `;
         } else if (lbCount === 1) {
             offerBannerHTML = `
                 <div style="background: rgba(212, 175, 55, 0.1); border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 6px; padding: 10px 12px; margin-bottom: 15px; font-size: 12px; color: #1E3A34; font-weight: 500; display: flex; align-items: center; gap: 8px;">
                     <span style="font-size: 15px;">🚚</span>
-                    <span>Add 1 more Lip Balm for ₹149 to get <strong>FREE DELIVERY!</strong></span>
+                    <span>Add Lip Balms to save: <strong>FREE for 2+ in Kerala, 3+ India-wide</strong></span>
                 </div>
             `;
         }
@@ -1452,9 +1459,26 @@ document.addEventListener('DOMContentLoaded', () => {
         
         html += '</div>';
         
-        const cartDeliveryText = lbCount >= 2 
-            ? '<span style="color: #4CAF50; font-weight: 700;">FREE</span>' 
-            : (activeState ? (activeState.toLowerCase().trim() === 'kerala' ? '₹30' : '₹60') : '<span style="font-size: 11.5px; opacity: 0.85;">Calculated at checkout</span>');
+        let cartDeliveryText = '';
+        if (lbCount >= 3) {
+            cartDeliveryText = '<span style="color: #4CAF50; font-weight: 700;">FREE</span>';
+        } else if (lbCount === 2) {
+            if (activeState) {
+                cartDeliveryText = (activeState.toLowerCase().trim() === 'kerala')
+                    ? '<span style="color: #4CAF50; font-weight: 700;">FREE</span>'
+                    : '₹40';
+            } else {
+                cartDeliveryText = '<span style="font-size: 11.5px; opacity: 0.85;">FREE (Kerala) / ₹40 (Other)</span>';
+            }
+        } else if (lbCount === 1) {
+            if (activeState) {
+                cartDeliveryText = (activeState.toLowerCase().trim() === 'kerala') ? '₹30' : '₹60';
+            } else {
+                cartDeliveryText = '<span style="font-size: 11.5px; opacity: 0.85;">₹30 (Kerala) / ₹60 (Other)</span>';
+            }
+        } else {
+            cartDeliveryText = '<span style="font-size: 11.5px; opacity: 0.85;">Calculated at checkout</span>';
+        }
 
         html += `
             <div style="margin-top: 20px; border-top: 1px solid rgba(30, 58, 52, 0.12); padding-top: 15px;">
@@ -2613,9 +2637,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Keep window.shippingConfig for backwards compatibility but shipping charge calculation uses new engine
     window.shippingConfig = {
-        freeDeliveryMinQuantity: 2,
+        freeDeliveryMinQuantityKerala: 2,
+        freeDeliveryMinQuantityOther: 3,
         keralaDeliveryCharge: 30,
-        standardDeliveryCharge: 60
+        otherState1Charge: 60,
+        otherState2Charge: 40
     };
 
     function isLipBalmProduct(productId) {
@@ -2642,9 +2668,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function getUnifiedShippingRate(state, subtotal = 0, lipBalmQty = 0) {
-        // Buy 2 or more eligible lip balms -> FREE DELIVERY across all Indian states
-        if (lipBalmQty >= 2) {
-            return { charge: 0, text: 'FREE DELIVERY (Buy 2 Offer)' };
+        // 3 or more eligible lip balms -> FREE DELIVERY across all Indian states
+        if (lipBalmQty >= 3) {
+            return { charge: 0, text: 'FREE DELIVERY (Buy 3+ Offer)' };
         }
 
         if (!state) {
@@ -2653,9 +2679,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const stateKey = state.toLowerCase().trim();
         if (stateKey === 'kerala') {
-            return { charge: 30, text: 'Kerala Delivery (₹30)' };
+            if (lipBalmQty >= 2) {
+                return { charge: 0, text: 'FREE DELIVERY (Kerala 2+ Offer)' };
+            } else {
+                return { charge: 30, text: 'Kerala Delivery (₹30)' };
+            }
         } else {
-            return { charge: 60, text: 'Standard Delivery (₹60)' };
+            // Other Indian States: 1 = ₹60, 2 = ₹40, 3+ = FREE
+            if (lipBalmQty === 2) {
+                return { charge: 40, text: 'Standard Delivery (₹40)' };
+            } else {
+                return { charge: 60, text: 'Standard Delivery (₹60)' };
+            }
         }
     }
 
@@ -2823,18 +2858,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         let offerBannerHTML = '';
-        if (lbQty >= 2) {
+        if (lbQty >= 3) {
             offerBannerHTML = `
                 <div style="background: rgba(46, 125, 50, 0.08); border: 1px solid rgba(46, 125, 50, 0.3); border-radius: 6px; padding: 10px 12px; margin-bottom: 15px; font-size: 12px; color: #2E7D32; font-weight: 600; display: flex; align-items: center; gap: 8px;">
                     <span style="font-size: 15px;">🎉</span>
-                    <span>Buy 2 Lip Balms Offer: <strong>FREE DELIVERY Applied!</strong></span>
+                    <span>3+ Lip Balms: <strong>FREE DELIVERY Across India Applied!</strong></span>
+                </div>
+            `;
+        } else if (lbQty === 2) {
+            const isKer = activeState && activeState.toLowerCase().trim() === 'kerala';
+            offerBannerHTML = `
+                <div style="background: rgba(46, 125, 50, 0.08); border: 1px solid rgba(46, 125, 50, 0.3); border-radius: 6px; padding: 10px 12px; margin-bottom: 15px; font-size: 12px; color: #2E7D32; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 15px;">🚚</span>
+                    <span>2 Lip Balms: <strong>${isKer ? 'FREE DELIVERY (Kerala)' : '₹40 Delivery (Other States) / FREE in Kerala'}</strong></span>
                 </div>
             `;
         } else if (lbQty === 1) {
             offerBannerHTML = `
                 <div style="background: rgba(212, 175, 55, 0.1); border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 6px; padding: 10px 12px; margin-bottom: 15px; font-size: 12px; color: #1E3A34; font-weight: 500; display: flex; align-items: center; gap: 8px;">
                     <span style="font-size: 15px;">🚚</span>
-                    <span>Add 1 more Lip Balm for ₹149 to get <strong>FREE DELIVERY!</strong></span>
+                    <span>Delivery: ₹30 (Kerala) | ₹60 (Other States). Add more to save on shipping!</span>
                 </div>
             `;
         }
@@ -2963,9 +3006,9 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 if (billPinRow) billPinRow.style.display = 'none';
                 if (billStateRow) billStateRow.style.display = 'none';
-                if (lbQty >= 2) {
+                if (lbQty >= 3) {
                     deliveryCharge = 0;
-                    offerText = 'FREE DELIVERY (Buy 2 Offer)';
+                    offerText = 'FREE DELIVERY (Buy 3+ Offer)';
                 } else {
                     deliveryCharge = null;
                 }
@@ -2993,9 +3036,9 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 if (billPinRow) billPinRow.style.display = 'none';
                 if (billStateRow) billStateRow.style.display = 'none';
-                if (lbQty >= 2) {
+                if (lbQty >= 3) {
                     deliveryCharge = 0;
-                    offerText = 'FREE DELIVERY (Buy 2 Offer)';
+                    offerText = 'FREE DELIVERY (Buy 3+ Offer)';
                 } else {
                     deliveryCharge = null;
                 }
@@ -3005,13 +3048,20 @@ document.addEventListener('DOMContentLoaded', () => {
         let deliveryMsg = "";
         if (deliveryCharge !== null) {
             if (deliveryCharge === 0) {
+                const offerTag = lbQty >= 3 ? 'Buy 3+ Offer' : (isKerala ? 'Kerala 2+ Offer' : 'Offer');
                 deliveryMsg = activeState 
-                    ? `Delivery to ${activeState}: FREE (Buy 2 Offer Applied)` 
-                    : `Delivery across India: FREE (Buy 2 Offer Applied)`;
+                    ? `Delivery to ${activeState}: FREE (${offerTag} Applied)` 
+                    : `Delivery across India: FREE (Buy 3+ Offer Applied)`;
             } else {
                 deliveryMsg = `Delivery to ${activeState}: ₹${formatMoney(deliveryCharge)}`;
-                if (lbQty === 1) {
+                if (isKerala && lbQty === 1) {
                     deliveryMsg += ` • Buy 1 more lip balm for FREE delivery`;
+                } else if (!isKerala) {
+                    if (lbQty === 1) {
+                        deliveryMsg += ` • Buy 1 more for ₹40 delivery (2 more for FREE)`;
+                    } else if (lbQty === 2) {
+                        deliveryMsg += ` • Buy 1 more lip balm for FREE delivery`;
+                    }
                 }
             }
         }
@@ -3461,8 +3511,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <br>
             <h3>2. Shipping Rates</h3>
             <ul>
-                <li><strong>Quantity 1:</strong> ₹30 Delivery Charge.</li>
-                <li><strong>Quantity 2 or more:</strong> FREE Delivery.</li>
+                <li><strong>Kerala:</strong> 1 Lip Balm = ₹30; 2 or more Lip Balms = FREE Delivery.</li>
+                <li><strong>Other Indian States:</strong> 1 Lip Balm = ₹60; 2 Lip Balms = ₹40; 3 or more Lip Balms = FREE Delivery.</li>
             </ul>
             <br>
             <h3>3. Estimated Delivery Times</h3>

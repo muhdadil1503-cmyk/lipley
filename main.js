@@ -1396,9 +1396,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let lbCount = 0;
         cart.forEach(item => {
-            const p = window.products[item.productId];
-            const isLb = item.productId === 'strawberry-beetroot' || item.productId === 'strawberry-zero' || (p && (p.category === 'Organic Lip Balm' || p.type === 'Organic Lip Balm'));
-            if (isLb) lbCount += item.quantity;
+            if (item && isLipBalmProduct(item.productId)) {
+                lbCount += (item.quantity || 0);
+            }
         });
 
         let offerBannerHTML = '';
@@ -1452,11 +1452,19 @@ document.addEventListener('DOMContentLoaded', () => {
         
         html += '</div>';
         
+        const cartDeliveryText = lbCount >= 2 
+            ? '<span style="color: #4CAF50; font-weight: 700;">FREE</span>' 
+            : (activeState ? (activeState.toLowerCase().trim() === 'kerala' ? '₹30' : '₹60') : '<span style="font-size: 11.5px; opacity: 0.85;">Calculated at checkout</span>');
+
         html += `
             <div style="margin-top: 20px; border-top: 1px solid rgba(30, 58, 52, 0.12); padding-top: 15px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                     <span style="font-size: 13px; font-weight: 600; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.02em;">Subtotal</span>
                     <span style="font-size: 16px; font-weight: 700; color: var(--color-primary);">₹${subtotal}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <span style="font-size: 13px; font-weight: 600; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.02em;">Delivery</span>
+                    <span style="font-size: 13.5px; font-weight: 600; color: var(--color-primary);">${cartDeliveryText}</span>
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 8px;">
                     <button class="btn btn-primary btn-full" id="cart-checkout-btn" style="height: 44px; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 4px; box-shadow: var(--shadow-luxury);">Checkout Cart</button>
@@ -2607,40 +2615,56 @@ document.addEventListener('DOMContentLoaded', () => {
     window.shippingConfig = {
         freeDeliveryMinQuantity: 2,
         keralaDeliveryCharge: 30,
-        standardDeliveryCharge: 69
+        standardDeliveryCharge: 60
     };
 
     function isLipBalmProduct(productId) {
         if (!productId) return false;
-        if (productId === 'strawberry-beetroot' || productId === 'strawberry-zero') return true;
+        const id = String(productId).toLowerCase().trim();
+        // Hair Oil is currently unavailable - exclude from lip balm count
+        if (id.includes('hair') || id.includes('hairoil') || id.includes('hair-oil') || id.includes('hair_oil')) {
+            return false;
+        }
+        if (id === 'strawberry-beetroot' || id === 'strawberry-zero') return true;
         const p = window.products ? window.products[productId] : null;
-        if (p && (p.category === 'Organic Lip Balm' || p.type === 'Organic Lip Balm')) return true;
+        if (p) {
+            const name = (p.name || '').toLowerCase();
+            const category = (p.category || '').toLowerCase();
+            const type = (p.type || '').toLowerCase();
+            if (name.includes('hair') || category.includes('hair') || type.includes('hair')) {
+                return false;
+            }
+            if (category === 'organic lip balm' || type === 'organic lip balm' || name.includes('lip balm')) {
+                return true;
+            }
+        }
         return false;
     }
 
     function getUnifiedShippingRate(state, subtotal = 0, lipBalmQty = 0) {
-        if (!state) {
-            return { charge: null, text: '' };
-        }
-        
-        // Buy 2 or more eligible lip balms -> FREE DELIVERY
+        // Buy 2 or more eligible lip balms -> FREE DELIVERY across all Indian states
         if (lipBalmQty >= 2) {
             return { charge: 0, text: 'FREE DELIVERY (Buy 2 Offer)' };
+        }
+
+        if (!state) {
+            return { charge: null, text: '' };
         }
 
         const stateKey = state.toLowerCase().trim();
         if (stateKey === 'kerala') {
             return { charge: 30, text: 'Kerala Delivery (₹30)' };
         } else {
-            return { charge: 69, text: 'Standard Delivery (₹69)' };
+            return { charge: 60, text: 'Standard Delivery (₹60)' };
         }
     }
 
     function getShippingRate(state, productId, qty, subtotal) {
         const lbQty = isLipBalmProduct(productId) ? qty : 0;
         if (typeof subtotal !== 'number') {
-            const product = window.products[productId] || { price: 149 };
-            subtotal = qty * product.price;
+            const product = window.products ? window.products[productId] : null;
+            const price = product ? product.price : 149;
+            subtotal = qty * price;
         }
         return getUnifiedShippingRate(state, subtotal, lbQty);
     }
@@ -2649,8 +2673,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let lbQty = 0;
         if (Array.isArray(cartItems)) {
             cartItems.forEach(item => {
-                if (isLipBalmProduct(item.productId)) {
-                    lbQty += item.quantity;
+                if (item && isLipBalmProduct(item.productId)) {
+                    lbQty += (item.quantity || 0);
                 }
             });
         }
@@ -2939,7 +2963,12 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 if (billPinRow) billPinRow.style.display = 'none';
                 if (billStateRow) billStateRow.style.display = 'none';
-                deliveryCharge = null;
+                if (lbQty >= 2) {
+                    deliveryCharge = 0;
+                    offerText = 'FREE DELIVERY (Buy 2 Offer)';
+                } else {
+                    deliveryCharge = null;
+                }
             }
         } else {
             if (currentQty > 0) {
@@ -2964,16 +2993,21 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 if (billPinRow) billPinRow.style.display = 'none';
                 if (billStateRow) billStateRow.style.display = 'none';
-                deliveryCharge = null;
+                if (lbQty >= 2) {
+                    deliveryCharge = 0;
+                    offerText = 'FREE DELIVERY (Buy 2 Offer)';
+                } else {
+                    deliveryCharge = null;
+                }
             }
         }
 
         let deliveryMsg = "";
         if (deliveryCharge !== null) {
             if (deliveryCharge === 0) {
-                deliveryMsg = lbQty >= 2 
+                deliveryMsg = activeState 
                     ? `Delivery to ${activeState}: FREE (Buy 2 Offer Applied)` 
-                    : `Delivery to ${activeState}: FREE`;
+                    : `Delivery across India: FREE (Buy 2 Offer Applied)`;
             } else {
                 deliveryMsg = `Delivery to ${activeState}: ₹${formatMoney(deliveryCharge)}`;
                 if (lbQty === 1) {
@@ -3009,7 +3043,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 billDeliveryCharge.style.color = 'var(--color-accent)';
                 billDeliveryCharge.style.fontWeight = "";
             } else if (deliveryCharge === 0) {
-                billDeliveryCharge.textContent = lbQty >= 2 ? "FREE (Buy 2 Offer)" : "FREE";
+                billDeliveryCharge.textContent = "FREE";
                 billDeliveryCharge.style.color = "#4CAF50";
                 billDeliveryCharge.style.fontWeight = "600";
             } else {
